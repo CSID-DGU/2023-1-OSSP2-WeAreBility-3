@@ -38,7 +38,8 @@ dependencies:
     shared_preferences: ^2.1.0
     google_sign_in: ^6.1.0
     sign_in_with_apple: ^4.3.0
-
+    kakao_flutter_sdk: ^1.4.2
+    flutter_dotenv: ^5.0.2
 dev_dependencies:
     flutter_test:
         sdk: flutter
@@ -66,6 +67,7 @@ flutter:
         - assets/images/logo/google.png
         - assets/images/logo/kakao.png
         - assets/images/logo/apple.png
+        - assets/config/.env
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware
