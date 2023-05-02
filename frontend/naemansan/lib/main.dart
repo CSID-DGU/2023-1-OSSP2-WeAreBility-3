@@ -3,6 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:naemansan/screens/home_sccreen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:naemansan/screens/screen_index.dart';
 
 void main() async {
   // spalsh 시간 조절하기
@@ -15,6 +16,7 @@ void main() async {
   final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
 
   runApp(MyApp(isLoggedin: isLoggedin));
+  runApp(const App());
 }
 
 class MyApp extends StatelessWidget {
@@ -29,6 +31,22 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // 로그인 여부에 따라 화면 분기
       home: isLoggedin ? const HomeScreen() : LoginScreen(),
+    );
+  }
+}
+
+//---
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: '내가 만든 산책로',
+      routes: {
+        '/index': (context) => const IndexScreen(),
+      },
+      initialRoute: '/index',
     );
   }
 }
