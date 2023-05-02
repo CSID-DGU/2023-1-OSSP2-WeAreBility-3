@@ -14,13 +14,13 @@ void main() async {
   // 로그인 여부 확인
   final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
 
-  runApp(App(isLoggedin: isLoggedin));
+  runApp(MyApp(isLoggedin: isLoggedin));
 }
 
-class App extends StatelessWidget {
+class MyApp extends StatelessWidget {
   // 로그인 여부 체크
   final bool isLoggedin;
-  const App({super.key, required this.isLoggedin});
+  const MyApp({super.key, required this.isLoggedin});
 
   // This widget is the root of your application.
   @override
@@ -28,7 +28,7 @@ class App extends StatelessWidget {
     FlutterNativeSplash.remove(); // 초기화가 끝나는 시점에 삽입
     return MaterialApp(
       // 로그인 여부에 따라 화면 분기
-      home: isLoggedin ? const HomeScreen() : const LoginScreen(),
+      home: isLoggedin ? const HomeScreen() : LoginScreen(),
     );
   }
 }
