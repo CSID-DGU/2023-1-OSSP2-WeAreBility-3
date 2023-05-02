@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:naemansan/widgets/login_button.dart';
 
 class LoginScreen extends StatelessWidget {
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -16,8 +17,19 @@ class LoginScreen extends StatelessWidget {
           image: AssetImage('assets/images/login_screen.png'), // 배경 이미지
         ),
       ),
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: Colors.transparent, // 배경색을 투명으로 설정
+        body: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            LoginBtn(whatsLogin: "Kakao 계정으로 로그인"),
+            SizedBox(height: 20),
+            LoginBtn(whatsLogin: "Google 계정으로 로그인"),
+            SizedBox(height: 20),
+            LoginBtn(whatsLogin: "Apple 계정으로 로그인"),
+          ],
+        )),
       ),
     );
   }
