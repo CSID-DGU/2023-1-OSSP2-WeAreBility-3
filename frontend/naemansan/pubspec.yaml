@@ -38,6 +38,7 @@ dependencies:
     shared_preferences: ^2.1.0
     google_sign_in: ^6.1.0
     sign_in_with_apple: ^4.3.0
+    kakao_flutter_sdk: ^1.4.2
 
 dev_dependencies:
     flutter_test:
