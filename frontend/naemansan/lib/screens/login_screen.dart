@@ -23,11 +23,12 @@ class LoginScreen extends StatelessWidget {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            LoginBtn(whatsLogin: "Kakao 계정으로 로그인"),
+            SizedBox(height: 60),
+            LoginBtn(whatsLogin: "Kakao 계정으로 로그인", logo: "kakao"),
             SizedBox(height: 20),
-            LoginBtn(whatsLogin: "Google 계정으로 로그인"),
+            LoginBtn(whatsLogin: "Apple 계정으로 로그인", logo: "apple"),
             SizedBox(height: 20),
-            LoginBtn(whatsLogin: "Apple 계정으로 로그인"),
+            LoginBtn(whatsLogin: "Google 계정으로 로그인", logo: "google"),
           ],
         )),
       ),

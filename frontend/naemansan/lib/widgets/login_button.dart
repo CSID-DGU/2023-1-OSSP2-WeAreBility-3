@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class LoginBtn extends StatelessWidget {
   final String whatsLogin;
+  final String logo;
 
-  const LoginBtn({super.key, required this.whatsLogin});
+  const LoginBtn({super.key, required this.whatsLogin, required this.logo});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +20,10 @@ class LoginBtn extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/kakao.png',
+            'assets/images/logo/$logo.png',
             width: 18,
-            height: 16,
           ),
+          const SizedBox(width: 10),
           Text(
             whatsLogin,
             style: const TextStyle(
