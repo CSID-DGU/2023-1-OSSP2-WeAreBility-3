@@ -18,7 +18,7 @@ void main() async {
   // prefs 초기화
   final prefs = await SharedPreferences.getInstance();
   // 로그인 여부 확인
-  final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
+  //final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
 
   runApp(const App());

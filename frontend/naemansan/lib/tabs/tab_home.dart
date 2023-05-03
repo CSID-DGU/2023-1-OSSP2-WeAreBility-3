@@ -2,10 +2,49 @@
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('홈'));
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 2,
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.white,
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Row(
+                children: const [
+                  Text(
+                    '내만산',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Icon(
+                    Icons.forest_outlined,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // 버튼을 눌렀을 때 실행될 코드 작성
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

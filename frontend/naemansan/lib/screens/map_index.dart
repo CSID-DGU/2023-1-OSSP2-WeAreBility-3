@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_home.dart';
-import 'package:naemansan/tabs/tab_trail.dart';
-import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
 class IndexScreen extends StatefulWidget {
@@ -15,8 +13,7 @@ class _IndexScreenState extends State<IndexScreen> {
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     const Home(),
-    const Trail(),
-    const Myrail(),
+    //const Map()
     const Mypage(),
   ];
 
@@ -43,20 +40,15 @@ class _IndexScreenState extends State<IndexScreen> {
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              _currentIndex == 1 ? Icons.forest : Icons.forest_outlined,
-            ),
-            label: '산책로',
+            icon: Icon(_currentIndex == 1
+                    ? CustomIcons.heart
+                    : CustomIcons.heart //하트 아이콘을 깨진 하트밖에 못 찾겠습니다 찾게 되면 수정해주세요!!
+                ),
+            label: '나만의지도',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _currentIndex == 2 ? Icons.park : Icons.park_outlined,
-            ),
-            label: '나만의산책로',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              _currentIndex == 3 ? Icons.person : Icons.person_outlined,
+              _currentIndex == 2 ? Icons.person : Icons.person_outlined,
             ),
             label: '마이페이지',
           ),
@@ -65,4 +57,8 @@ class _IndexScreenState extends State<IndexScreen> {
       body: _tabs[_currentIndex],
     );
   }
+}
+
+class CustomIcons {
+  static const IconData heart = IconData(0xe800, fontFamily: 'CustomIcons');
 }
