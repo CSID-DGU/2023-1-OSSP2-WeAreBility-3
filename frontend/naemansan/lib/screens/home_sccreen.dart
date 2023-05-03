@@ -11,6 +11,12 @@ class HomeScreen extends StatelessWidget {
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          )
+        ],
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: const [
