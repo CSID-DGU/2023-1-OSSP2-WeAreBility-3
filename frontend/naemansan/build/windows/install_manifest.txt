@@ -1,0 +1,15 @@
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/icudtl.dat
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/flutter_windows.dll
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/assets/config/.env
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/assets/images/login_screen.png
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/assets/images/logo/apple.png
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/assets/images/logo/google.png
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/assets/images/logo/kakao.png
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/FontManifest.json
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/NOTICES
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag
