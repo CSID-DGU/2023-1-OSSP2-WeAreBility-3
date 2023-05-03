@@ -4,8 +4,8 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/screens/home_sccreen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:naemansan/screens/screen_index.dart';
 
 void main() async {
   // 환경변수
@@ -52,6 +52,8 @@ class App extends StatelessWidget {
       title: '내가 만든 산책로',
       routes: {
         '/index': (context) => const IndexScreen(),
+        //지도 하단바 확인
+        //'/index': (context) => const MapIndex(),
       },
       initialRoute: '/index',
     );

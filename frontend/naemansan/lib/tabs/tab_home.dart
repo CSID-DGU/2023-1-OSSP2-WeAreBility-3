@@ -15,7 +15,7 @@ class Home extends StatelessWidget {
         title: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 5.0),
               child: Row(
                 children: const [
                   Text(
@@ -25,7 +25,6 @@ class Home extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SizedBox(width: 8),
                   Icon(
                     Icons.forest_outlined,
                     color: Colors.green,
@@ -34,11 +33,15 @@ class Home extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            const Icon(
-              Icons.notifications_none_sharp,
-              color: Colors.black,
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // 버튼을 눌렀을 때 실행될 코드 작성
+              },
             ),
-            const SizedBox(width: 20),
           ],
         ),
       ),

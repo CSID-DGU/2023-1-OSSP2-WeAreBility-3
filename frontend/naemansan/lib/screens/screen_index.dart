@@ -4,9 +4,15 @@ import 'package:naemansan/tabs/tab_trail.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
+//화면 확인용
+//import 'package:naemansan/profile_tabs/profile_tab_settings.dart';
+//import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
+//import 'package:naemansan/profile_tabs/profile_tab_reviews.dart';
+//import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
+//import 'package:naemansan/profile_tabs/view_profile.dart';
+
 class IndexScreen extends StatefulWidget {
   const IndexScreen({super.key});
-
   @override
   _IndexScreenState createState() => _IndexScreenState();
 }
@@ -19,10 +25,10 @@ class _IndexScreenState extends State<IndexScreen> {
     const Myrail(),
     const Mypage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         iconSize: 30,
@@ -35,14 +41,31 @@ class _IndexScreenState extends State<IndexScreen> {
             _currentIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
+        items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.forest_outlined), label: '산책로'),
+            icon: Icon(
+              _currentIndex == 0 ? Icons.home : Icons.home_outlined,
+            ),
+            label: '홈',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.park_outlined), label: '나만의산책로'),
+            icon: Icon(
+              _currentIndex == 1 ? Icons.forest : Icons.forest_outlined,
+            ),
+            label: '산책로',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_outlined), label: '마이페이지'),
+            icon: Icon(
+              _currentIndex == 2 ? Icons.park : Icons.park_outlined,
+            ),
+            label: '나만의산책로',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              _currentIndex == 3 ? Icons.person : Icons.person_outlined,
+            ),
+            label: '마이페이지',
+          ),
         ],
       ),
       body: _tabs[_currentIndex],
