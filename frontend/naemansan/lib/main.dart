@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
-import 'package:naemansan/screens/home_sccreen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
@@ -22,38 +21,43 @@ void main() async {
   final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
 
-  runApp(MyApp(isLoggedin: isLoggedin));
   runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  // 로그인 여부 체크
-  final bool isLoggedin;
-  const MyApp({super.key, required this.isLoggedin});
+//---
+class App extends StatefulWidget {
+  const App({super.key});
 
-  // This widget is the root of your application.
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  bool isLogged = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLogged = prefs.getBool('isLogged') ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove(); // 초기화가 끝나는 시점에 삽입
     return MaterialApp(
-      // 로그인 여부에 따라 화면 분기
-      home: isLoggedin ? const HomeScreen() : LoginScreen(),
-    );
-  }
-}
-
-//---
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
       title: '내가 만든 산책로',
       routes: {
+        '/': (context) => isLogged ? const IndexScreen() : LoginScreen(),
         '/index': (context) => const IndexScreen(),
       },
-      initialRoute: '/index',
+      initialRoute: '/',
     );
   }
 }
