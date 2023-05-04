@@ -8,11 +8,12 @@ class LoginBtn extends StatelessWidget {
   final String logo;
   final BuildContext routeContext;
 
-  const LoginBtn(
-      {super.key,
-      required this.whatsLogin,
-      required this.logo,
-      required this.routeContext});
+  const LoginBtn({
+    super.key,
+    required this.whatsLogin,
+    required this.logo,
+    required this.routeContext,
+  });
 
   login() async {
     if (await isKakaoTalkInstalled()) {

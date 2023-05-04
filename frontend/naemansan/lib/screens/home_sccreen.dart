@@ -20,8 +20,8 @@ class HomeScreen extends StatelessWidget {
         ],
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.only(left: 20.0),
               child: Text(
                 '내만산',
@@ -31,9 +31,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(
-              Icons.forest_outlined,
-              color: Colors.green,
+            Image.asset(
+              'assets/images/logo/google.png',
+              width: 18,
             ),
           ],
         ),

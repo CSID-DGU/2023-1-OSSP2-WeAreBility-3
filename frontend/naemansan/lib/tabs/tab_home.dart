@@ -9,6 +9,8 @@ class Home extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
+
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
