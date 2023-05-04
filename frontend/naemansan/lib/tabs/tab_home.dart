@@ -19,17 +19,18 @@ class Home extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 5.0),
               child: Row(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     '내만산',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Icon(
-                    Icons.forest_outlined,
-                    color: Colors.green,
+                  const SizedBox(width: 5),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 18,
                   ),
                 ],
               ),
