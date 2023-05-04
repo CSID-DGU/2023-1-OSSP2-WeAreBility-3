@@ -25,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/kakao")
     public ResponseEntity<LoginResponse> getKakaoAccessToken(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok((LoginResponse) kakaoService.login(request));
+        return ResponseEntity.ok(kakaoService.login(request));
     }
 
     @GetMapping("/google")
