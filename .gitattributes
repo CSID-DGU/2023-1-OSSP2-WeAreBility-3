@@ -2,3 +2,4 @@ frontend/naemansan/windows/flutter/ephemeral/flutter_windows.dll.pdb filter=lfs 
 frontend/naemansan/windows/flutter/ephemeral filter=lfs diff=lfs merge=lfs -text
 *.pdb filter=lfs diff=lfs merge=lfs -text
 C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/windows/flutter/ephemeral filter=lfs diff=lfs merge=lfs -text
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/windows/flutter/ephemeral filter=lfs diff=lfs merge=lfs -text
