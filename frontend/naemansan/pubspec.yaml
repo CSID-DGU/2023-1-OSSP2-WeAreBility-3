@@ -40,6 +40,7 @@ dependencies:
     sign_in_with_apple: ^4.3.0
     kakao_flutter_sdk: ^1.4.2
     flutter_dotenv: ^5.0.2
+    geolocator: ^9.0.2
 dev_dependencies:
     flutter_test:
         sdk: flutter
