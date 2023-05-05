@@ -1,13 +1,11 @@
 //홈 페이지 Home()
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:naemansan/widgets/banner.dart';
 import 'dart:convert';
-import 'package:geolocator_android/geolocator_android.dart';
-import 'package:geolocator_apple/geolocator_apple.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Home extends StatefulWidget {
@@ -28,42 +26,49 @@ class _HomeState extends State<Home> {
 
   // 위도, 경도로 주소 가져오기
   _getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('위치 권한이 없습니다.');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('위치 권한이 영구적으로 없습니다.');
+    }
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     _getAddressFromLatLng(position.latitude, position.longitude);
   }
 
-  void _registerPlatformInstance() {
-    if (Platform.isAndroid) {
-      GeolocatorAndroid.registerWith();
-    } else if (Platform.isIOS) {
-      GeolocatorApple.registerWith();
+  Future<void> requestLocationPermission() async {
+    final PermissionStatus permissionStatus =
+        await Permission.locationWhenInUse.request();
+
+    // 위치 권한 요청
+    if (permissionStatus == PermissionStatus.granted) {
+      // 권한 허용 시 처리할 코드
+    } else {
+      // 권한 거부 시 처리할 코드
     }
   }
 
-  Future<void> onJoin() async {
-    await _handleLocation(Permission.location);
-  }
-
-  Future<void> _handleLocation(Permission permission) async {
-    final status = await permission.request();
-    print(status);
-  }
-
+// 주소 가져오기 (위도, 경도 -> 주소)
 // 주소 가져오기 (위도, 경도 -> 주소)
   _getAddressFromLatLng(latitude, longitude) async {
     // 환경변수 로드
     await dotenv.load(fileName: 'assets/config/.env');
     // url 생성
     final url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${dotenv.env['YOUR_NATIVE_APP_KEY']}";
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${dotenv.env['GOOGLE_MAPS_API_KEY']}";
     final response = await http.get(Uri.parse(url));
     final responseData = json.decode(response.body);
     if (responseData["status"] == "OK") {
       final results = responseData["results"][0]["address_components"];
       for (var i = 0; i < results.length; i++) {
         final types = results[i]["types"];
-        if (types.contains("locality")) {
+        // "locality"나 "administrative_area_level_1" 이외에도 "sublocality", "neighborhood" 등 다른 값도 가능
+        if (types.contains("locality") || types.contains("sublocality")) {
           _city = results[i]["long_name"];
         }
         if (types.contains("administrative_area_level_1")) {
@@ -119,10 +124,14 @@ class _HomeState extends State<Home> {
           ),
         ),
         // body
-        body: Text("현재 위치: $_city $_district"),
+        body: Column(
+          children: [
+            BannerSwiper(),
+            Text("현재 위치: $_city $_district"),
+          ],
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            onJoin();
             _getCurrentLocation();
           },
           tooltip: "현재 위치 받아오기",
