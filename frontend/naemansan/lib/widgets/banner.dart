@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class BannerSwiper extends StatelessWidget {
+  final int _currentPage = 0;
   final List<String> images = [
     "https://via.placeholder.com/300/09f/fff.png",
     "https://via.placeholder.com/300/0c5/fff.png",
@@ -26,7 +27,6 @@ class BannerSwiper extends StatelessWidget {
         options: CarouselOptions(
           autoPlay: true,
           enlargeCenterPage: true,
-          aspectRatio: 16 / 9,
         ),
       ),
     );

@@ -18,6 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _city = "";
   String _district = "";
+  bool nowLocation = false;
 
   @override
   void initState() {
@@ -82,61 +83,76 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
 
-          elevation: 2,
-          foregroundColor: Colors.black87,
-          backgroundColor: Colors.white,
-          title: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Row(
-                  children: [
-                    const Text(
-                      '내만산',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: 18,
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications_none_rounded,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  // 버튼을 눌렀을 때 실행될 코드 작성
-                },
-              ),
-            ],
-          ),
-        ),
-        // body
-        body: Column(
+        elevation: 2,
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.white,
+        title: Row(
           children: [
-            BannerSwiper(),
-            Text("현재 위치: $_city $_district"),
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
+              child: Row(
+                children: [
+                  const Text(
+                    '내만산',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: 18,
+                  ),
+                ],
+              ),
+            ),
+            const Spacer(),
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // 버튼을 눌렀을 때 실행될 코드 작성
+              },
+            ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _getCurrentLocation();
-          },
-          tooltip: "현재 위치 받아오기",
-          backgroundColor: Colors.black,
-          child: const Icon(Icons.location_on_rounded),
-        ));
+      ),
+      // body
+      body: Column(
+        children: [
+          BannerSwiper(),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(Icons.location_on_rounded, size: 20),
+                const SizedBox(width: 5),
+                nowLocation
+                    ? Text("현재 위치:$_city $_district")
+                    : const Text("위치 정보 없음"),
+                IconButton(
+                  onPressed: () {
+                    _getCurrentLocation();
+                    setState(() {
+                      nowLocation = true;
+                    });
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
