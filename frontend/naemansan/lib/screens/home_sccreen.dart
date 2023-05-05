@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  PermissionStatus? _status;
+
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Text("$_status"),
             Image.asset(
               'assets/images/logo/google.png',
               width: 18,

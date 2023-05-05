@@ -44,11 +44,11 @@ class LoginBtn extends StatelessWidget {
 
         // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
         final prefs = await SharedPreferences.getInstance();
+
         prefs.setBool('isLogged', true);
 
         final navigator = Navigator.of(routeContext);
         navigator.pushNamed('/index');
-        print("Token : ${token.accessToken}");
       } catch (error) {
         // print('카카오계정으로 로그인 실패 $error');
       }

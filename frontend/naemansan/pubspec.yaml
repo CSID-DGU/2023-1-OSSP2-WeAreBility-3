@@ -43,6 +43,7 @@ dependencies:
     geolocator: ^9.0.2
     http: ^0.13.6
     permission_handler: ^10.2.0
+    carousel_slider: ^4.2.1
 dev_dependencies:
     flutter_test:
         sdk: flutter
