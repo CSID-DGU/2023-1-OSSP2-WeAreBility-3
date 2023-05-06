@@ -8,11 +8,12 @@ class LoginBtn extends StatelessWidget {
   final String logo;
   final BuildContext routeContext;
 
-  const LoginBtn(
-      {super.key,
-      required this.whatsLogin,
-      required this.logo,
-      required this.routeContext});
+  const LoginBtn({
+    super.key,
+    required this.whatsLogin,
+    required this.logo,
+    required this.routeContext,
+  });
 
   login() async {
     if (await isKakaoTalkInstalled()) {
@@ -43,11 +44,11 @@ class LoginBtn extends StatelessWidget {
 
         // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
         final prefs = await SharedPreferences.getInstance();
+
         prefs.setBool('isLogged', true);
 
         final navigator = Navigator.of(routeContext);
         navigator.pushNamed('/index');
-        print("Token : ${token.accessToken}");
       } catch (error) {
         // print('카카오계정으로 로그인 실패 $error');
       }
