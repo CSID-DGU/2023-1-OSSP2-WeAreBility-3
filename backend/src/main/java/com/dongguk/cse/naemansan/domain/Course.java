@@ -4,14 +4,17 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import org.springframework.data.geo.Point;
+
+import java.util.Date;
 import java.util.List;
 @Entity
-public class Walkway {
+public class Course {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private int user_id;
+    @Column(name="title",unique = true)
     private String title;
-    private String created_date;
+    private Date created_date;
     private String introduction;
     private String start_location;
     @ElementCollection
@@ -19,7 +22,7 @@ public class Walkway {
     private int distance;
     private int status;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -31,7 +34,7 @@ public class Walkway {
         return title;
     }
 
-    public String getCreated_date() {
+    public Date getCreated_date() {
         return created_date;
     }
 
@@ -53,10 +56,10 @@ public class Walkway {
         return locations;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
-    public void setCreated_date(String created_date) {
+    public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
     public void setDistance(int distance) {

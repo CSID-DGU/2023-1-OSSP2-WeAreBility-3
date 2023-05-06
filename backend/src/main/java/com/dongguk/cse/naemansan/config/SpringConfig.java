@@ -1,8 +1,8 @@
 package com.dongguk.cse.naemansan.config;
 
-import com.dongguk.cse.naemansan.repository.JpaWalkwayRepository;
-import com.dongguk.cse.naemansan.repository.Walkwayrepository;
-import com.dongguk.cse.naemansan.service.WalkwayService;
+import com.dongguk.cse.naemansan.repository.JpaCourseRepository;
+import com.dongguk.cse.naemansan.repository.CourseRepository;
+import com.dongguk.cse.naemansan.service.CourseService;
 import jakarta.persistence.EntityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +18,11 @@ public class SpringConfig {
         this.em = em;
     }
     @Bean
-    public WalkwayService walkwayService(){
-        return new WalkwayService(walkwayrepository());
+    public CourseService courseServiceService(){
+        return new CourseService(courseRepository());
     }
     @Bean
-    public Walkwayrepository walkwayrepository(){
-        return new JpaWalkwayRepository(em);
+    public CourseRepository courseRepository(){
+        return new JpaCourseRepository(em);
     }
 }
