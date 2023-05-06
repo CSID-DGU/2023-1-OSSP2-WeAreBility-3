@@ -29,6 +29,11 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+<<<<<<< HEAD
+=======
+        automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
+
+>>>>>>> 0b3aef621885e355994d06106904f7569b163854
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,

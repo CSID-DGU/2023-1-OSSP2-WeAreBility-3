@@ -3,6 +3,10 @@ import 'package:naemansan/screens/screen_index.dart';
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0b3aef621885e355994d06106904f7569b163854
   @override
   _TrailState createState() => _TrailState();
 }

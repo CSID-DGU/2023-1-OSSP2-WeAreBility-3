@@ -2,8 +2,9 @@ package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.domain.LoginRequest;
 import com.dongguk.cse.naemansan.domain.LoginResponse;
+import com.dongguk.cse.naemansan.dto.TokenDto;
 import com.dongguk.cse.naemansan.dto.RedirectUrlDto;
-import com.dongguk.cse.naemansan.service.AppleService;
+import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.service.GoogleService;
 import com.dongguk.cse.naemansan.service.KakaoService;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auths")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final KakaoService kakaoService;
     private final GoogleService googleService;
+    private final JwtProvider jwtProvider;
 //    private final AppleService appleService;
 
     @GetMapping("/kakao")
@@ -25,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/kakao")
     public ResponseEntity<LoginResponse> getKakaoAccessToken(@RequestBody LoginRequest request) {
-        return ResponseEntity.ok((LoginResponse) kakaoService.login(request));
+        return ResponseEntity.ok(kakaoService.login(request));
     }
 
     @GetMapping("/google")
@@ -48,4 +50,10 @@ public class AuthController {
 //        return ResponseEntity.ok((LoginResponse) appleService.login(request));
 //    }
 
+
+    // test용
+    @PostMapping("/renewal")
+    public ResponseEntity<TokenDto> UpdateAccessToken(@RequestBody TokenDto request) {
+        return ResponseEntity.ok(TokenDto.builder().tokens(jwtProvider.validRefreshToken(request.getTokens())).build());
+    }
 }
