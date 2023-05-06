@@ -1,9 +1,5 @@
 //홈 페이지 Home()
 
-<<<<<<< HEAD
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
-=======
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
@@ -83,18 +79,14 @@ class _HomeState extends State<Home> {
       setState(() {});
     }
   }
->>>>>>> 0b3aef621885e355994d06106904f7569b163854
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-<<<<<<< HEAD
-=======
         automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
 
->>>>>>> 0b3aef621885e355994d06106904f7569b163854
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
@@ -103,29 +95,18 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.only(left: 5.0),
               child: Row(
-<<<<<<< HEAD
-                children: const [
-                  Text(
-=======
                 children: [
                   const Text(
->>>>>>> 0b3aef621885e355994d06106904f7569b163854
                     '내만산',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-<<<<<<< HEAD
-                  Icon(
-                    Icons.forest_outlined,
-                    color: Colors.green,
-=======
                   const SizedBox(width: 5),
                   Image.asset(
                     'assets/images/logo.png',
                     width: 18,
->>>>>>> 0b3aef621885e355994d06106904f7569b163854
                   ),
                 ],
               ),
@@ -143,8 +124,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-<<<<<<< HEAD
-=======
       // body
       body: Column(
         children: [
@@ -174,7 +153,6 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
->>>>>>> 0b3aef621885e355994d06106904f7569b163854
     );
   }
 }

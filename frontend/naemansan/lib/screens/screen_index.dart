@@ -4,15 +4,9 @@ import 'package:naemansan/tabs/tab_trail.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
-//화면 확인용
-//import 'package:naemansan/profile_tabs/profile_tab_settings.dart';
-//import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
-//import 'package:naemansan/profile_tabs/profile_tab_reviews.dart';
-//import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
-//import 'package:naemansan/profile_tabs/view_profile.dart';
-
 class IndexScreen extends StatefulWidget {
   const IndexScreen({super.key});
+
   @override
   _IndexScreenState createState() => _IndexScreenState();
 }
