@@ -21,11 +21,17 @@ for i in temp2 :
     user_input = np.append(user_input, float(i))
 user_input = user_input.reshape(-1, 2)
 
+# 유사도 검사를 통과하면 db에 저장되는 유저의 좌표
+user_coordinates = [tuple(e) for e in user_input] 
 
+
+
+# 정규화
 user_frame = pd.DataFrame(user_input)
 user_frame.iloc[:,0] = (user_frame.iloc[:,0] - X_mean) / X_std
 user_frame.iloc[:,1] = (user_frame.iloc[:,1] - Y_mean) / Y_std
-print(user_frame)
+user_std = user_frame.values
+print(user_std)
 
 # DB연결
 conn = pymysql.connect(
@@ -95,7 +101,29 @@ for i in range(X):
     print(temp_frame)
 
     # 유사도 벡터와 점수
+    walking_std = temp_frame.values
     similarity_vector = cosine_similarity(walking_std, user_std)
     similarity_score = similarity_vector.mean()
-    print(similarity_score)
-    print(cosine_similarity(walking_std, user_std))
+    print("코사인 유사도 점수 : ", similarity_score)
+    print("코사인 유사도 벡터 : ", cosine_similarity(walking_std, user_std))
+
+    # threshold -> 0.975 (나중에 바뀔수도..??)
+    threshold = 0.975
+    
+    # 유사도가 높으면 반복문 멈추고 등록 불가
+    if np.any(np.isclose(similarity_vector,1.0)) and (similarity_score > threshold or similarity_score < -threshold) :
+        print("등록 불가")
+        break
+    else :
+        continue
+        print("산책로를 등록 합니다.")
+
+
+# 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
+location = wkt.dumps(MultiPoint(user_coordinates))
+query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
+data = ("Hoin6", "서울", location)
+cursor.execute(query, data)
+conn.commit()
+
+  
