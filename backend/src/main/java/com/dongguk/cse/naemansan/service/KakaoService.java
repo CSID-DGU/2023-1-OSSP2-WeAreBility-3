@@ -1,8 +1,10 @@
 package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.RedirectUrlDto;
+import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
@@ -21,27 +23,36 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Ref;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class KakaoService implements AuthService{
-    private final String authorizeURL = "https://kauth.kakao.com/oauth/authorize";
-    private final String tokenUrl = "https://kauth.kakao.com/oauth/token";
-    private final String userInfoUrl = "https://kapi.kakao.com/v2/user/me";
-    private final String clientID = "db9bfe01c95414e0f1add469fdfaa9ff";
-    private final String redirectURL = "http://localhost:8080/login/oauth2/code/kakao";
-    private final String clinetSecret = "uH8Hae1LjyocJbxWsqGTNvhe09CeMuZw";
+public class KakaoService implements AuthenticationService {
+    // Kakao 용 Data
+    @Value("${client.provider.kakao.authorization-uri: aaa.bbb.ccc}")
+    private String kakaoAuthorizationUrl;
+    @Value("${client.provider.kakao.token-uri: aaa.bbb.ccc}")
+    private String kakaoTokenUrl;
+    @Value("${client.provider.kakao.user-info-uri: aaa.bbb.ccc}")
+    private String kakaoUserInfoUrl;
+    @Value("${client.registration.kakao.client-id: aaa.bbb.ccc}")
+    private String kakaoClientId;
+    @Value("${client.registration.kakao.client-secret: aaa.bbb.ccc}")
+    private String kakaoClientSecret;
+    @Value("${client.registration.kakao.redirect-uri: aaa.bbb.ccc}")
+    private String kakaoRedirectURL;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
 
     public RedirectUrlDto getRedirectUrlDto(String ProviedType) {
-        String url = authorizeURL + "?client_id=" + clientID + "&redirect_uri="
-                + redirectURL + "&response_type=code";
+        String url = kakaoAuthorizationUrl
+                + "?client_id=" + kakaoClientId
+                + "&redirect_uri=" + kakaoRedirectURL
+                + "&response_type=code";
         return new RedirectUrlDto(url, ProviedType);
     }
 
@@ -57,7 +68,7 @@ public class KakaoService implements AuthService{
 
         // 처음 로그인 용
         if (LoginProviderType.KAKAO.equals(providerType)) {
-            loginUserInfo = getUserInfo(request.getCode());
+            loginUserInfo = getUserInfo(getAccessToken(request.getCode()));
         }
         // 제공자가 아예 이상한 상황용
         else {
@@ -75,6 +86,10 @@ public class KakaoService implements AuthService{
                     .socialLoginId(socialLoginId)
                     .name(name)
                     .loginProviderType(providerType)
+                    .build());
+            imageRepository.save(Image.builder()
+                    .useId(loginUser.getId())
+                    .imageUseType(ImageUseType.USER)
                     .build());
         } else {
             loginUser = user.get();
@@ -99,13 +114,11 @@ public class KakaoService implements AuthService{
     }
 
     @Override
-    public Map<String, Object> getAccessToken(String code) {
-        Map<String, Object> tokenMap = new HashMap<>();
+    public String getAccessToken(String code) {
         String accessToken = "";
-        String refreshToken = "";
 
         try {
-            URL url = new URL(tokenUrl);
+            URL url = new URL(kakaoTokenUrl);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -113,9 +126,9 @@ public class KakaoService implements AuthService{
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=" + clientID);
-            sb.append("&client_secret=" + clinetSecret);
-            sb.append("&redirect_uri=" + redirectURL);
+            sb.append("&client_id=" + kakaoClientId);
+            sb.append("&client_secret=" + kakaoClientSecret);
+            sb.append("&redirect_uri=" + kakaoRedirectURL);
             sb.append("&code=" + code);
 
             bw.write(sb.toString());
@@ -133,27 +146,24 @@ public class KakaoService implements AuthService{
             System.out.println(result);
 
             JsonElement element = JsonParser.parseString(result);
-            tokenMap.put("access_token", element.getAsJsonObject().get("access_token").getAsString());
-            tokenMap.put("refresh_token", element.getAsJsonObject().get("refresh_token").getAsString());
+            accessToken = element.getAsJsonObject().get("access_token").getAsString();
 
             br.close();
             bw.close();
+            conn.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(tokenMap.get("access_token"));
-        return tokenMap;
+
+        return accessToken;
     }
 
     @Override
-    public Map<String, Object> getUserInfo(String code) {
-        Map<String, Object> tokenMap = getAccessToken(code);
+    public Map<String, Object> getUserInfo(String accessToken) {
         Map<String, Object> userInfo = new HashMap<String, Object>();
-        String accessToken = tokenMap.get("access_token").toString();
-        String refreshToken = tokenMap.get("refresh_token").toString();
 
         try {
-            URL url = new URL(userInfoUrl);
+            URL url = new URL(kakaoUserInfoUrl);
 
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("POST");
@@ -175,10 +185,10 @@ public class KakaoService implements AuthService{
             String id = element.getAsJsonObject().get("id").getAsString();
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
 
-            String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+            String name = properties.getAsJsonObject().get("nickname").getAsString();
 
             userInfo.put("id", id);
-            userInfo.put("name", nickname);
+            userInfo.put("name", name);
             userInfo.put("provider", LoginProviderType.KAKAO);
 
         } catch (Exception e) {
@@ -186,10 +196,5 @@ public class KakaoService implements AuthService{
         }
 
         return userInfo;
-    }
-
-    @Override
-    public void logout(String accessToken) {
-
     }
 }
