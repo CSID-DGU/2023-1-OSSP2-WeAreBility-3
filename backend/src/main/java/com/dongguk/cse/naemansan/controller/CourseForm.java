@@ -2,20 +2,21 @@ package com.dongguk.cse.naemansan.controller;
 
 import org.springframework.data.geo.Point;
 
+import java.util.Date;
 import java.util.List;
 
-public class WalkwayForm {
-    private int id;
+public class CourseForm {
+    private Long id;
     private int user_id;
     private String title;
-    private String created_date;
+    private Date created_date;
     private String introduction;
     private String start_location;
     private List<Point> locations;
     private int distance;
     private int status;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -27,7 +28,7 @@ public class WalkwayForm {
         return title;
     }
 
-    public String getCreated_date() {
+    public Date getCreated_date() {
         return created_date;
     }
 
@@ -51,7 +52,7 @@ public class WalkwayForm {
         return distance;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -79,7 +80,7 @@ public class WalkwayForm {
         this.distance = distance;
     }
 
-    public void setCreated_date(String created_date) {
+    public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
 
