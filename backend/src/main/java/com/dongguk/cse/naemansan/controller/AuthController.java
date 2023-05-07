@@ -53,7 +53,7 @@ public class AuthController {
 
     // test용
     @PostMapping("/renewal")
-    public ResponseEntity<TokenDto> UpdateAccessToken(@RequestBody TokenDto request) {
-        return ResponseEntity.ok(TokenDto.builder().tokens(jwtProvider.validRefreshToken(request.getTokens())).build());
+    public ResponseEntity<TokenDto> UpdateAccessToken(@RequestHeader("Authorization") String refreshToken) {
+        return ResponseEntity.ok(TokenDto.builder().tokens(jwtProvider.validRefreshToken(refreshToken)).build());
     }
 }
