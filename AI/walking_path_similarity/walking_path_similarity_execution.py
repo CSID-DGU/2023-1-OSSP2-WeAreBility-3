@@ -8,7 +8,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-
+# ..
 # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
 X_mean, Y_mean = 37.554812, 126.988204
 X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
