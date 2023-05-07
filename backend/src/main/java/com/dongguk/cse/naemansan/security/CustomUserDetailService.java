@@ -3,7 +3,6 @@ package com.dongguk.cse.naemansan.security;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

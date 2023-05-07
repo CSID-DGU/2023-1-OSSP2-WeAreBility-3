@@ -7,14 +7,16 @@ import com.dongguk.cse.naemansan.dto.RedirectUrlDto;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.service.GoogleService;
 import com.dongguk.cse.naemansan.service.KakaoService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthenticationController {
     private final KakaoService kakaoService;
     private final GoogleService googleService;
     private final JwtProvider jwtProvider;
@@ -35,10 +37,10 @@ public class AuthController {
         return googleService.getRedirectUrlDto("GOOGLE");
     }
 
-//    @PostMapping("/google")
-//    public ResponseEntity<LoginResponse> getGoogleAccessToken(@RequestBody LoginRequest request) {
-//        return ResponseEntity.ok((LoginResponse) googleService.login(request));
-//    }
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> getGoogleAccessToken(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(googleService.login(request));
+    }
 
 //    @GetMapping("/apple")
 //    public RedirectUrlDto getAppleRedirectUrl() {
@@ -53,7 +55,13 @@ public class AuthController {
 
     // test용
     @PostMapping("/renewal")
-    public ResponseEntity<TokenDto> UpdateAccessToken(@RequestHeader("Authorization") String refreshToken) {
-        return ResponseEntity.ok(TokenDto.builder().tokens(jwtProvider.validRefreshToken(refreshToken)).build());
+    public ResponseEntity<TokenDto> UpdateAccessToken(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            headerAuth =  headerAuth.substring(7, headerAuth.length());
+        }
+
+        return ResponseEntity.ok(TokenDto.builder().tokens(jwtProvider.validRefreshToken(headerAuth)).build());
     }
 }

@@ -3,38 +3,36 @@ package com.dongguk.cse.naemansan.security.filter;
 import com.dongguk.cse.naemansan.security.CustomUserDetail;
 import com.dongguk.cse.naemansan.security.CustomUserDetailService;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
+import com.dongguk.cse.naemansan.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
+@Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailsService;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = getToken((HttpServletRequest) request);
+            String token = JwtUtil.refineToken(request.getHeader("Authorization"));
             if (token != null && jwtProvider.validateToken(token)) {
                 String userid = jwtProvider.getUserId(token);
 
-                System.out.println("로그인 시작 - " + userid);
+                log.info("Authentication start - {}", userid);
+
                 CustomUserDetail userDetails = (CustomUserDetail) userDetailsService.loadUserByUsername(userid);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

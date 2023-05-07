@@ -32,25 +32,25 @@ spring:
         order_updates: true
         format_sql: true
   # Security OAuth
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: "db9bfe01c95414e0f1add469fdfaa9ff"
-            client-secret: "hhfaxdZnYy7aDB3DVoag05qhiQEck0HL"
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            authorization-grant-type: authorization_code
-            client-authentication-method: POST
-            client-name: Kakao
-            scope:
-              - profile_nickname
-              - account_email
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+
+client:
+  registration:
+    kakao:
+      client-id: "db9bfe01c95414e0f1add469fdfaa9ff"
+      client-secret: "hhfaxdZnYy7aDB3DVoag05qhiQEck0HL"
+      redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+    google:
+      clientId: '99694127428-0j6odmodhkrb2df1g80rusn1urnv43fi.apps.googleusercontent.com'
+      clientSecret: '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'
+      redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+  provider:
+    kakao:
+      authorization-uri: "https://kauth.kakao.com/oauth/authorize"
+      token-uri: "https://kauth.kakao.com/oauth/token"
+      user-info-uri: "https://kapi.kakao.com/v2/user/me"
+    google:
+      authorization-uri: "https://accounts.google.com/o/oauth2/v2/auth"
+      token-uri: "https://oauth2.googleapis.com/token"
+      user-info-uri: "https://www.googleapis.com/userinfo/v2/me"
 
 jwt.secret: '8sknjlO3NPTBqo319DHLNqsQAfRJEdKsETOdsalei2sdfe'
