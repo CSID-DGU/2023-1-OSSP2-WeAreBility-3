@@ -5,10 +5,27 @@ from shapely.wkb import loads
 import struct
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_similarity
+
+
 
 # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
-X_mean, Y_mean, X_std, Y_std = 37.554812, 126.988204, 0.0031548, 0.00720859
+X_mean, Y_mean = 37.554812, 126.988204
+X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
+
+# 유저 input(좌표의 x,y 값을 순서대로 입력한다.)
+temp = input("gps 값 입력 : ")
+temp2 = np.array(temp.split())
+user_input = np.array([])
+for i in temp2 :
+    user_input = np.append(user_input, float(i))
+user_input = user_input.reshape(-1, 2)
+
+
+user_frame = pd.DataFrame(user_input)
+user_frame.iloc[:,0] = (user_frame.iloc[:,0] - X_mean) / X_std
+user_frame.iloc[:,1] = (user_frame.iloc[:,1] - Y_mean) / Y_std
+print(user_frame)
 
 # DB연결
 conn = pymysql.connect(
@@ -20,9 +37,8 @@ conn = pymysql.connect(
 
 cursor = conn.cursor()
 
-
 # 좌표 정보를 db에 저장
-"""coordinates = [(37.0000, 127.0000)]
+"""coordinates = [(37.5622,126.9985)]
 location = wkt.dumps(MultiPoint(coordinates))
 print(type(location))
 query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
@@ -72,5 +88,14 @@ for i in range(X):
 
     temp_frame = pd.DataFrame(walking_list)
     temp_frame = temp_frame.dropna(axis=1)
-   
-    print(temp_frame.iloc[:,0] - X_mean / X_std)
+
+    # 정규화
+    temp_frame.iloc[:,0] = (temp_frame.iloc[:,0] - X_mean) / X_std
+    temp_frame.iloc[:,1] = (temp_frame.iloc[:,1] - Y_mean) / Y_std
+    print(temp_frame)
+
+    # 유사도 벡터와 점수
+    similarity_vector = cosine_similarity(walking_std, user_std)
+    similarity_score = similarity_vector.mean()
+    print(similarity_score)
+    print(cosine_similarity(walking_std, user_std))
