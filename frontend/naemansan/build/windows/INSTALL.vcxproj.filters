@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\wjdgu\Documents\2023-1-OSSP2-WeAreBility-3\2023-1-OSSP2-WeAreBility-3\frontend\naemansan\build\windows\CMakeFiles\fba2b00023894cfc348231e55febb34f\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{0174A3A3-1FFB-3167-A6B6-5FB2137081D0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
