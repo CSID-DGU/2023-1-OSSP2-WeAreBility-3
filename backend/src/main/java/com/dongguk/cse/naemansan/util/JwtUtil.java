@@ -16,7 +16,7 @@ public class JwtUtil {
                 throw new UnsupportedJwtException("잘못된 형식의 Token 입니다.");
             }
         } catch (UnsupportedJwtException e) {
-            log.info("{}", e);
+            log.info("JwtUtil Error 발생!!!! - {}", e.getMessage());
         }
 
         return afterToken;

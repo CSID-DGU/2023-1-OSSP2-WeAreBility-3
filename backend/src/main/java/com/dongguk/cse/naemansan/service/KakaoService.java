@@ -1,8 +1,10 @@
 package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.RedirectUrlDto;
+import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
@@ -43,6 +45,7 @@ public class KakaoService implements AuthenticationService {
     private String kakaoRedirectURL;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
 
     public RedirectUrlDto getRedirectUrlDto(String ProviedType) {
@@ -83,6 +86,10 @@ public class KakaoService implements AuthenticationService {
                     .socialLoginId(socialLoginId)
                     .name(name)
                     .loginProviderType(providerType)
+                    .build());
+            imageRepository.save(Image.builder()
+                    .useId(loginUser.getId())
+                    .imageUseType(ImageUseType.USER)
                     .build());
         } else {
             loginUser = user.get();

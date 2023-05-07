@@ -1,11 +1,10 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.domain.LoginRequest;
-import com.dongguk.cse.naemansan.domain.LoginResponse;
-import com.dongguk.cse.naemansan.domain.RefreshToken;
-import com.dongguk.cse.naemansan.domain.User;
+import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.RedirectUrlDto;
+import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
@@ -46,6 +45,7 @@ public class GoogleService implements AuthenticationService {
     private String GoogleRedirectURL;
 
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
     private final TokenRepository tokenRepository;
     private final JwtProvider jwtProvider;
 
@@ -87,6 +87,10 @@ public class GoogleService implements AuthenticationService {
                     .socialLoginId(socialLoginId)
                     .name(name)
                     .loginProviderType(providerType)
+                    .build());
+            imageRepository.save(Image.builder()
+                    .useId(loginUser.getId())
+                    .imageUseType(ImageUseType.USER)
                     .build());
         } else {
             loginUser = user.get();
