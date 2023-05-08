@@ -129,7 +129,7 @@ class _HomeState extends State<Home> {
         children: [
           BannerSwiper(),
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,6 +149,14 @@ class _HomeState extends State<Home> {
                   icon: const Icon(Icons.refresh_rounded),
                 ),
               ],
+            ),
+          ),
+          const Text(
+            "위치별",
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
