@@ -1,6 +1,8 @@
 package com.dongguk.cse.naemansan.repository;
 
 import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.CourseType;
+import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import org.springframework.data.geo.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

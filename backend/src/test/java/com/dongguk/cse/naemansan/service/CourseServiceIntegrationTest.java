@@ -1,6 +1,7 @@
 package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.CourseType;
 import com.dongguk.cse.naemansan.repository.CourseRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class CourseServiceIntegrationTest {
         listp.add(point1);
         listp.add(point2);
         listp.add(point3);
+        String tag = "ABC";
         course.setUser_id(1);
         course.setTitle("test1 title");
         course.setCreated_date(date);
@@ -42,7 +44,11 @@ public class CourseServiceIntegrationTest {
         course.setDistance(10);
         course.setStatus(13);
 
-        Long saveId = courseService.join(course);
+        //join으로 course, courseType 확인
+        CourseType courseType= new CourseType();
+        courseType.setCourseTag(tag);
+        Long saveId = courseService.join(course, courseType);
+       // Long saveTagId = courseService.joinTag(courseType);
         Course findCourse = courseService.findOne(saveId).get();
         assertThat(course.getId()).isEqualTo(findCourse.getId());
     }

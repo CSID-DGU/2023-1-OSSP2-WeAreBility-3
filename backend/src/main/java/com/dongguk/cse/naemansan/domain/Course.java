@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.domain;
 
+import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,19 +9,33 @@ import org.springframework.data.geo.Point;
 import java.util.Date;
 import java.util.List;
 @Entity
+@Table(name="courses")
 public class Course {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name="user_id")
     private int user_id;
     @Column(name="title",unique = true)
     private String title;
+    @Column(name="created_date")
     private Date created_date;
+    @Column(name="introduction")
     private String introduction;
+    @Column(name="start_location")
     private String start_location;
     @ElementCollection
+    @Column(name="locations")
     private List<Point> locations= new ArrayList<>();
+    @Column(name="start_point")
+    private Point startpoint;
+    @Column(name="distance")
     private int distance;
+    @Column(name="status")
     private int status;
+
+    public Point getStartpoint() {
+        return startpoint;
+    }
 
     public Long getId() {
         return id;
@@ -83,5 +98,9 @@ public class Course {
 
     public void setLocations(List<Point> locations) {
         this.locations = locations;
+    }
+
+    public void setStartpoint(Point startpoint) {
+        this.startpoint = startpoint;
     }
 }
