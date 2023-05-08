@@ -2,10 +2,12 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.UserDto;
+import com.dongguk.cse.naemansan.dto.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class UserService {
     private final SubscribeRepository subscribeRepository;
 
     public UserDto getUserInformation(Long id) {
-        log.info("Get UserInformation - ID : {}", id);
+        log.info("getUserInformation - ID : {}", id);
 
         Optional<User> user = userRepository.findById(id);
         Optional<Image> image = imageRepository.findByUserId(id);
@@ -56,5 +58,31 @@ public class UserService {
         }
 
         return userDto;
+    }
+
+    @Transactional
+    public Boolean updateUserInformation(Long id, UserRequestDto userRequestDto) {
+        log.info("updateUserInformation - {}", userRequestDto);
+        Optional<User> user = userRepository.findById(id);
+        Optional<Image> image = imageRepository.findByUserId(id);
+        if (user.isEmpty() || image.isEmpty()){
+            return Boolean.FALSE;
+        }
+        else {
+            user.get().setName(userRequestDto.getName());
+            user.get().setIntroduction(userRequestDto.getInformation());
+            image.get().setImagePath(userRequestDto.getImagePath());
+            return Boolean.TRUE;
+        }
+    }
+
+    public Boolean deleteUserInformation(Long id) {
+        try {
+            userRepository.deleteById(id);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        return Boolean.FALSE;
     }
 }

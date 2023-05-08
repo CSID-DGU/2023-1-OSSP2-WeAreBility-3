@@ -5,7 +5,6 @@ import com.dongguk.cse.naemansan.dto.UserDto;
 import com.dongguk.cse.naemansan.dto.UserRequestDto;
 import com.dongguk.cse.naemansan.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +18,12 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<?> updateUserProfile(@RequestBody UserRequestDto userRequestDto, Authentication authentication) {
-        return null;
+    public ResponseDto<Boolean> updateUserProfile(@RequestBody UserRequestDto userRequestDto, Authentication authentication) {
+        return new ResponseDto<Boolean>(userService.updateUserInformation(Long.valueOf(authentication.getName()), userRequestDto));
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<?> deleteUserProfile(Authentication authentication) {
-        return null;
+    public ResponseDto<Boolean> deleteUserProfile(Authentication authentication) {
+        return new ResponseDto<Boolean>(userService.deleteUserInformation(Long.valueOf(authentication.getName())));
     }
 }
