@@ -1,6 +1,8 @@
 package com.dongguk.cse.naemansan.repository;
 
 import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.CourseType;
+import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.geo.Point;
 
@@ -21,7 +23,6 @@ public class JpaCourseRepository implements CourseRepository {
         em.persist(course);
         return course;
     }
-
     @Override
     public Optional<Course> findById(Long id) {
         Course course = em.find(Course.class, id);
@@ -43,7 +44,7 @@ public class JpaCourseRepository implements CourseRepository {
 
     @Override
     public Optional<Course> orderByKeyword(String tag) {
-        List<Course> result = em.createQuery("select c from Course c, course_types t where t.tag=:tag AND t.id=c.id", Course.class)
+        List<Course> result = em.createQuery("select c from Course c, CourseType t where t.courseTagType=:tag AND t.courseId=c.id", Course.class)
                 .setParameter("tag", tag)
                 .getResultList();
         return result.stream().findAny();
@@ -54,7 +55,7 @@ public class JpaCourseRepository implements CourseRepository {
         double longitude, latitude;
         longitude = point.getX();
         latitude = point.getY();
-        List<Course> result = em.createQuery("select c , ST_Distance_Sphere(POINT(:longitude, :latitude),POINT(c.longitude, c.latitude)) AS distance from Course c where c.id IN (select c.id from Course c where ST_Distance_Sphere(POINT(:longitude, :latitude),POINT(c.longitude, c.latitude)) <= 2000) order by distance", Course.class)
+        List<Course> result = em.createQuery("select c , ST_Distance_Sphere(POINT(:longitude, :latitude),c.startpoint) from Course c where c.id IN (select c.id from Course c where ST_Distance_Sphere(POINT(:longitude, :latitude),c.startpoint) <= 2000) order by distance", Course.class)
                 .setParameter("longitude", longitude).setParameter("latitude", latitude)
                 .getResultList();
         return result.stream().findAny();
