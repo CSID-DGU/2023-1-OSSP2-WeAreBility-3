@@ -77,13 +77,12 @@ public class UserService {
     }
 
     public Boolean deleteUserInformation(Long id) {
-//        try {
-//            userRepository.deleteById(id);
-//            return Boolean.TRUE;
-//        } catch (Exception e) {
-//
-//        }
-//
+        try {
+            userRepository.deleteById(id);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
         return Boolean.FALSE;
     }
 }
