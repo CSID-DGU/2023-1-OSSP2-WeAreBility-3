@@ -23,6 +23,7 @@ public class Course {
     private String introduction;
     @Column(name="start_location")
     private String start_location;
+
     @ElementCollection
     @Column(name="locations")
     private List<Point> locations= new ArrayList<>();
