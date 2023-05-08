@@ -37,7 +37,7 @@ public class CourseController {
         course.setLocations(form.getLocations());
         course.setDistance(form.getDistance());
         course.setStatus(form.getStatus());
-        courseService.join(course);
+        //courseService.join(course);
 
         return "redirect:/";
     }
