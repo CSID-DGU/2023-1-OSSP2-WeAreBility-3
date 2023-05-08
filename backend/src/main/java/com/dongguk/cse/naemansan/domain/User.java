@@ -11,6 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,6 +38,9 @@ public class User {
     private String introduction;
     @Column(name = "created_date")
     private Timestamp createdDate;
+
+//    @OneToOne()
+//    private List<Image> images;
 
     @Builder
     public User(String socialLoginId, LoginProviderType loginProviderType, String name) {
