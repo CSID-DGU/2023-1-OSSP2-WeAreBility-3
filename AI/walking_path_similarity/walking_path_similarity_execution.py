@@ -17,29 +17,23 @@ X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
 temp = input("gps 값 입력 : ")
 temp2 = np.array(temp.split())
 user_input = np.array([])
-for i in temp2 :
+for i in temp2:
     user_input = np.append(user_input, float(i))
 user_input = user_input.reshape(-1, 2)
 
 # 유사도 검사를 통과하면 db에 저장되는 유저의 좌표
-user_coordinates = [tuple(e) for e in user_input] 
-
+user_coordinates = [tuple(e) for e in user_input]
 
 
 # 정규화
 user_frame = pd.DataFrame(user_input)
-user_frame.iloc[:,0] = (user_frame.iloc[:,0] - X_mean) / X_std
-user_frame.iloc[:,1] = (user_frame.iloc[:,1] - Y_mean) / Y_std
+user_frame.iloc[:, 0] = (user_frame.iloc[:, 0] - X_mean) / X_std
+user_frame.iloc[:, 1] = (user_frame.iloc[:, 1] - Y_mean) / Y_std
 user_std = user_frame.values
 print(user_std)
 
 # DB연결
-conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    password='1234',
-    db='naemansan'
-)
+conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
 
 cursor = conn.cursor()
 
@@ -59,8 +53,8 @@ query = "SELECT ST_AsText(locations) FROM courses"
 cursor.execute(query)
 results = cursor.fetchall()
 
-locations_list = [] # multipoint형 리스트
-coordinates_list = [] # multipoint를 float으로 변환한 리스트
+locations_list = []  # multipoint형 리스트
+coordinates_list = []  # multipoint를 float으로 변환한 리스트
 
 # multipoint 저장
 for row in results:
@@ -68,13 +62,13 @@ for row in results:
 
 # float 형태로 저장
 for row in locations_list:
-    row = row.replace('MULTIPOINT', '')
-    row = row.replace('(', '')
-    row = row.replace(')', '')
-    row = row.replace(',', ' ')
+    row = row.replace("MULTIPOINT", "")
+    row = row.replace("(", "")
+    row = row.replace(")", "")
+    row = row.replace(",", " ")
     temp = row.split()
     float_coord = []
-    for i in temp : 
+    for i in temp:
         float_coord.append(float(i))
     coordinates_list.append(float_coord)
 
@@ -90,14 +84,14 @@ for i in range(X):
     walking = walking_Path.iloc[i]
     walking = walking.dropna()
     walking_list = walking.values
-    walking_list = walking_list.reshape(-1,2)
+    walking_list = walking_list.reshape(-1, 2)
 
     temp_frame = pd.DataFrame(walking_list)
     temp_frame = temp_frame.dropna(axis=1)
 
     # 정규화
-    temp_frame.iloc[:,0] = (temp_frame.iloc[:,0] - X_mean) / X_std
-    temp_frame.iloc[:,1] = (temp_frame.iloc[:,1] - Y_mean) / Y_std
+    temp_frame.iloc[:, 0] = (temp_frame.iloc[:, 0] - X_mean) / X_std
+    temp_frame.iloc[:, 1] = (temp_frame.iloc[:, 1] - Y_mean) / Y_std
     print(temp_frame)
 
     # 유사도 벡터와 점수
@@ -109,12 +103,14 @@ for i in range(X):
 
     # threshold -> 0.975 (나중에 바뀔수도..??)
     threshold = 0.975
-    
+
     # 유사도가 높으면 반복문 멈추고 등록 불가
-    if np.any(np.isclose(similarity_vector,1.0)) and (similarity_score > threshold or similarity_score < -threshold) :
+    if np.any(np.isclose(similarity_vector, 1.0)) and (
+        similarity_score > threshold or similarity_score < -threshold
+    ):
         print("등록 불가")
         break
-    else :
+    else:
         continue
         print("산책로를 등록 합니다.")
 
@@ -125,5 +121,3 @@ query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, 
 data = ("Hoin6", "서울", location)
 cursor.execute(query, data)
 conn.commit()
-
-  
