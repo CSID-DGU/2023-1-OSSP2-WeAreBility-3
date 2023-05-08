@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/widgets/banner.dart';
+import 'package:naemansan/widgets/slide_item.dart';
+import 'package:naemansan/widgets/slider.dart';
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -129,35 +131,53 @@ class _HomeState extends State<Home> {
         children: [
           BannerSwiper(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
               children: [
-                const Icon(Icons.location_on_rounded, size: 20),
-                const SizedBox(width: 5),
-                nowLocation
-                    ? Text("현재 위치:$_city $_district")
-                    : const Text("위치 정보 없음"),
-                IconButton(
-                  onPressed: () {
-                    _getCurrentLocation();
-                    setState(() {
-                      nowLocation = true;
-                    });
-                  },
-                  icon: const Icon(Icons.refresh_rounded),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.location_on_rounded, size: 20),
+                    const SizedBox(width: 5),
+                    nowLocation
+                        ? Text("현재 위치:$_city $_district")
+                        : const Text("위치 정보 없음"),
+                    IconButton(
+                      onPressed: () {
+                        _getCurrentLocation();
+                        setState(() {
+                          nowLocation = true;
+                        });
+                      },
+                      icon: const Icon(Icons.refresh_rounded),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "위치별",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const Text(
-            "위치별",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w800,
-            ),
+          const HorizontalSlider(
+            items: [
+              SlideItem(icon: Icons.forest, text: '산책로 1'),
+              SlideItem(icon: Icons.forest, text: '산책로 2'),
+              SlideItem(icon: Icons.forest, text: '산책로 3'),
+              SlideItem(icon: Icons.forest, text: 'Item 3'),
+              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
+              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
+            ],
           ),
         ],
       ),
