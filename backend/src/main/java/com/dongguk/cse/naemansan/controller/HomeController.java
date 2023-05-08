@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,7 +10,7 @@ public class HomeController {
     @GetMapping("")
     public Hello helloApi() {
         Hello hello = new Hello();
-        hello.setName("start");
+        hello.setName("Hello");
         return hello;
     }
     static class Hello {
