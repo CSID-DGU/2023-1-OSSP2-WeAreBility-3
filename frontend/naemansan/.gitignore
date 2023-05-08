@@ -42,3 +42,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/windows/flutter/ephemeral/flutter_windows.dll.pdb
+# 일단 추가 해놨습니다 확인하고 지워주세요
