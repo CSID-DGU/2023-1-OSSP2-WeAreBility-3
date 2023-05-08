@@ -97,7 +97,6 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           Center(
             //등록한 산책로
             child: ListView.builder(
-              itemCount: 5, //사용자가 등록한 산책로의 개수 불러오기
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(
