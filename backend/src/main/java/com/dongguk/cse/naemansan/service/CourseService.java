@@ -22,9 +22,10 @@ public class CourseService {
     }
 
     //산책도 등록
-    public Long join(Course course,CourseType courseType) {
+    public Long join(Course course, CourseType courseType) {
         validateDuplicateCourse(course);//중복 검사
-        validateCourseTag(courseType);
+        if (!validateCourseTag(courseType))
+            throw new IllegalStateException("적절하지 않은 태그 입니다");
         courseRepository.save(course);
         courseType.setCourseId(Math.toIntExact(course.getId()));
         courseTypeRepository.save(courseType);
@@ -39,13 +40,17 @@ public class CourseService {
                 });
     }
 
-    private void validateCourseTag(CourseType courseType) {
-        CourseTagType courseTagType = courseType.getCourseTagType();
+    //산책로 태그 확인
+    private boolean validateCourseTag(CourseType courseType) {
+        //CourseTagType courseTagType = courseType.getCourseTagType();
         //태그 맞는디 equal로 확인
-        if (!courseType.getCourseTagType().equals(courseTagType))
-            throw new IllegalStateException("적절하지 않은 태그 입니다");
-        courseType.setCourseTag(courseType.getCourseTag());
-
+        for (CourseTagType courseTagType : CourseTagType.values()) {
+            if (courseTagType.name().equals(courseType.getCourseTag())) {
+                courseType.setCourseTag(courseType.getCourseTag());
+                return true;
+            }
+        }
+        return false;
     }
 
     //전체 산책로 조회

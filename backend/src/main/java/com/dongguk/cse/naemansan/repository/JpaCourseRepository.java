@@ -44,7 +44,7 @@ public class JpaCourseRepository implements CourseRepository {
 
     @Override
     public Optional<Course> orderByKeyword(String tag) {
-        List<Course> result = em.createQuery("select c from Course c, CourseType t where t.courseTagType=:tag AND t.courseId=c.id", Course.class)
+        List<Course> result = em.createQuery("select c from Course c, CourseType t where t.courseTag=:tag AND t.courseId=c.id", Course.class)
                 .setParameter("tag", tag)
                 .getResultList();
         return result.stream().findAny();
