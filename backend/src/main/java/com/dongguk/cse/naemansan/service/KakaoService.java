@@ -70,7 +70,7 @@ public class KakaoService implements AuthenticationService {
         if (LoginProviderType.KAKAO.equals(providerType)) {
             loginUserInfo = getUserInfo(getAccessToken(request.getCode()));
         }
-        // 제공자가 아예 이상한 상황용
+        // 제공자가  아예 이상한 상황용
         else {
             throw new NullPointerException();
         }

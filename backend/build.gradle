@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.hibernate:hibernate-spatial:6.2.2.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

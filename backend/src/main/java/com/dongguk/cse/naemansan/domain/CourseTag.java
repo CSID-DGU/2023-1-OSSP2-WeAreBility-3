@@ -2,16 +2,21 @@ package com.dongguk.cse.naemansan.domain;
 
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="course_types")
-public class CourseType {
+@Getter
+@NoArgsConstructor
+@Table(name="course_tags")
+public class CourseTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name="course_id")
     private int courseId;
-    @Transient
+    @Column(name="")
+    @Enumerated(EnumType.STRING)
     private CourseTagType courseTagType;
     @Column(name="tag")
     private String courseTag;
