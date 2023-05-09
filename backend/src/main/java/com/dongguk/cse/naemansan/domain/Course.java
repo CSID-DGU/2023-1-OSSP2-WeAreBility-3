@@ -20,14 +20,16 @@ import java.util.Date;
 @DynamicUpdate
 @Table(name="courses")
 public class Course {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @Column(name="user_id")
     private Long userId;
     @Column(name="title",unique = true)
     private String title;
     @Column(name="created_date")
-    private Date createdDate;
+    private Timestamp createdDate;
     @Column(name="introduction")
     private String introduction;
     @Column(name="start_location_name")

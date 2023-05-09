@@ -36,29 +36,4 @@ public class CourseController {
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
-    //산책로 생성
-//    @PostMapping("/course")
-//    public String create(CourseForm form){
-//        Course course = new Course();
-//        course.setId(form.getId());
-//        course.setUser_id(form.getUser_id());
-//        course.setTitle(form.getTitle());
-//        course.setCreated_date(form.getCreated_date());
-//        course.setIntroduction(form.getIntroduction());
-//        course.setStart_location(form.getStart_location());
-//        course.setLocations(form.getLocations());
-//        course.setDistance(form.getDistance());
-//        course.setStatus(form.getStatus());
-//        //courseService.join(course);
-//
-//        return "redirect:/";
-//    }
-//
-//    @GetMapping("/courses")
-//    public String list(Model model){
-//        List<Course> courses = courseService.findCourses();
-//        model.addAttribute("courses", courses);
-//        return "courses/courseList";
-//    }
-
 }

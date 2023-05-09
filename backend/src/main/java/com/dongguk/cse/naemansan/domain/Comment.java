@@ -22,13 +22,13 @@ public class Comment {
     private Long courseId;
     @Column(name = "create_date")
     private Timestamp createdDate;
-    @Column(name = "isEdit", columnDefinition = "TINYINT(1)")
-    private boolean isEdit;
+    @Column(name = "is_edit", columnDefinition = "TINYINT(1)")
+    private Boolean isEdit;
     @Column(name = "status", columnDefinition = "TINYINT(1)")
-    private boolean status;
+    private Boolean status;
 
     @Builder
-    public Comment(Long id, Long userId, Long courseId, Timestamp createdDate, boolean isEdit, boolean status) {
+    public Comment(Long id, Long userId, Long courseId, Timestamp createdDate, Boolean isEdit, Boolean status) {
         this.id = id;
         this.userId = userId;
         this.courseId = courseId;
