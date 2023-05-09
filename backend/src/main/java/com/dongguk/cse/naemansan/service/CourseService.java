@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.DoubleBuffer;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -120,11 +123,46 @@ public class CourseService {
 
     // Course Read
     public CourseDto readCourse(Long courseId) {
+//        Optional<Course> course = courseRepository.findById(courseId);
+//
+//        if (course.isEmpty()) {
+//            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
+//            return null;
+//        }
+//
+////        List<PointDto> locations = new ArrayList<>();
+////
+////        for (Point point : course.get().getLocations())
+//        return CourseDto.builder()
+//                .id(course.get().getId())
+//                .userId(course.get().getUserId())
+//                .title(course.get().getTitle())
+//                .createdDateTime((Timestamp) course.get().getCreatedDate())
+//                .introduction(course.get().getIntroduction())
+//                .courseTags(null)
+//                .startLocationName(course.get().getStartLocationName())
+//                .locations(course.get().getLocations())
+//                .build();
         return null;
     }
 
-    public Boolean updateCourse(CourseRequestDto courseRequestDto) {
-        return Boolean.FALSE;
+    public Boolean updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
+        log.info("updateCourse - {}", courseRequestDto);
+
+
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (course.isEmpty()) {
+            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
+            return Boolean.FALSE;
+        } else if (course.get().getUserId() != userId) {
+            log.info("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
+            return Boolean.FALSE;
+        }
+
+        course.get().setTitle(courseRequestDto.getTitle());
+        course.get().setIntroduction(courseRequestDto.getIntroduction());
+        // Tag 바꾸는거 넣어야 함
+        return Boolean.TRUE;
     }
 
     public Boolean deleteCourse(Long courseId) {

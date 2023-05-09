@@ -26,9 +26,9 @@ public class CourseController {
     }
 
     //Course Update
-    @PutMapping("/course")
-    public ResponseDto<Boolean> updateCourse(@RequestBody CourseRequestDto courseRequestDto) {
-        return new ResponseDto<Boolean>(courseService.updateCourse(courseRequestDto));
+    @PutMapping("/course/{courseId}")
+    public ResponseDto<Boolean> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
+        return new ResponseDto<Boolean>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
     }
 
     //Course Delete
