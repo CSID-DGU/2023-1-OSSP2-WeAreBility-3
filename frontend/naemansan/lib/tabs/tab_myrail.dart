@@ -1,9 +1,13 @@
 //나만의 산책로 페이지 Myrail()
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/service/api_service.dart';
+import 'package:naemansan/models/trailmodel.dart';
 
 class Myrail extends StatefulWidget {
-  const Myrail({Key? key}) : super(key: key);
+  Myrail({Key? key}) : super(key: key);
+
+  final Future<List<TrailModel>> trail = CreatedTrailApi.getCreatedTrail();
 
   @override
   _MyrailState createState() => _MyrailState();
@@ -65,7 +69,6 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-            //------------------------------------------------------
             Tab(
               child: Text(
                 '좋아요',
@@ -96,22 +99,42 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: [
-          Center(
-            //등록한 산책로
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                ;
-                return null;
-              }, //api에서 불러온 데이터에 인덱스를 부여해 목록으로 보여줌
-            ),
-            //->
+          //-------------------------------등록한 산책로 탭------------------------------------------
+          FutureBuilder<List<TrailModel>>(
+            future: widget.trail,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<TrailModel>> snapshot) {
+              if (snapshot.hasData) {
+                List<TrailModel> trails = snapshot.data!;
+                // trails 리스트를 사용하여 등록한 산책로를 표시하는 위젯을 반환
+                return ListView.builder(
+                  itemCount: trails.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(trails[index].title),
+                      // **위젯 형태에 맞게 수정
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                // 에러가 발생한 경우 에러 메시지를 표시하는 위젯을 반환
+                return Text('${snapshot.error}');
+              } else {
+                // 데이터가 로드되기 전에는 로딩 중임을 알리는 위젯을 반환
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
           ),
+
+          //------------------------------좋아요한 산책로 탭------------------------------------------
           const Center(
             child: Text('계정 사용자가 좋아요한 산책로 리스트'),
           ),
+          //------------------------------이용한 산책로 탭---------------------------------------------
           const Center(
             child: Text('계정 사용자가 이용한 산책로 리스트'),
           ),
+          //-------------------------------댓글 단 산책로 탭-------------------------------------------
           const Center(
             child: Text('계정 사용자가 작성한 댓글 모음'),
           ),

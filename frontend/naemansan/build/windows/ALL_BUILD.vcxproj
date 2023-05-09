@@ -148,9 +148,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{964E79C8-C9E6-3EA0-882A-E63CDD0C142A}</Project>
       <Name>flutter_wrapper_plugin</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\wjdgu\Documents\2023-1-OSSP2-WeAreBility-3\2023-1-OSSP2-WeAreBility-3\frontend\naemansan\build\windows\plugins\geolocator_windows\geolocator_windows_plugin.vcxproj">
+      <Project>{010504DD-8837-3009-8E30-D713F4F9919B}</Project>
+      <Name>geolocator_windows_plugin</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\wjdgu\Documents\2023-1-OSSP2-WeAreBility-3\2023-1-OSSP2-WeAreBility-3\frontend\naemansan\build\windows\runner\naemansan.vcxproj">
       <Project>{F18E341B-FB34-314A-B24C-9C47F90D4B73}</Project>
       <Name>naemansan</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\wjdgu\Documents\2023-1-OSSP2-WeAreBility-3\2023-1-OSSP2-WeAreBility-3\frontend\naemansan\build\windows\plugins\permission_handler_windows\permission_handler_windows_plugin.vcxproj">
+      <Project>{6C4A52BA-C7CA-388F-9936-3EB3E7625D01}</Project>
+      <Name>permission_handler_windows_plugin</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

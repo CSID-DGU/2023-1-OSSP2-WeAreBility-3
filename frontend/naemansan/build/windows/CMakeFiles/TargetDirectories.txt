@@ -8,3 +8,9 @@ C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/f
 C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/CMakeFiles/naemansan.dir
 C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/CMakeFiles/INSTALL.dir
 C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner/CMakeFiles/ALL_BUILD.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/geolocator_windows/CMakeFiles/geolocator_windows_plugin.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/geolocator_windows/CMakeFiles/INSTALL.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/geolocator_windows/CMakeFiles/ALL_BUILD.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/permission_handler_windows/CMakeFiles/permission_handler_windows_plugin.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/permission_handler_windows/CMakeFiles/INSTALL.dir
+C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/permission_handler_windows/CMakeFiles/ALL_BUILD.dir

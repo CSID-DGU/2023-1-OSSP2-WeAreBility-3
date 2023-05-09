@@ -185,6 +185,38 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Directory under which to collect all populated content
+FETCHCONTENT_BASE_DIR:PATH=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/_deps
+
+//Disables all attempts to download or update content and assumes
+// source dirs already exist
+FETCHCONTENT_FULLY_DISCONNECTED:BOOL=OFF
+
+//Enables QUIET option for all content population
+FETCHCONTENT_QUIET:BOOL=ON
+
+//When not empty, overrides where to find pre-populated content
+// for nuget
+FETCHCONTENT_SOURCE_DIR_NUGET:PATH=
+
+//Enables UPDATE_DISCONNECTED behavior for all content population
+FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
+
+//Enables UPDATE_DISCONNECTED behavior just for population of nuget
+FETCHCONTENT_UPDATES_DISCONNECTED_NUGET:BOOL=OFF
+
+//Path to a program.
+NUGET:FILEPATH=NUGET-NOTFOUND
+
+//Value Computed by CMake
+geolocator_windows_BINARY_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/geolocator_windows
+
+//Value Computed by CMake
+geolocator_windows_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+geolocator_windows_SOURCE_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/windows/flutter/ephemeral/.plugin_symlinks/geolocator_windows/windows
+
 //Value Computed by CMake
 naemansan_BINARY_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows
 
@@ -193,6 +225,15 @@ naemansan_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 naemansan_SOURCE_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/windows
+
+//Value Computed by CMake
+permission_handler_windows_BINARY_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/plugins/permission_handler_windows
+
+//Value Computed by CMake
+permission_handler_windows_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+permission_handler_windows_SOURCE_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/windows/flutter/ephemeral/.plugin_symlinks/permission_handler_windows/windows
 
 //Value Computed by CMake
 runner_BINARY_DIR:STATIC=C:/Users/wjdgu/Documents/2023-1-OSSP2-WeAreBility-3/2023-1-OSSP2-WeAreBility-3/frontend/naemansan/build/windows/runner
@@ -282,7 +323,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=3
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib

@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-abstract class Trail extends StatelessWidget {
-  //임시로 abstract 사용, 필요 파일에 입력 후 abstract제거하기
-
+class Trail extends StatelessWidget {
   //userimage
   final String title;
   //시작 위치 불러오기  (Segment ID -startpoint)
