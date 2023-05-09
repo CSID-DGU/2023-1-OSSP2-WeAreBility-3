@@ -19,19 +19,19 @@ public class CourseController {
         return new ResponseDto<Boolean>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
     }
 
-    //Course Read
+    // Course Read
     @GetMapping("/course/{courseId}")
     public ResponseDto<CourseDto> readCourse(@PathVariable Long courseId) {
         return new ResponseDto<CourseDto>(courseService.readCourse(Long.valueOf(courseId)));
     }
 
-    //Course Update
+    // Course Update
     @PutMapping("/course/{courseId}")
     public ResponseDto<Boolean> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
         return new ResponseDto<Boolean>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
     }
 
-    //Course Delete
+    // Course Delete
     @DeleteMapping("/course/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
