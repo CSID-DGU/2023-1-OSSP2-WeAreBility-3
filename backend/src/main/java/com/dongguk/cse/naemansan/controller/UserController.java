@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     @GetMapping("/user")
-    public ResponseDto<UserDto> readUserProfile(Authentication authentication) {
+    public ResponseDto<UserDto> readUser(Authentication authentication) {
         return new ResponseDto<UserDto>(userService.getUserInformation(Long.valueOf(authentication.getName())));
     }
 
     @PutMapping("/user")
-    public ResponseDto<Boolean> updateUserProfile(@RequestBody UserRequestDto userRequestDto, Authentication authentication) {
+    public ResponseDto<Boolean> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
         return new ResponseDto<Boolean>(userService.updateUserInformation(Long.valueOf(authentication.getName()), userRequestDto));
     }
 
     @DeleteMapping("/user")
-    public ResponseDto<Boolean> deleteUserProfile(Authentication authentication) {
+    public ResponseDto<Boolean> deleteUser(Authentication authentication) {
         return new ResponseDto<Boolean>(userService.deleteUserInformation(Long.valueOf(authentication.getName())));
     }
 }
