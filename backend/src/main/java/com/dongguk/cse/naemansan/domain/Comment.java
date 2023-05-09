@@ -4,13 +4,18 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "comments")
+@DynamicUpdate
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,18 +27,20 @@ public class Comment {
     private Long courseId;
     @Column(name = "create_date")
     private Timestamp createdDate;
-    @Column(name = "isEdit", columnDefinition = "TINYINT(1)")
-    private boolean isEdit;
+    @Column(name = "context", nullable = false)
+    private String context;
+    @Column(name = "is_edit", columnDefinition = "TINYINT(1)")
+    private Boolean isEdit;
     @Column(name = "status", columnDefinition = "TINYINT(1)")
-    private boolean status;
+    private Boolean status;
 
     @Builder
-    public Comment(Long id, Long userId, Long courseId, Timestamp createdDate, boolean isEdit, boolean status) {
-        this.id = id;
+    public Comment(Long userId, Long courseId, String context) {
         this.userId = userId;
         this.courseId = courseId;
-        this.createdDate = createdDate;
-        this.isEdit = isEdit;
-        this.status = status;
+        this.context = context;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.isEdit = false;
+        this.status = true;
     }
 }

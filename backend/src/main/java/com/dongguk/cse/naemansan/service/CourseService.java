@@ -11,7 +11,6 @@ import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.DoubleBuffer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,27 +122,29 @@ public class CourseService {
 
     // Course Read
     public CourseDto readCourse(Long courseId) {
-//        Optional<Course> course = courseRepository.findById(courseId);
-//
-//        if (course.isEmpty()) {
-//            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
-//            return null;
-//        }
-//
-////        List<PointDto> locations = new ArrayList<>();
-////
-////        for (Point point : course.get().getLocations())
-//        return CourseDto.builder()
-//                .id(course.get().getId())
-//                .userId(course.get().getUserId())
-//                .title(course.get().getTitle())
-//                .createdDateTime((Timestamp) course.get().getCreatedDate())
-//                .introduction(course.get().getIntroduction())
-//                .courseTags(null)
-//                .startLocationName(course.get().getStartLocationName())
-//                .locations(course.get().getLocations())
-//                .build();
-        return null;
+        Optional<Course> course = courseRepository.findById(courseId);
+
+        if (course.isEmpty()) {
+            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
+            return null;
+        }
+
+        MultiPoint multiPoint = course.get().getLocations();
+        List<PointDto> locations = new ArrayList<>();
+
+        for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+            locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getX(),
+                    multiPoint.getGeometryN(i).getCoordinate().getY()));
+        }
+        return CourseDto.builder()
+                .id(course.get().getId())
+                .userId(course.get().getUserId())
+                .title(course.get().getTitle())
+                .createdDateTime(course.get().getCreatedDate())
+                .introduction(course.get().getIntroduction())
+                .courseTags(null)
+                .startLocationName(course.get().getStartLocationName())
+                .locations(locations).build();
     }
 
     public Boolean updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {

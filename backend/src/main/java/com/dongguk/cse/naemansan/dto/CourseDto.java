@@ -16,11 +16,11 @@ public class CourseDto {
     private String introduction;
     private List<CourseTagType> courseTags;
     private String startLocationName;
-    private MultiPoint locations;
+    private List<PointDto> locations;
 
     @Builder
     public CourseDto(Long id, Long userId, String title, Timestamp createdDateTime, String introduction,
-                     List<CourseTagType> courseTags, String startLocationName, MultiPoint locations) {
+                     List<CourseTagType> courseTags, String startLocationName, List<PointDto> locations) {
         this.id = id;
         this.userId = userId;
         this.title = title;

@@ -39,9 +39,6 @@ public class User {
     @Column(name = "created_date")
     private Timestamp createdDate;
 
-//    @OneToOne()
-//    private List<Image> images;
-
     @Builder
     public User(String socialLoginId, LoginProviderType loginProviderType, String name) {
         this.socialLoginId = socialLoginId;
