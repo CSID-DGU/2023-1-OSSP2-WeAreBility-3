@@ -23,6 +23,7 @@ user_input = user_input.reshape(-1, 2)
 
 # 유사도 검사를 통과하면 db에 저장되는 유저의 좌표
 user_coordinates = [tuple(e) for e in user_input]
+print(user_coordinates)
 
 
 # 정규화
@@ -109,15 +110,18 @@ for i in range(X):
         similarity_score > threshold or similarity_score < -threshold
     ):
         print("등록 불가")
+        token = 1
         break
     else:
-        continue
-        print("산책로를 등록 합니다.")
+        token = 0
 
 
 # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
-location = wkt.dumps(MultiPoint(user_coordinates))
-query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
-data = ("Hoin6", "서울", location)
-cursor.execute(query, data)
-conn.commit()
+if token == 0 :
+    location = wkt.dumps(MultiPoint(user_coordinates))
+    query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
+    data = ("Hoin6", "서울", location)
+    cursor.execute(query, data)
+    conn.commit()
+
+
