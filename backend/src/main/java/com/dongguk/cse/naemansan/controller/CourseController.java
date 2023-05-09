@@ -20,8 +20,8 @@ public class CourseController {
     }
 
     //Course Read
-    @GetMapping("/course")
-    public ResponseDto<CourseDto> readCourse(@RequestParam("courseId") String courseId) {
+    @GetMapping("/course/{courseId}")
+    public ResponseDto<CourseDto> readCourse(@PathVariable Long courseId) {
         return new ResponseDto<CourseDto>(courseService.readCourse(Long.valueOf(courseId)));
     }
 
@@ -32,9 +32,9 @@ public class CourseController {
     }
 
     //Course Delete
-    @DeleteMapping("/course")
-    public ResponseDto<Boolean> deleteCourse(@RequestParam("courseId") String courseId) {
-        return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(courseId)));
+    @DeleteMapping("/course/{courseId}")
+    public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
     //산책로 생성
 //    @PostMapping("/course")

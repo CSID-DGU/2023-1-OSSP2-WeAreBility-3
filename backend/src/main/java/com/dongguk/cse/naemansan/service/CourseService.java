@@ -148,9 +148,8 @@ public class CourseService {
 
     public Boolean updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
         log.info("updateCourse - {}", courseRequestDto);
-
-
         Optional<Course> course = courseRepository.findById(courseId);
+
         if (course.isEmpty()) {
             log.info("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
             return Boolean.FALSE;
@@ -165,8 +164,20 @@ public class CourseService {
         return Boolean.TRUE;
     }
 
-    public Boolean deleteCourse(Long courseId) {
-        return Boolean.FALSE;
+    public Boolean deleteCourse(Long userId, Long courseId) {
+        log.info("deleteCourse - UserID : {}, CourseID : {}", userId, courseId);
+        Optional<Course> course = courseRepository.findById(courseId);
+
+        if (course.isEmpty()) {
+            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
+            return Boolean.FALSE;
+        } else if (course.get().getUserId() != userId) {
+            log.info("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
+            return Boolean.FALSE;
+        }
+
+        courseRepository.deleteById(courseId);
+        return Boolean.TRUE;
     }
 
     private double getPointDistance(PointDto pointDtoOne, PointDto pointDtoTwo) {
