@@ -1,13 +1,12 @@
 //나만의 산책로 페이지 Myrail()
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:naemansan/service/api_service.dart';
-import 'package:naemansan/models/trailmodel.dart';
+//import 'package:naemansan/service/api_service.dart';
 
 class Myrail extends StatefulWidget {
-  Myrail({Key? key}) : super(key: key);
+  const Myrail({Key? key}) : super(key: key);
 
-  final Future<List<TrailModel>> trail = CreatedTrailApi.getCreatedTrail();
+  // final Future<List<TrailModel>> trail = CreatedTrailApi.getCreatedTrail();
 
   @override
   _MyrailState createState() => _MyrailState();
@@ -58,6 +57,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
+        titleSpacing: 0,
         //---------------------------------------------------------
         bottom: TabBar(
           controller: _tabController,
@@ -66,31 +66,31 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '등록한',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '이용',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '댓글',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
           ],
@@ -98,20 +98,25 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
+        children: const [
           //-------------------------------등록한 산책로 탭------------------------------------------
+          Center(
+            child: Text('계정 사용자가 좋아요한 산책로 리스트'),
+          ),
+
+          /*
           FutureBuilder<List<TrailModel>>(
             future: widget.trail,
             builder: (BuildContext context,
                 AsyncSnapshot<List<TrailModel>> snapshot) {
               if (snapshot.hasData) {
-                List<TrailModel> trails = snapshot.data!;
+                List<TrailModel> trail = snapshot.data!;
                 // trails 리스트를 사용하여 등록한 산책로를 표시하는 위젯을 반환
                 return ListView.builder(
-                  itemCount: trails.length,
+                  itemCount: trail.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ListTile(
-                      title: Text(trails[index].title),
+                      title: Text(trail[index].title),
                       // **위젯 형태에 맞게 수정
                     );
                   },
@@ -125,20 +130,21 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               }
             },
           ),
+          */
 
           //------------------------------좋아요한 산책로 탭------------------------------------------
-          const Center(
+          Center(
             child: Text('계정 사용자가 좋아요한 산책로 리스트'),
           ),
           //------------------------------이용한 산책로 탭---------------------------------------------
-          const Center(
+          Center(
             child: Text('계정 사용자가 이용한 산책로 리스트'),
           ),
           //-------------------------------댓글 단 산책로 탭-------------------------------------------
-          const Center(
+          Center(
             child: Text('계정 사용자가 작성한 댓글 모음'),
           ),
-          const Center(
+          Center(
             child: Text('키워드'),
           ),
         ],

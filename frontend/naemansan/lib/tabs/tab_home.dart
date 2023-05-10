@@ -112,7 +112,9 @@ class _HomeState extends State<Home> {
               ),
             ),
             const Spacer(),
+            const Expanded(child: SizedBox(width: 30)), // 여백 추가
             IconButton(
+              padding: const EdgeInsets.only(left: 25),
               icon: const Icon(
                 Icons.notifications_none_rounded,
                 color: Colors.black,

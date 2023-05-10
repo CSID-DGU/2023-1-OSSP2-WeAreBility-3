@@ -80,9 +80,13 @@ void main() async {
   await dotenv.load(fileName: 'assets/config/.env');
   // await dotenv.load(fileName: '.env');
 
-  // spalsh 시간 조절하기
+  // spalsh(로그인 화면) 시간 조절하기
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  //WidgetsFlutterBinding.ensureInitialized();
+  //WidgetsBinding widgetsBinding = WidgetsBinding.instance;
+  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // prefs 초기화
   final prefs = await SharedPreferences.getInstance();

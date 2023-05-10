@@ -71,25 +71,36 @@ class CreatedTrailApi {
     throw Error();
   }
 //---------------------------------------키워드별 리스트 불러오기------------------------------------
+//
+//
+//
+//
 
 //--------------------------------------나만의 산책로 페이지-----------------------------------------
-//--------------------------------------등록한 산책로 리스트 불러오기---------------------------------
+//------------------------------------등록한 산책로 리스트 불러오기-----------------------------------------------/작업중인 탭/-------------
   static Future<List<TrailModel>> getCreatedTrail() async {
     List<TrailModel> CreatedTrailInstances = [];
+    //실험용...인데 형태가 안 맞는.. final url = Uri.parse("https://jsonplaceholder.typicode.com/todos/1");
     final url = Uri.parse("/api/course"); //등록한 산책로 api
     final response = await http.get(url);
-    if (response.statusCode == 201) {
-      final trails = jsonDecode(response.body);
-      for (var trail in trails) {
-        final instance = TrailModel.fromJson(trail);
-        CreatedTrailInstances.add(instance);
+    if (response.statusCode == 200) {
+      try {
+        final trails = jsonDecode(response.body);
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          CreatedTrailInstances.add(instance);
+        }
+        return CreatedTrailInstances; //스크롤을 내리면서 목록이 더 생김
+      } catch (e) {
+        print('Failed to decode trails: $e');
+        rethrow;
       }
-      return CreatedTrailInstances; //스크롤을 내리면서 목록이 더 생김
+    } else {
+      throw Error();
     }
-    throw Error();
   }
 
-  //-----------------------------------좋아요한 산책로 리스트 불러오기-------------------------------
+  //-----------------------------------좋아요한 산책로 리스트 불러오기-----------------------------------------------------------------------
   static Future<List<TrailModel>> getLikedTrail() async {
     List<TrailModel> LikedTrailInstances = [];
     final url = Uri.parse("/api/my_course/liked"); //좋아요한 산책로 api
@@ -105,7 +116,7 @@ class CreatedTrailApi {
     throw Error();
   }
 
-  //----------------------------------이용한 산책로 리스트 불러오기-------------------------------------
+  //----------------------------------이용한 산책로 리스트 불러오기---------------------------------------------------------------------
   static Future<List<TrailModel>> getUsedTrail() async {
     List<TrailModel> UsedTrailInstances = [];
     final url = Uri.parse("/api/my_course/finished"); //이용한 산책로 api
@@ -121,7 +132,7 @@ class CreatedTrailApi {
     throw Error();
   }
 
-  //----------------------------------댓글단 산책로 리스트 불러오기-------------------------------------
+  //----------------------------------댓글단 산책로 리스트 불러오기---------------------------------------------------------------------
   static Future<List<TrailModel>> getCommentedTrail() async {
     List<TrailModel> CommentedTrailInstances = [];
     final url = Uri.parse("/api/course/comments"); // *****
@@ -137,5 +148,9 @@ class CreatedTrailApi {
     throw Error();
   }
 
-//-----------------------------------키워드별 리스트 불러오기-------------------------------------------------
+//-----------------------------------키워드별 리스트 불러오기---------------------------------------------------------------------------------
+//
+//
+//
+//
 }
