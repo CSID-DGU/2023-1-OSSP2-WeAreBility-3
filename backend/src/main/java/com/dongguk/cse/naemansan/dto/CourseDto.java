@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.dto;
 
+import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,18 @@ public class CourseDto {
         this.introduction = introduction;
         this.courseTags = courseTags;
         this.startLocationName = startLocationName;
+        this.locations = locations;
+    }
+
+    @Builder(builderMethodName = "UserDataBuilder")
+    public CourseDto(Course course, List<CourseTagType> courseTags, List<PointDto> locations) {
+        this.id = course.getId();
+        this.userId = course.getUserId();
+        this.title = course.getTitle();
+        this.createdDateTime = course.getCreatedDate();
+        this.introduction = course.getIntroduction();
+        this.courseTags = courseTags;
+        this.startLocationName = course.getStartLocationName();
         this.locations = locations;
     }
 }

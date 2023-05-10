@@ -1,10 +1,14 @@
 package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.CourseTag;
+import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import com.dongguk.cse.naemansan.dto.CourseDto;
 import com.dongguk.cse.naemansan.dto.CourseRequestDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.repository.CourseRepository;
+import com.dongguk.cse.naemansan.repository.CourseTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
@@ -22,6 +26,7 @@ import java.util.Optional;
 @Transactional
 public class CourseService {
     private final CourseRepository courseRepository;
+    private final CourseTagRepository courseTagRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 //    //산책도 등록
 //    public Long join(Course course, CourseTag courseTag) {
@@ -78,20 +83,20 @@ public class CourseService {
 
 
     // Course Create
-    public Boolean createCourse(Long userId, CourseRequestDto courseRequestDto) {
-        Optional<Course> course = courseRepository.findByTitle(courseRequestDto.getTitle());
+    public CourseDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
+        Optional<Course> forCheckCourse = courseRepository.findByTitle(courseRequestDto.getTitle());
 
-        if (!course.isEmpty()) {
+        if (!forCheckCourse.isEmpty()) {
             log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
-            return Boolean.FALSE;
+            return null;
         }
 
         if (courseRequestDto.getPointDtos().size() == 0) {
             log.error("Not Exist Points - user : {}, {}", userId, courseRequestDto);
-            return Boolean.FALSE;
+            return null;
         }
 
-
+        // MultiPoint 만드는 과정
         Point points[] = new Point[courseRequestDto.getPointDtos().size()];
 
         PointDto pointDtoOne = null;
@@ -107,7 +112,7 @@ public class CourseService {
 
         MultiPoint multiPoint = geometryFactory.createMultiPoint(points);
 
-        courseRepository.save(Course.builder()
+        Course course = courseRepository.save(Course.builder()
                 .userId(userId)
                 .title(courseRequestDto.getTitle())
                 .introduction(courseRequestDto.getIntroduction())
@@ -117,7 +122,19 @@ public class CourseService {
                 .distance(distance)
                 .status(true).build());
 
-        return Boolean.TRUE;
+        // CourseTag 등록하는 과정
+        List<CourseTagType> courseTagTypes = new ArrayList<>();
+        for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
+            courseTagRepository.save(CourseTag.builder()
+                    .courseId(course.getId())
+                    .courseTagType(courseTagDto.getCourseTagType()).build());
+            courseTagTypes.add(courseTagDto.getCourseTagType());
+        }
+
+        return CourseDto.UserDataBuilder()
+                .course(course)
+                .courseTags(courseTagTypes)
+                .locations(courseRequestDto.getPointDtos()).build();
     }
 
     // Course Read
@@ -147,22 +164,47 @@ public class CourseService {
                 .locations(locations).build();
     }
 
-    public Boolean updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
+    public CourseDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
         log.info("updateCourse - {}", courseRequestDto);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (course.isEmpty()) {
-            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
-            return Boolean.FALSE;
+            log.error("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
+            return null;
         } else if (course.get().getUserId() != userId) {
-            log.info("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
-            return Boolean.FALSE;
+            log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
+            return null;
+        } else if (!course.isEmpty()) {
+            log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
+            return null;
         }
 
         course.get().setTitle(courseRequestDto.getTitle());
         course.get().setIntroduction(courseRequestDto.getIntroduction());
+
+        List<CourseTagType> courseTagTypes = new ArrayList<>();
+        for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
+            switch (courseTagDto.getStatusType()) {
+                case NEW -> {
+                    courseTagRepository.save(CourseTag.builder()
+                            .courseId(courseId)
+                            .courseTagType(courseTagDto.getCourseTagType()).build());
+                    courseTagTypes.add(courseTagDto.getCourseTagType());
+                }
+                case DELETE -> {
+                    courseTagRepository.deleteByCourseIdAndCourseTagType(courseId, courseTagDto.getCourseTagType());
+                }
+                case DEFAULT -> {
+                    courseTagTypes.add(courseTagDto.getCourseTagType());
+                }
+            }
+        }
+
         // Tag 바꾸는거 넣어야 함
-        return Boolean.TRUE;
+        return CourseDto.UserDataBuilder()
+                .course(course.get())
+                .courseTags(courseTagTypes)
+                .locations(courseRequestDto.getPointDtos()).build();
     }
 
     public Boolean deleteCourse(Long userId, Long courseId) {
