@@ -3,9 +3,8 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.CourseTag;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
-import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.CourseDto;
-import com.dongguk.cse.naemansan.dto.CourseRequestDto;
+import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.repository.CourseRepository;
@@ -13,15 +12,16 @@ import com.dongguk.cse.naemansan.repository.CourseTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.dongguk.cse.naemansan.domain.type.CourseTagType.existType;
 
 @Slf4j
 @Service
@@ -31,58 +31,6 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseTagRepository courseTagRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
-//    //산책도 등록
-//    public Long join(Course course, CourseTag courseTag) {
-//        validateDuplicateCourse(course);//중복 검사
-//        if (!validateCourseTag(courseTag))
-//            throw new IllegalStateException("적절하지 않은 태그 입니다");
-//        courseRepository.save(course);
-//        courseTag.setCourseId(Math.toIntExact(course.getId()));
-//        courseTypeRepository.save(courseTag);
-//        return course.getId();
-//    }
-//
-//    //산책로 중복 검사 (이름으로 바꿔야 할 수도?)
-//    private void validateDuplicateCourse(Course course) {
-//        courseRepository.findByTitle(course.getTitle())
-//                .ifPresent(w -> {
-//                    throw new IllegalStateException("이미 존재하는 산책로 입니다");
-//                });
-//    }
-
-    //산책로 태그 확인
-//    private boolean validateCourseTag(CourseTag courseTag) {
-//        //CourseTagType courseTagType = courseType.getCourseTagType();
-//        //태그 맞는디 equal로 확인
-//        for (CourseTagType courseTagType : CourseTagType.values()) {
-//            if (courseTagType.name().equals(courseTag.getCourseTag())) {
-//                courseTag.setCourseTag(courseTag.getCourseTag());
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    //전체 산책로 조회
-//    public List<Course> findCourses() {
-//        return courseRepository.findAll();
-//    }
-//
-//    //산책로 하나 찾기
-//    public Optional<Course> findOne(Long courseId) {
-//        return courseRepository.findById(courseId);
-//    }
-//
-//    //제목으로 산책로 찾기
-//    public Optional<Course> findOneTitle(String courseTitle) {
-//        return courseRepository.findByTitle(courseTitle);
-//    }
-//
-//    //키워드 기반 조회
-//    public Optional<Course> OrderbyKeword(String tag) {
-//        return courseRepository.orderByKeyword(tag);
-//    }
-
 
     // Course Create
     public CourseDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
@@ -109,7 +57,7 @@ public class CourseService {
             pointDtoOne = pointDtoTwo;
             pointDtoTwo = pointDto;
             distance += getPointDistance(pointDtoOne, pointDtoTwo);
-            points[i] = geometryFactory.createPoint(new Coordinate(pointDto.getLatitude(), pointDto.getLongitude()));
+            points[i] = geometryFactory.createPoint(new Coordinate(pointDto.getLongitude(), pointDto.getLatitude()));
         }
 
         MultiPoint multiPoint = geometryFactory.createMultiPoint(points);
@@ -152,8 +100,8 @@ public class CourseService {
         List<PointDto> locations = new ArrayList<>();
 
         for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
-            locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getX(),
-                    multiPoint.getGeometryN(i).getCoordinate().getY()));
+            locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getY(),
+                    multiPoint.getGeometryN(i).getCoordinate().getX()));
         }
         return CourseDto.builder()
                 .id(course.get().getId())
@@ -271,8 +219,8 @@ public class CourseService {
             List<PointDto> locations = new ArrayList<>();
 
             for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
-                locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getX(),
-                        multiPoint.getGeometryN(i).getCoordinate().getY()));
+                locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getY(),
+                        multiPoint.getGeometryN(i).getCoordinate().getX()));
             }
 
             List<CourseTagType> courseTagTypes = new ArrayList<>();
@@ -290,6 +238,42 @@ public class CourseService {
                     .startLocationName(course.get().getStartLocationName())
                     .locations(locations).build());
         }
+        return courseDtos;
+    }
+
+    public List<CourseDto> getCourseListByLocation(Double latitude, Double longitude) {
+        Pageable paging = PageRequest.of(0, 5, Sort.by("distance"));
+        Page<Course> pages =  courseRepository.findCourseList(geometryFactory.createPoint(new Coordinate(longitude, latitude)), paging);
+
+        List<Course> courseIds =  pages.getContent();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Course course : courseIds) {
+            MultiPoint multiPoint = course.getLocations();
+            List<PointDto> locations = new ArrayList<>();
+
+            for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+                locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getY(),
+                    multiPoint.getGeometryN(i).getCoordinate().getX()));
+            }
+
+            List<CourseTag> courseTags = courseTagRepository.findByCourseId(course.getId());
+            List<CourseTagType> courseTagTypes = new ArrayList<>();
+            for (CourseTag tempCourseTag : courseTags) {
+                courseTagTypes.add(tempCourseTag.getCourseTagType());
+            }
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.getId())
+                    .userId(course.getUserId())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .introduction(course.getIntroduction())
+                    .courseTags(courseTagTypes)
+                    .startLocationName(course.getStartLocationName())
+                    .locations(locations).build());
+        }
+
         return courseDtos;
     }
 }

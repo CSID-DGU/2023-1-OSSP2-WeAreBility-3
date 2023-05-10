@@ -1,4 +1,4 @@
-package com.dongguk.cse.naemansan.dto;
+package com.dongguk.cse.naemansan.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

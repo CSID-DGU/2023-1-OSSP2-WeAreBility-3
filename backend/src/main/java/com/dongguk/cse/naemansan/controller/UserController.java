@@ -2,7 +2,7 @@ package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.dto.UserDto;
-import com.dongguk.cse.naemansan.dto.UserRequestDto;
+import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

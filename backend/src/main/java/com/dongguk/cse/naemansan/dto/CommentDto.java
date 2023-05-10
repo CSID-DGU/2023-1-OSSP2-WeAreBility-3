@@ -32,5 +32,5 @@ public class CommentDto {
         this.content = content;
         this.createdDateTime = createdDateTime;
         this.isEdit = isEdit;
-}
+    }
 }

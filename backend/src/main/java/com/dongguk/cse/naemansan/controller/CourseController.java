@@ -1,7 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.CourseDto;
-import com.dongguk.cse.naemansan.dto.CourseRequestDto;
+import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,11 @@ public class CourseController {
     @DeleteMapping("/course/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
+    }
+
+    @GetMapping("/course/loaction/{latitude}/{longitude}")
+    public ResponseDto<List<CourseDto>> getCourseListByLocations(@PathVariable Double latitude, @PathVariable Double longitude) {
+        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByLocation(latitude, longitude));
     }
 
     @GetMapping("/course/tag/{tag}")

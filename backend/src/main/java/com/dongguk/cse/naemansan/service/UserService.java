@@ -2,7 +2,7 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.UserDto;
-import com.dongguk.cse.naemansan.dto.UserRequestDto;
+import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

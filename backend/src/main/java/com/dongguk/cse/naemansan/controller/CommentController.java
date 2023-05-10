@@ -1,6 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.*;
+import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
 import com.dongguk.cse.naemansan.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
