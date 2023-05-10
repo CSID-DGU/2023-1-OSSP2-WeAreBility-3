@@ -18,14 +18,14 @@ public class CourseTag {
     @Column(name = "id")
     private Long id;
     @Column(name="course_id")
-    private int courseId;
-    @Column(name="tag")
-    private String courseTag;
+    private Long courseId;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private CourseTagType courseTagType;
 
     @Builder
-    public CourseTag(Long id, int courseId, String courseTag) {
-        this.id = id;
+    public CourseTag(Long courseId, CourseTagType courseTagType) {
         this.courseId = courseId;
-        this.courseTag = courseTag;
+        this.courseTagType = courseTagType;
     }
 }
