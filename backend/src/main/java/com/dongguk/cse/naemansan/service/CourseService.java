@@ -3,6 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.CourseTag;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
+import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.CourseDto;
 import com.dongguk.cse.naemansan.dto.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
@@ -19,6 +20,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.dongguk.cse.naemansan.domain.type.CourseTagType.existType;
 
 @Slf4j
 @Service
@@ -79,7 +82,6 @@ public class CourseService {
 //    public Optional<Course> OrderbyKeword(String tag) {
 //        return courseRepository.orderByKeyword(tag);
 //    }
-
 
 
     // Course Create
@@ -238,11 +240,56 @@ public class CourseService {
         distance = distance * 60 * 1.1515 * 1609.344;
         return distance;
     }
+
     private static double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
+    }
+
+    public List<CourseDto> getCourseListByTag(String tag) {
+        CourseTagType courseTagType = CourseTagType.existType(tag);
+        if (courseTagType == null) {
+            log.error("존재하지 않는 Tag 입니다. - Tag : {}", tag);
+            return null;
+        }
+
+        List<CourseTag> courseIdList = courseTagRepository.findByCourseTagType(courseTagType);
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (CourseTag courseTag : courseIdList) {
+            Optional<Course> course = courseRepository.findById(courseTag.getCourseId());
+            List<CourseTag> courseTags = courseTagRepository.findByCourseId(courseTag.getCourseId());
+
+            if (course.isEmpty()) {
+                log.error("잘못된 CourseId 입니다. - Tag : {}", tag);
+                return null;
+            }
+
+            MultiPoint multiPoint = course.get().getLocations();
+            List<PointDto> locations = new ArrayList<>();
+
+            for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+                locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getX(),
+                        multiPoint.getGeometryN(i).getCoordinate().getY()));
+            }
+
+            List<CourseTagType> courseTagTypes = new ArrayList<>();
+            for (CourseTag tempCourseTag : courseTags) {
+                courseTagTypes.add(tempCourseTag.getCourseTagType());
+            }
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.get().getId())
+                    .userId(course.get().getUserId())
+                    .title(course.get().getTitle())
+                    .createdDateTime(course.get().getCreatedDate())
+                    .introduction(course.get().getIntroduction())
+                    .courseTags(courseTagTypes)
+                    .startLocationName(course.get().getStartLocationName())
+                    .locations(locations).build());
+        }
+        return courseDtos;
     }
 }

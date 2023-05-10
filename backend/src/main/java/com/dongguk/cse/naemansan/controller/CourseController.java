@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class CourseController {
@@ -35,5 +37,10 @@ public class CourseController {
     @DeleteMapping("/course/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
+    }
+
+    @GetMapping("/course/tag/{tag}")
+    public ResponseDto<List<CourseDto>> getCourseListByTag(@PathVariable String tag) {
+        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByTag(tag));
     }
 }
