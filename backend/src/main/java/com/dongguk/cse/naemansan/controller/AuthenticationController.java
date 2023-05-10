@@ -29,6 +29,11 @@ public class AuthenticationController {
         return kakaoService.getRedirectUrlDto("KAKAO");
     }
 
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<LoginResponse> getKakaoAccessToken(@RequestParam("code") String code, HttpServletRequest request) {
+        return ResponseEntity.ok(kakaoService.testAccessToken(code, request));
+    }
+
     @PostMapping("/kakao")
     public ResponseEntity<LoginResponse> getKakaoAccessToken(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(kakaoService.login(request));
@@ -37,6 +42,11 @@ public class AuthenticationController {
     @GetMapping("/google")
     public RedirectUrlDto getGoogleRedirectUrl() {
         return googleService.getRedirectUrlDto("GOOGLE");
+    }
+
+    @GetMapping("/google/callback")
+    public ResponseEntity<LoginResponse> getGoogleAccessToken(@RequestParam("code") String code, HttpServletRequest request) {
+        return ResponseEntity.ok(googleService.testAccessToken(code, request));
     }
 
     @PostMapping("/google")
