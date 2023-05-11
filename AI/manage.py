@@ -3,6 +3,7 @@
 import os
 import sys
 
+sys.path.append('AI\checker')
 
 def main():
     """Run administrative tasks."""
