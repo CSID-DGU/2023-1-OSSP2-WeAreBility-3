@@ -7,9 +7,10 @@ import struct
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+import joblib
 
 
-class  similarity_Checker:
+class  similarity_Checker():
     def calculate_Similarity(input_coord) :
 
         # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
@@ -127,5 +128,6 @@ class  similarity_Checker:
             cursor.execute(query, data)
             conn.commit()
             return True
-
+filename = "similarity_Checker.sav"
+joblib.dump(similarity_Checker, filename)
 
