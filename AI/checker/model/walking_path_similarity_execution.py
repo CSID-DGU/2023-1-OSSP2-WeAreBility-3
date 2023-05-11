@@ -1,3 +1,4 @@
+# 토큰으로 입력 받기 api 문서 post로 request return은 bool값
 import pymysql
 from shapely import wkt
 from shapely.geometry import MultiPoint
@@ -6,8 +7,7 @@ import struct
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-import sys
-sys.path.append('AI/checker')
+
 
 class  similarity_Checker:
     def calculate_Similarity(input_coord) :
@@ -112,7 +112,7 @@ class  similarity_Checker:
             if np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
             ):
-                return "등록불가"
+                return False
                 token = 1
                 break
             else:
@@ -126,6 +126,6 @@ class  similarity_Checker:
             data = ("Hoin6", "서울", location)
             cursor.execute(query, data)
             conn.commit()
-            return "등록완료"
+            return True
 
 

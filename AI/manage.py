@@ -3,7 +3,7 @@
 import os
 import sys
 
-sys.path.append('AI\checker')
+sys.path.append('C:\Hoin666\2023-1-OSSP2-WeAreBility-3\AI\checker')
 
 def main():
     """Run administrative tasks."""

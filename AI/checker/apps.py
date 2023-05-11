@@ -6,10 +6,10 @@ class CheckerConfig(AppConfig):
     name = "checker" """
 from django.apps import AppConfig
 import html
-import pathlib
+from pathlib import Path
 import os
-import walking_path_similarity_execution
+from models import similarity_Checker
 
 class WebappConfig(AppConfig):
-    name = 'checker'
-    predictor = walking_path_similarity_execution.similarity_Checker()
+    MODEL_PATH = Path("model")
+    predictor = similarity_Checker()
