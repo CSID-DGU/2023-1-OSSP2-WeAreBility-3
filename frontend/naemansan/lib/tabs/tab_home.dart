@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
     await dotenv.load(fileName: 'assets/config/.env');
     // url 생성
     final url =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${dotenv.env['GOOGLE_MAPS_API_KEY']}";
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${dotenv.env['GOOGLE_MAPS_API_KEY']}&language=ko";
     final response = await http.get(Uri.parse(url));
     final responseData = json.decode(response.body);
     if (responseData["status"] == "OK") {

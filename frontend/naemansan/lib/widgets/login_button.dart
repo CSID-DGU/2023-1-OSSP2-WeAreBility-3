@@ -18,19 +18,32 @@ class LoginBtn extends StatelessWidget {
   login() async {
     if (await isKakaoTalkInstalled()) {
       try {
+        // flutter SDK를 사용하는 방식
         await UserApi.instance.loginWithKakaoTalk();
+
+        // redirect 방식
+        // redirectUri로 인가코드 발송
+        // await AuthCodeClient.instance.authorizeWithTalk(
+        //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
+        // );
         // print('카카오톡으로 로그인 성공');
       } catch (error) {
-        // print('카카오톡으로 로그인 실패 $error');
+        print('카카오톡으로 로그인 실패 $error');
 
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
         // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
         if (error is PlatformException && error.code == 'CANCELED') {
           return;
         }
-        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
+        // 카카오톡에 연결된 카카오계정이 없는 경우, web 카카오계정으로 로그인
         try {
+          // // flutter SDK를 사용하는 방식
+          // flutter SDK가 accesstoken, Refrest Token 발급 해줌.
           await UserApi.instance.loginWithKakaoAccount();
+
+          // await AuthCodeClient.instance.authorize(
+          //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
+          // );
           // print('카카오계정으로 로그인 성공');
         } catch (error) {
           // print('카카오계정으로 로그인 실패 $error');
@@ -38,9 +51,23 @@ class LoginBtn extends StatelessWidget {
       }
     } else {
       try {
+        isKakaoTalkInstalled();
+
+        // await AuthCodeClient.instance.authorize(
+        //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
+        // );
+
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
         print('카카오계정으로 로그인 성공');
-        print("Token : ${token.accessToken}");
+        print("ACCESS Token : ${token.accessToken}");
+        print("REFRESH Token : ${token.refreshToken}");
+
+        // 서비스 서버가 전달한 response 데이터에서 토큰 획득 후 Flutter SDK에서 사용하는 타입으로 변환
+        // var tokenResponse = AccessTokenResponse.fromJson(response);
+        // var token = OAuthToken.fromResponse(tokenResponse);
+
+        // // 토큰 저장
+        // TokenManagerProvider.instance.manager.setToken(token);
 
         // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
         final prefs = await SharedPreferences.getInstance();

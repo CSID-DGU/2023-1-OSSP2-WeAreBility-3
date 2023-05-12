@@ -1,8 +1,8 @@
 // Mypage()
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Mypage extends StatelessWidget {
   const Mypage({super.key});
@@ -12,7 +12,7 @@ class Mypage extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLogged', false);
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-
+      await UserApi.instance.unlink();
       await UserApi.instance.logout();
     } catch (error) {
       print('카카오계정으로 로그인 아웃 실패 $error');
