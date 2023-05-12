@@ -1,7 +1,8 @@
-package com.dongguk.cse.naemansan.dto;
+package com.dongguk.cse.naemansan.dto.response;
 
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
+import com.dongguk.cse.naemansan.dto.PointDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.locationtech.jts.geom.MultiPoint;

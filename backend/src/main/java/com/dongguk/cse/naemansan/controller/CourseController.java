@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.CourseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;

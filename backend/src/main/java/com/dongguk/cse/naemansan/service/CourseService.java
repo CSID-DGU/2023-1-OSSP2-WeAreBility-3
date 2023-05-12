@@ -5,7 +5,7 @@ import com.dongguk.cse.naemansan.domain.CourseTag;
 import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
-import com.dongguk.cse.naemansan.dto.CourseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;

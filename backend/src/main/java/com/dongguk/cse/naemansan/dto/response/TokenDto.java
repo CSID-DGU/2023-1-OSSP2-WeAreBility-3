@@ -1,4 +1,4 @@
-package com.dongguk.cse.naemansan.dto;
+package com.dongguk.cse.naemansan.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TokenDto {
-    String tokens;
+    private String token;
 }

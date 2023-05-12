@@ -9,17 +9,19 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.dongguk.cse.naemansan.util.Oauth2Util;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Ref;
 import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -39,7 +41,9 @@ public class AuthenticationService {
         }
         return null;
     }
-    public LoginResponse login(String authorizationCode, LoginProviderType loginProviderType, HttpServletRequest request) {
+    public LoginResponse login(String authorizationCode, LoginProviderType loginProviderType) {
+        log.info("유저 로그인 시작 Oauth: {}, 인가코드: {}", loginProviderType, authorizationCode);
+
         String accessToken = null;
         String socialId = null;
         switch (loginProviderType) {
@@ -100,5 +104,28 @@ public class AuthenticationService {
         return LoginResponse.builder()
                 .jwt(jwtToken)
                 .build();
+    }
+
+    public void logout(Long userId) {
+        Optional<User> user =  userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            log.error("존재하지 않은 유저입니다. UserID: {}", userId);
+            return;
+        }
+
+        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(userId);
+        refreshToken.get().setRefreshToken(null);
+    }
+
+    public void withdrawal(Long userId) {
+        Optional<User> user =  userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            log.error("존재하지 않은 유저입니다. UserID: {}", userId);
+            return;
+        }
+
+        userRepository.delete(user.get());
     }
 }
