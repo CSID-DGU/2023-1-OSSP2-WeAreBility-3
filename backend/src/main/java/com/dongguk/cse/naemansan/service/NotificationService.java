@@ -3,7 +3,6 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.Notification;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
-import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.repository.NotificationRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +29,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
         notificationRepository.save(Notification.builder()
-                .user_id(userId)
+                .userId(userId)
                 .content(notificationDto.getContent())
                 .build());
         return Boolean.TRUE;
@@ -50,28 +48,28 @@ public class NotificationService {
         for (Notification notification : notifications) {
             notificationDtos.add(NotificationDto.builder()
                     .id(notification.getId())
-                    .user_id(notification.getUser_id())
                     .content(notification.getContent())
-                    .create_date(notification.getCreate_date())
-                    .is_read_status(notification.getIs_read_status()).build());
+                    .createDate(notification.getCreateDate())
+                    .isReadStatus(notification.getIsReadStatus()).build());
         }
+
         return notificationDtos;
     }
 
-    public Boolean updateNotification(Long userId, Long notificationId, NotificationRequestDto notificationRequestDto) {
+    public Boolean updateNotification(Long userId, Long notificationId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             log.error("Not Exist User - UserID: {}", userId);
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByUserIdAndId(userId, notificationId);
+        Optional<Notification> notification = notificationRepository.findByIdAndUserId(notificationId, userId);
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;
         }
 
-        notification.get().setIs_read_status(notificationRequestDto.getIs_read_status());
+        notification.get().setIsReadStatus(Boolean.TRUE);
         return Boolean.TRUE;
     }
 
@@ -82,7 +80,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByUserIdAndId(userId, notificationId);
+        Optional<Notification> notification = notificationRepository.findByIdAndUserId(notificationId, userId);
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;

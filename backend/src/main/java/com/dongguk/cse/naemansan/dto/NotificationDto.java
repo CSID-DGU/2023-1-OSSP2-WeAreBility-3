@@ -9,17 +9,15 @@ import java.sql.Timestamp;
 @Getter
 public class NotificationDto {
     private Long id;
-    private Long user_id;
     private String content;
-    private Timestamp create_date;
-    private Boolean is_read_status;
+    private Timestamp createDate;
+    private Boolean isReadStatus;
 
     @Builder
-    public  NotificationDto(Long id, Long user_id, String content, Timestamp create_date, Boolean is_read_status){
+    public  NotificationDto(Long id, String content, Timestamp createDate, Boolean isReadStatus){
         this.id = id;
-        this.user_id = user_id;
         this.content = content;
-        this.create_date = create_date;
-        this.is_read_status = is_read_status;
+        this.createDate = createDate;
+        this.isReadStatus = isReadStatus;
     }
 }

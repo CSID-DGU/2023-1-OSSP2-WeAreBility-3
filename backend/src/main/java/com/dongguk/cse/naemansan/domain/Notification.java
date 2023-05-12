@@ -23,19 +23,19 @@ public class Notification {
     @Column(name = "id")
     private Long id;
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
     @Column(name = "content")
     private String content;
     @Column(name = "create_date")
-    private Timestamp create_date;
+    private Timestamp createDate;
     @Column(name = "is_read_status", columnDefinition = "TINYINT(1)")
-    private Boolean is_read_status;
+    private Boolean isReadStatus;
 
     @Builder
-    public Notification(Long user_id, String content) {
-        this.user_id = user_id;
+    public Notification(Long userId, String content) {
+        this.userId = userId;
         this.content = content;
-        this.create_date = Timestamp.valueOf(LocalDateTime.now());
-        this.is_read_status = false;
+        this.createDate = Timestamp.valueOf(LocalDateTime.now());
+        this.isReadStatus = false;
     }
 }
