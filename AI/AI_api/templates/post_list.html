@@ -1,0 +1,14 @@
+<!-- post_list.html -->
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <form method="get">
+        <button class="btn btn-danger">GET</button>
+    </form>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary">POST</button>
+    </form>
+    <h2>{{GET}}</h2>
+    <h2>{{POST}}</h2>
+{% endblock %}
