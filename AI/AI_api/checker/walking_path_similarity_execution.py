@@ -109,9 +109,9 @@ class  similarity_Checker():
             threshold = 0.975
 
             # 유사도가 높으면 반복문 멈추고 등록 불가
-            if np.any(np.isclose(similarity_vector, 1.0)) and (
+            if (np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
-            ):
+            )) or np.all(np.isclose(np.trace(similarity_vector), 1.0)) :
                 return False
                 token = 1
                 break
