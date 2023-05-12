@@ -124,7 +124,8 @@ public class CourseService {
         } else if (course.get().getUserId() != userId) {
             log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
             return null;
-        } else if (!course.isEmpty()) {
+        }
+        else if (course.get().getTitle().equals(courseRequestDto.getTitle())) {
             log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
             return null;
         }

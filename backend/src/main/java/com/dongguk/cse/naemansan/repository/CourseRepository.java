@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findByTitle(String title);
 
-    @Query(value = "SELECT c FROM Course c WHERE ST_Distance_Sphere(:start, c.startLocation) <= 1000")
+    @Query(value = "SELECT c FROM Course c WHERE ST_Distance_Sphere(:start, c.startLocation) <= 50")
     Page<Course> findCourseList(@Param("start") Point point, Pageable paging);
 }

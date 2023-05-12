@@ -39,7 +39,7 @@ public class CourseController {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
 
-    @GetMapping("/course/loaction/{latitude}/{longitude}")
+    @GetMapping("/course/location/{latitude}/{longitude}")
     public ResponseDto<List<CourseDto>> getCourseListByLocations(@PathVariable Double latitude, @PathVariable Double longitude) {
         return new ResponseDto<List<CourseDto>>(courseService.getCourseListByLocation(latitude, longitude));
     }

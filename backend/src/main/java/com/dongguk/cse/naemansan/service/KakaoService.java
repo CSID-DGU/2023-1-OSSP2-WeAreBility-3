@@ -12,10 +12,19 @@ import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -196,5 +205,86 @@ public class KakaoService implements AuthenticationService {
         }
 
         return userInfo;
+    }
+
+    public LoginResponse testAccessToken(String code, HttpServletRequest request) {
+        RestTemplate rt = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type","authorization_code");
+        params.add("client_id", kakaoClientId);
+        params.add("redirect_uri", "http://localhost:8080/auth/kakao/callback");
+        params.add("code", code);
+
+        HttpEntity<MultiValueMap<String,String>> kakaoTokenRequest = new HttpEntity<>(params,httpHeaders);
+
+        ResponseEntity<String> response = rt.exchange(
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST,
+                kakaoTokenRequest,
+                String.class
+        );
+
+        // 토큰값 Json 형식으로 가져오기위해 생성
+//        log.debug("kakao token result = {} " , response);
+
+        RestTemplate rt2 = new RestTemplate();
+        HttpHeaders headers2 = new HttpHeaders();
+
+        headers2.add("Authorization", "Bearer "+ JsonParser.parseString(response.getBody()).getAsJsonObject().get("access_token").getAsString());
+        headers2.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<MultiValueMap<String,String >> kakaoProfileRequest2= new HttpEntity<>(headers2);
+
+        ResponseEntity<String> response2 = rt2.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoProfileRequest2,
+                String.class
+        );
+
+        // 토큰을 사용하여 사용자 정보 추출
+        JsonElement element = JsonParser.parseString(response2.getBody());
+        String socialLoginId = element.getAsJsonObject().get("id").getAsString();
+        JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+        String name = properties.getAsJsonObject().get("nickname").getAsString();
+//        log.debug("###### kakao login = {}", jo2);
+
+        // 이후 유저 여부를 판단하고 회원가입 / 로그인 처리를 진행하면 된다.
+        Optional<User> user = userRepository.findBySocialLoginIdAndLoginProviderType(socialLoginId, LoginProviderType.KAKAO);
+        User loginUser;
+
+        if (user.isEmpty()) {
+            loginUser = userRepository.save(User.builder()
+                    .socialLoginId(socialLoginId)
+                    .name(name)
+                    .loginProviderType(LoginProviderType.KAKAO)
+                    .build());
+            imageRepository.save(Image.builder()
+                    .useId(loginUser.getId())
+                    .imageUseType(ImageUseType.USER)
+                    .build());
+        } else {
+            loginUser = user.get();
+        }
+
+        JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
+
+        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(loginUser.getId());
+
+        if (refreshToken.isEmpty()) {
+            tokenRepository.save(RefreshToken.builder()
+                    .userId(loginUser.getId())
+                    .refreshToken(jwtToken.getRefreshToken())
+                    .build());
+        } else {
+            refreshToken.get().setRefreshToken(jwtToken.getRefreshToken());
+        }
+
+        return LoginResponse.builder()
+                .jwt(jwtToken)
+                .build();
     }
 }

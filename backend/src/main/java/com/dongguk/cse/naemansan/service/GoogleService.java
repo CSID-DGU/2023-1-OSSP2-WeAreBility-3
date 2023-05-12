@@ -12,9 +12,18 @@ import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -22,11 +31,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpHeaders;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class GoogleService implements AuthenticationService {
@@ -199,5 +208,85 @@ public class GoogleService implements AuthenticationService {
         }
 
         return userInfo;
+    }
+
+    public LoginResponse testAccessToken(String code, HttpServletRequest request) {
+        log.info("인가코드 - {}", code);
+        RestTemplate rt = new RestTemplate();
+        org.springframework.http.HttpHeaders httpHeaders = new org.springframework.http.HttpHeaders();
+        httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type","authorization_code");
+        params.add("client_id", GoogleClientId);
+        params.add("client_secret", GoogleClientSecret);
+        params.add("redirect_uri", "http://localhost:8080/auth/google/callback");
+        params.add("code", code);
+
+        HttpEntity<MultiValueMap<String,String>> googleTokenRequest = new HttpEntity<>(params,httpHeaders);
+
+        ResponseEntity<String> response = rt.exchange(
+                "https://oauth2.googleapis.com/token",
+                HttpMethod.POST,
+                googleTokenRequest,
+                String.class
+        );
+        // 토큰값 Json 형식으로 가져오기위해 생성
+//        log.debug("kakao token result = {} " , response);
+        log.info("접근토큰 - {}", JsonParser.parseString(response.getBody()).getAsJsonObject().get("access_token").getAsString());
+        RestTemplate rt2 = new RestTemplate();
+        HttpHeaders headers2 = new HttpHeaders();
+
+        headers2.add("Authorization", "Bearer "+ JsonParser.parseString(response.getBody()).getAsJsonObject().get("access_token").getAsString());
+        headers2.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2= new HttpEntity<>(headers2);
+
+        ResponseEntity<String> response2 = rt2.exchange(
+                "https://www.googleapis.com/userinfo/v2/me",
+                HttpMethod.GET,
+                kakaoProfileRequest2,
+                String.class
+        );
+
+        // 토큰을 사용하여 사용자 정보 추출
+        JsonElement element = JsonParser.parseString(response2.getBody());
+        String socialLoginId = element.getAsJsonObject().get("id").getAsString();
+        String name = element.getAsJsonObject().get("given_name").getAsString();
+
+        // 이후 유저 여부를 판단하고 회원가입 / 로그인 처리를 진행하면 된다.
+        Optional<User> user = userRepository.findBySocialLoginIdAndLoginProviderType(socialLoginId, LoginProviderType.GOOGLE);
+        User loginUser;
+
+        if (user.isEmpty()) {
+            loginUser = userRepository.save(User.builder()
+                    .socialLoginId(socialLoginId)
+                    .name(name)
+                    .loginProviderType(LoginProviderType.KAKAO)
+                    .build());
+            imageRepository.save(Image.builder()
+                    .useId(loginUser.getId())
+                    .imageUseType(ImageUseType.USER)
+                    .build());
+        } else {
+            loginUser = user.get();
+        }
+
+        JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
+
+        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(loginUser.getId());
+
+        if (refreshToken.isEmpty()) {
+            tokenRepository.save(RefreshToken.builder()
+                    .userId(loginUser.getId())
+                    .refreshToken(jwtToken.getRefreshToken())
+                    .build());
+        } else {
+            refreshToken.get().setRefreshToken(jwtToken.getRefreshToken());
+        }
+
+        return LoginResponse.builder()
+                .jwt(jwtToken)
+                .build();
     }
 }
