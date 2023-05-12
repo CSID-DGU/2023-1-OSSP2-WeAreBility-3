@@ -3,6 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.Notification;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
+import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.repository.NotificationRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -23,7 +24,7 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
 
-    public Boolean createNotification(Long userId, String content, Time createdTime, int isReadStatus) {
+    public Boolean createNotification(Long userId, NotificationDto notificationDto) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             log.error("Not Exist User - UserID: {}", userId);
@@ -31,7 +32,7 @@ public class NotificationService {
         }
         notificationRepository.save(Notification.builder()
                 .user_id(userId)
-                .content(content)
+                .content(notificationDto.getContent())
                 .build());
         return Boolean.TRUE;
     }
@@ -58,7 +59,7 @@ public class NotificationService {
         return notificationDtos;
     }
 
-    public Boolean updateNotification(Long userId, Long notificationId, Boolean isReadStatus, NotificationDto notificationDto) {
+    public Boolean updateNotification(Long userId, Long notificationId, NotificationRequestDto notificationRequestDto) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             log.error("Not Exist User - UserID: {}", userId);
@@ -71,7 +72,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        notification.get().setIs_read_status(notificationDto.getIs_read_status());
+        notification.get().setIs_read_status(notificationRequestDto.getIs_read_status());
         return Boolean.TRUE;
     }
 

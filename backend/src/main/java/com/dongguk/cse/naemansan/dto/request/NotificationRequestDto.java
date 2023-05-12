@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationRequestDto {
+    private String content;
     private Boolean is_read_status;
 }
