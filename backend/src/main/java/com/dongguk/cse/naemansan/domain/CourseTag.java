@@ -19,7 +19,7 @@ public class CourseTag {
     private Long id;
     @Column(name="course_id")
     private Long courseId;
-    @Column(name = "role")
+    @Column(name = "tag")
     @Enumerated(EnumType.STRING)
     private CourseTagType courseTagType;
 
