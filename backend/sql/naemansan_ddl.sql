@@ -157,6 +157,16 @@ CREATE TABLE `badges` (
                           CONSTRAINT BADGES_COURSE_FK FOREIGN KEY (`badge_id`) REFERENCES `badge_names` (`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `notifications` (
+    `id` integer AUTO_INCREMENT,
+    `user_id` integer,
+    `content` varchar(300),
+    `create_date` timestamp,
+    `is_read_status` boolean,
+    CONSTRAINT NOTIFICATIONS_PK PRIMARY KEY (`id`),
+    CONSTRAINT BADGES_USER_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+)
+
 INSERT INTO users (`social_login_id`, `provider`, `name`, `introduction`, `role`, `created_date`)VALUES ("00000000", 'KAKAO', "DEFAULT_ADMIM", "THIS IS ADIMN", 'ADMIN', null);
 INSERT INTO tokens (`user_id`, `refresh_token`) VALUES (1, NULL);
 INSERT INTO images (`use_user`, `use_shop`, `use_advertisement`, `path`) VALUES (1, NULL, NULL, "이미지 경로입니다.");

@@ -2,6 +2,8 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.CourseTag;
+import com.dongguk.cse.naemansan.domain.Like;
+import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import com.dongguk.cse.naemansan.dto.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
@@ -9,6 +11,8 @@ import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.repository.CourseRepository;
 import com.dongguk.cse.naemansan.repository.CourseTagRepository;
+import com.dongguk.cse.naemansan.repository.LikeRepository;
+import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
@@ -28,8 +32,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class CourseService {
+    private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final CourseTagRepository courseTagRepository;
+    private final LikeRepository likeRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     // Course Create
@@ -276,5 +282,45 @@ public class CourseService {
         }
 
         return courseDtos;
+    }
+
+    public Boolean likeCourse(Long userId, Long courseId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Course> course = courseRepository.findById(courseId);
+
+        if (user.isEmpty()) {
+            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
+            return Boolean.FALSE;
+        }
+
+        if (course.isEmpty()) {
+            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
+            return Boolean.FALSE;
+        }
+
+        likeRepository.save(Like.builder()
+                .userId(userId)
+                .courseId(courseId).build());
+
+        return Boolean.TRUE;
+    }
+
+    public Boolean dislikeCourse(Long userId, Long courseId) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Course> course = courseRepository.findById(courseId);
+
+        if (user.isEmpty()) {
+            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
+            return Boolean.FALSE;
+        }
+
+        if (course.isEmpty()) {
+            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
+            return Boolean.FALSE;
+        }
+
+        likeRepository.deleteByUserIdAndCourseId(userId, courseId);
+
+        return Boolean.TRUE;
     }
 }
