@@ -55,7 +55,6 @@ public class NotificationService {
                     .create_date(notification.getCreate_date())
                     .is_read_status(notification.getIs_read_status()).build());
         }
-
         return notificationDtos;
     }
 
@@ -66,7 +65,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByUserIDAndId(userId, notificationId);
+        Optional<Notification> notification = notificationRepository.findByUserIdAndId(userId, notificationId);
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;
@@ -83,7 +82,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByUserIDAndId(userId, notificationId);
+        Optional<Notification> notification = notificationRepository.findByUserIdAndId(userId, notificationId);
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;
