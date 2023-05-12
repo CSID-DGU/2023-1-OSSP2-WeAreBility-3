@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "badges")
 public class Badge {
@@ -24,10 +27,9 @@ public class Badge {
     private Timestamp getDate;
 
     @Builder
-    public Badge(Long id, Long userId, Long badgeId, Timestamp getDate) {
-        this.id = id;
+    public Badge(Long userId, Long badgeId) {
         this.userId = userId;
         this.badgeId = badgeId;
-        this.getDate = getDate;
+        this.getDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }
