@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.CourseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;
@@ -47,5 +47,15 @@ public class CourseController {
     @GetMapping("/course/tag/{tag}")
     public ResponseDto<List<CourseDto>> getCourseListByTag(@PathVariable String tag) {
         return new ResponseDto<List<CourseDto>>(courseService.getCourseListByTag(tag));
+    }
+
+    @GetMapping("/course/like/{courseId}")
+    public ResponseDto<Boolean> likeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
+    @DeleteMapping("/course/like/{courseId}")
+    public ResponseDto<Boolean> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -24,10 +25,9 @@ public class Follow {
     private Timestamp createdDate;
 
     @Builder
-    public Follow(Long id, Long followingId, Long followedId, Timestamp createdDate) {
-        this.id = id;
+    public Follow(Long followingId, Long followedId) {
         this.followingId = followingId;
         this.followedId = followedId;
-        this.createdDate = createdDate;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }
