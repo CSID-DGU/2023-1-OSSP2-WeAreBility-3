@@ -17,26 +17,20 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    //Notification Create
-    @PostMapping("/{userId}/notification")
-    public ResponseDto<Boolean> createNotification(Authentication authentication, @RequestBody NotificationDto notificationDto) {
-        return new ResponseDto<Boolean>(notificationService.createNotification(Long.valueOf(authentication.getName()), notificationDto));
-    }
-
     //Notification Read
-    @GetMapping("/{userId}/notification")
-    public ResponseDto<List<NotificationDto>> readNotification(@PathVariable Long userId) {
-        return new ResponseDto<List<NotificationDto>>(notificationService.readNotification(userId));
+    @GetMapping("")
+    public ResponseDto<List<NotificationDto>> readNotification(Authentication authentication) {
+        return new ResponseDto<List<NotificationDto>>(notificationService.readNotification(Long.valueOf(authentication.getName())));
     }
 
     //Notification Update
-    @PutMapping("/{userId}/notification/{notificationId")
-    public ResponseDto<Boolean> updateNotification(Authentication authentication, @PathVariable Long notificationId, @RequestBody NotificationRequestDto notificationRequestDto) {
-        return new ResponseDto<Boolean>(notificationService.updateNotification(Long.valueOf(authentication.getName()), notificationId, notificationRequestDto));
+    @PutMapping("/{notificationId}")
+    public ResponseDto<Boolean> updateNotification(Authentication authentication, @PathVariable Long notificationId) {
+        return new ResponseDto<Boolean>(notificationService.updateNotification(Long.valueOf(authentication.getName()), notificationId));
     }
 
     //Notification Delete
-    @DeleteMapping("/{userId}/notification/{notificationId}")
+    @DeleteMapping("/{notificationId}")
     public ResponseDto<Boolean> deleteNotification(Authentication authentication, @PathVariable Long notificationId) {
         return new ResponseDto<Boolean>(notificationService.deleteNotification(Long.valueOf(authentication.getName()), notificationId));
     }
