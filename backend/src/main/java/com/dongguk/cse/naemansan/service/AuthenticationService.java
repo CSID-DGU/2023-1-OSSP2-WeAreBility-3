@@ -3,6 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
+import com.dongguk.cse.naemansan.dto.response.LoginResponse;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Ref;
 import java.util.Optional;
 import java.util.Random;
 
