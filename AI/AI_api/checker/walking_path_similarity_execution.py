@@ -10,6 +10,20 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 class  similarity_Checker():
+    def __init__(self, user_id = int, userid = int, title = str, createdDatetime = str,
+                 introduction = str, coursekeyword = str, segmentId = int, startPoint = str,
+                 endPoint = str, points = str) :
+        self.user_id = user_id
+        self.userid = userid
+        self.title = title
+        self.createdDatetime = createdDatetime
+        self.introduction = introduction
+        self.coursekeyword = coursekeyword
+        self.segmentId = segmentId
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+        self.points = points
+
     def calculate_Similarity(self, input_coord) :
 
         # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
@@ -120,10 +134,14 @@ class  similarity_Checker():
 
 
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
+        # userid 추가 필요..(5.14) 참조 테이블?? 
         if token == 0 :
             location = wkt.dumps(MultiPoint(user_coordinates))
-            query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
-            data = ("Hoin6", "서울", location)
+            query = """
+            INSERT INTO courses (id, title, created_date, introduction, start_location, locations, distance, status) 
+            VALUES (%s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
+            """
+            data = (self.user_id, self.title, pd.to_datetime(self.createdDatetime), self.introduction, self.startPoint, location, "1", "1")
             cursor.execute(query, data)
             conn.commit()
             return True

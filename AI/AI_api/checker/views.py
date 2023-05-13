@@ -6,13 +6,13 @@ from .models import Users
 from .serializer import userSerializer
 from .walking_path_similarity_execution import similarity_Checker
 
-checker = similarity_Checker()
+
 @csrf_exempt
 def user_list(request):
-    if request.method == 'GET': # GET 방식일 때
+    if request.method != 'POST': # GET 방식일 때
         query_set = Users.objects.all() # ORM으로 Users의 모든 객체 받아옴
         serializer = userSerializer(query_set, many=True) # JSON으로 변환
-        return JsonResponse(serializer.data, safe=False) # JSON타입의 데이터로 응답
+        return HttpResponse(serializer.data) # JSON타입의 데이터로 응답
 
     elif request.method == 'POST': # POST방식일 때
         query_set = Users.objects.all() # ORM으로 Users의 모든 객체 받아옴
@@ -23,7 +23,11 @@ def user_list(request):
             serializer.save() # 데이터 저장
             user = Users.objects.all()
             user = user.last()
+            checker = similarity_Checker(user.user_id, user.userid, user.title, user.createdDateTime,
+                                         user.introduction, user.coursekeyword, user.segmentId,
+                                         user.startPoint, user.endPoint, user.points)
             return JsonResponse(checker.calculate_Similarity(user.points), safe=False)
+        return JsonResponse(serializer.errors, status=400)
         
         "checker.calculate_Similarity(user.points)"
         """if serializer.is_valid(): # 생성한 모델과 일치하면
