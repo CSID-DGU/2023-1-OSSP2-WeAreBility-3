@@ -3,6 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
+import com.dongguk.cse.naemansan.dto.response.LoginResponse;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Ref;
 import java.util.Optional;
 import java.util.Random;
 
@@ -83,7 +83,10 @@ public class AuthenticationService {
             imageRepository.save(Image.builder()
                     .useId(loginUser.getId())
                     .imageUseType(ImageUseType.USER)
-                    .build());
+                    .originName("default_image.png")
+                    .uuidName("ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png")
+                    .type("image/png")
+                    .path("C:/Users/HyungJoon/Documents/0_OSSP/resources/images/ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png").build());
         } else {
             loginUser = user.get();
         }

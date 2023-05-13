@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.domain.LoginResponse;
+import com.dongguk.cse.naemansan.dto.response.LoginResponse;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.response.TokenDto;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;

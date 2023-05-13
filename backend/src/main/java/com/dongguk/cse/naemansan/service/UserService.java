@@ -71,7 +71,8 @@ public class UserService {
         else {
             user.get().setName(userRequestDto.getName());
             user.get().setIntroduction(userRequestDto.getInformation());
-            image.get().setImagePath(userRequestDto.getImagePath());
+//            image.get().setImagePath(userRequestDto.getImagePath());
+            // 이미지는 따로 한번 더 요청하는 것을 생각 중
             return Boolean.TRUE;
         }
     }

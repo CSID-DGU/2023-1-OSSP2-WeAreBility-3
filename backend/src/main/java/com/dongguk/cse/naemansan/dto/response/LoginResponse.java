@@ -1,4 +1,4 @@
-package com.dongguk.cse.naemansan.domain;
+package com.dongguk.cse.naemansan.dto.response;
 
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
