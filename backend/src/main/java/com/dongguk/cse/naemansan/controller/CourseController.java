@@ -1,52 +1,61 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
+import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
+import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
 
-    @Autowired
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
+    // Course Create
+    @PostMapping("/course")
+    public ResponseDto<CourseDto> createCourse(Authentication authentication, @RequestBody CourseRequestDto courseRequestDto){
+        return new ResponseDto<CourseDto>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
     }
 
-    //산책로 맵핑
-    @GetMapping("/courses/new")
-    public String createForm(){
-        return "courses/creatWalkwayForm";
-    }
-    //산책로 생성
-    @PostMapping("/courses/new")
-    public String create(CourseForm form){
-        Course course = new Course();
-        course.setId(form.getId());
-        course.setUser_id(form.getUser_id());
-        course.setTitle(form.getTitle());
-        course.setCreated_date(form.getCreated_date());
-        course.setIntroduction(form.getIntroduction());
-        course.setStart_location(form.getStart_location());
-        course.setLocations(form.getLocations());
-        course.setDistance(form.getDistance());
-        course.setStatus(form.getStatus());
-        //courseService.join(course);
-
-        return "redirect:/";
+    // Course Read
+    @GetMapping("/course/{courseId}")
+    public ResponseDto<CourseDto> readCourse(@PathVariable Long courseId) {
+        return new ResponseDto<CourseDto>(courseService.readCourse(Long.valueOf(courseId)));
     }
 
-    @GetMapping("/courses")
-    public String list(Model model){
-        List<Course> courses = courseService.findCourses();
-        model.addAttribute("courses", courses);
-        return "courses/courseList";
+    // Course Update
+    @PutMapping("/course/{courseId}")
+    public ResponseDto<CourseDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
+        return new ResponseDto<CourseDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
     }
 
+    // Course Delete
+    @DeleteMapping("/course/{courseId}")
+    public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
+    }
+
+    @GetMapping("/course/location/{latitude}/{longitude}")
+    public ResponseDto<List<CourseDto>> getCourseListByLocations(@PathVariable Double latitude, @PathVariable Double longitude) {
+        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByLocation(latitude, longitude));
+    }
+
+    @GetMapping("/course/tag/{tag}")
+    public ResponseDto<List<CourseDto>> getCourseListByTag(@PathVariable String tag) {
+        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByTag(tag));
+    }
+
+    @GetMapping("/course/like/{courseId}")
+    public ResponseDto<Boolean> likeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
+    @DeleteMapping("/course/like/{courseId}")
+    public ResponseDto<Boolean> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Boolean>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
+    }
 }

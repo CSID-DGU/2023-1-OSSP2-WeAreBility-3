@@ -7,7 +7,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+interface UserNameMapping {
+    Long getId();
+    String getName();
+}
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findBySocialLoginIdAndLoginProviderType(String socialLoginId, LoginProviderType loginProviderType);
+
+//    Optional<UserNameMapping> findById(Long id);
 }

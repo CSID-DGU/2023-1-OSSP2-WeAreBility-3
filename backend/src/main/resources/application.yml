@@ -38,11 +38,11 @@ client:
     kakao:
       client-id: "db9bfe01c95414e0f1add469fdfaa9ff"
       client-secret: "hhfaxdZnYy7aDB3DVoag05qhiQEck0HL"
-      redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+      redirect-uri: "http://localhost:8080/auth/kakao/callback"
     google:
       clientId: '99694127428-0j6odmodhkrb2df1g80rusn1urnv43fi.apps.googleusercontent.com'
       clientSecret: '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'
-      redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+      redirect-uri: "http://localhost:8080/auth/google/callback"
   provider:
     kakao:
       authorization-uri: "https://kauth.kakao.com/oauth/authorize"

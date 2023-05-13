@@ -20,8 +20,7 @@ public class Like {
     private Long courseId;
 
     @Builder
-    public Like(Long id, Long userId, Long courseId) {
-        this.id = id;
+    public Like(Long userId, Long courseId) {
         this.userId = userId;
         this.courseId = courseId;
     }
