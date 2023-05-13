@@ -34,10 +34,10 @@ public class Subscribe {
     @Column(name = "biliing_key")
     private Time biliingKey;
     @Column(name = "next_refresh", columnDefinition = "TINYINT(1)")
-    private boolean nextRefresh;
+    private Boolean nextRefresh;
 
     @Builder
-    public Subscribe(Long id, Long userId, PayType payType, Time createdDate, Time successedDate, Time expirationDate, Time nextOrderDate, Time biliingKey, boolean nextRefresh) {
+    public Subscribe(Long id, Long userId, PayType payType, Time createdDate, Time successedDate, Time expirationDate, Time nextOrderDate, Time biliingKey, Boolean nextRefresh) {
         this.id = id;
         this.userId = userId;
         this.payType = payType;
