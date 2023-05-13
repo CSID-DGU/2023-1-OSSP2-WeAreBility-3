@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,7 +39,7 @@ public class ImageService {
         Optional<Image> findImage = imageRepository.findByUserId(useId);
 
         if (findImage.isEmpty()) {
-            Image image = imageRepository.save(Image.builder()
+            imageRepository.save(Image.builder()
                     .useId(useId)
                     .imageUseType(imageUseType)
                     .originName(file.getOriginalFilename())
@@ -46,11 +47,28 @@ public class ImageService {
                     .type(file.getContentType())
                     .path(filePath).build());
         } else {
+            File currentFile = new File(findImage.get().getPath());
+            boolean result = currentFile.delete();
+
             findImage.get().setOriginName(file.getOriginalFilename());
+            findImage.get().setUuidName(uuidImageName);
+            findImage.get().setPath(filePath);
             findImage.get().setType(file.getContentType());
-            findImage.get().setUuidName(filePath);
         }
 
         return "file uploaded successfully : " + filePath;
+    }
+
+    public byte[] downloadImage(String fileName) throws IOException {
+        Optional<Image> image = imageRepository.findByUuidName(fileName);
+
+        if (image.isEmpty()) {
+            log.error("존재하지 않는 파일입니다 - UUID: {}", fileName);
+            return null;
+        }
+
+        String filePath = image.get().getPath();
+        byte[] images = Files.readAllBytes(new File(filePath).toPath());
+        return images;
     }
 }

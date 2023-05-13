@@ -83,7 +83,10 @@ public class AuthenticationService {
             imageRepository.save(Image.builder()
                     .useId(loginUser.getId())
                     .imageUseType(ImageUseType.USER)
-                    .build());
+                    .originName("default_image.png")
+                    .uuidName("ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png")
+                    .type("image/png")
+                    .path("C:/Users/HyungJoon/Documents/0_OSSP/resources/images/ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png").build());
         } else {
             loginUser = user.get();
         }
