@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+// 알림
+
 void main() async {
   // 환경변수
   await dotenv.load(fileName: 'assets/config/.env');

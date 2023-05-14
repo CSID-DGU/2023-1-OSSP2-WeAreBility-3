@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
+import 'package:naemansan/widgets/notification.dart';
 import 'package:naemansan/widgets/slide_item.dart';
 import 'package:naemansan/widgets/slider.dart';
 import 'dart:convert';
@@ -115,11 +116,9 @@ class _HomeState extends State<Home> {
               ),
             ),
             const Spacer(),
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_none_rounded,
-                color: Colors.black,
-              ),
+            // 알림 icon
+            NotificationIcon(
+              hasUnreadNotifications: true, // 읽지 않은 알림이 있는 경우 true로 설정
               onPressed: () {
                 Navigator.push(
                   context,
