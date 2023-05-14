@@ -1,11 +1,32 @@
+import 'package:naemansan/models/trailmodel.dart';
+//http
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-import 'package:naemansan/models/trailmodel.dart';
+class ApiService {
+  static Future<List<TrailModel>> getTrail() async {
+    List<TrailModel> trailInstances = [];
 
-class CreatedTrailApi {
-  //static const String baseUrl = "/api/course"; //등록한 산책로 API
+    // 테스트 데이터로 주어진 JSON 문자열을 파싱하여 TrailModel 인스턴스를 생성하여 리스트에 추가합니다.
+    String jsonData = '''
+    {
+      "userimage": "image",
+      "title": "중구 산책길",
+      "startpoint": "서울특별시 중구",
+      "distance": 0.8,
+      "CourseKeyword": ["둘레길"],
+      "likeCnt": 10,
+      "userCnt": 32,
+      "isLiked": true 
+    }
+    ''';
+    TrailModel instance = TrailModel.fromJson(jsonDecode(jsonData));
+    trailInstances.add(instance);
 
+    return trailInstances;
+  }
+}
+
+/*
 //---------------------------------------산책로 페이지----------------------------------------------------------------------------------------
 //---------------------------------------거리순 리스트 불러오기--------------------------------------------------------------------------------
   static Future<List<TrailModel>> getNearestTrail() async {
@@ -24,7 +45,7 @@ class CreatedTrailApi {
   }
 
 //---------------------------------------좋아요순 리스트 불러오기------------------------------------------------------------------------------
-  static Future<List<TrailModel>> MostLikedTrail() async {
+  static Future<List<TrailModel>> getMostLikedTrail() async {
     List<TrailModel> MostLikedTrailInstances = [];
     final url = Uri.parse("/api/course/total/top5"); //위치기반 산책로 top5 Api
     final response = await http.get(url);
@@ -40,7 +61,7 @@ class CreatedTrailApi {
   }
 
 //---------------------------------------이용자순 리스트 불러오기---------------------------------------------------------------------------
-  static Future<List<TrailModel>> MostUsedTrail() async {
+  static Future<List<TrailModel>> getMostUsedTrail() async {
     List<TrailModel> MostUsedTrailInstances = [];
     final url = Uri.parse("/api/course/total/top5"); //이용자순 Api
     final response = await http.get(url);
@@ -56,7 +77,7 @@ class CreatedTrailApi {
   }
 
 //---------------------------------------최신(등록)순 리스트 불러오기-----------------------------------------------------------------------
-  static Future<List<TrailModel>> NewTrail() async {
+  static Future<List<TrailModel>> getNewTrail() async {
     List<TrailModel> NewTrailInstances = [];
     final url = Uri.parse("/api/course/total/top5"); //**최신순 Api로 변경
     final response = await http.get(url);
@@ -77,13 +98,12 @@ class CreatedTrailApi {
 //
 
 //--------------------------------------나만의 산책로 페이지-----------------------------------------
-//------------------------------------등록한 산책로 리스트 불러오기-----------------------------------------------/작업중인 탭/-------------
+//------------------------------------등록한 산책로 리스트 불러오기-----------------------------------------------
   static Future<List<TrailModel>> getCreatedTrail() async {
     List<TrailModel> CreatedTrailInstances = [];
-    //실험용...인데 형태가 안 맞는.. final url = Uri.parse("https://jsonplaceholder.typicode.com/todos/1");
     final url = Uri.parse("/api/course"); //등록한 산책로 api
     final response = await http.get(url);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       try {
         final trails = jsonDecode(response.body);
         for (var trail in trails) {
@@ -152,5 +172,7 @@ class CreatedTrailApi {
 //
 //
 //
-//
-}
+//   
+*/ */
+
+

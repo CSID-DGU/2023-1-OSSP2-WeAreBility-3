@@ -1,18 +1,20 @@
 //등록한 산책로 api를 JSON형태로 변환
 class TrailModel {
-  //userimage
+  final String userimage;
   final String title;
-  //시작 위치 불러오기  (Segment ID -startpoint)
-  //거리 (endpoint - startpoint)
+  final String startpoint; //시작 위치 불러오기  (Segment ID -startpoint)
+  final double distance; //거리 (endpoint - startpoint)
   final List<String>? CourseKeyWord; //여러개일수도 있음
-  //좋아요 수
-  //이용자 수
+  final int likeCnt, userCnt;
+  final bool isLiked;
 
   TrailModel.fromJson(Map<String, dynamic> json)
-      : title = json['title'],
-        //시작위치,
-        //거리,
-        CourseKeyWord = json['CourseKeyword'];
-  //좋아요 수
-  //이용자 수
+      : userimage = json['userimage'],
+        title = json['title'],
+        startpoint = json['startpoint'],
+        distance = json['distance'],
+        CourseKeyWord = (json['CourseKeyword'] as List<dynamic>).cast<String>(),
+        likeCnt = json['likeCnt'],
+        userCnt = json['userCnt'],
+        isLiked = json['isLiked'];
 }

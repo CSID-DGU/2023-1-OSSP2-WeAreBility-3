@@ -16,7 +16,7 @@ class _IndexScreenState extends State<IndexScreen> {
   final List<Widget> _tabs = [
     const Home(),
     const Trail(),
-    Myrail(),
+    const Myrail(),
     const Mypage(),
   ];
 
