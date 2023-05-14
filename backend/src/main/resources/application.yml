@@ -31,27 +31,30 @@ spring:
         order_inserts: true
         order_updates: true
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   # Security OAuth
-  security:
-    oauth2.client:
-      registration:
-        kakao:
-          clientId: 'db9bfe01c95414e0f1add469fdfaa9ff'
-          clientSecret: 'uH8Hae1LjyocJbxWsqGTNvhe09CeMuZw'
-          clientAuthenticationMethod: POST
-          authorizationGrantType: authorization_code
-          redirectUri: "http://localhost:8080/login/oauth2/code/kakao"
-          scope:
-            - profile_nickname
-            - account_email
-          clientName: Kakao
-      # Provider 설정
-      provider:
-        kakao:
-          authorizationUri: "https://kauth.kakao.com/oauth/authorize"
-          tokenUri: "https://kauth.kakao.com/oauth/token"
-          userInfoUri: "https://kapi.kakao.com/v2/user/me"
 
-          userNameAttribute: id
+client:
+  registration:
+    kakao:
+      client-id: "db9bfe01c95414e0f1add469fdfaa9ff"
+      client-secret: "hhfaxdZnYy7aDB3DVoag05qhiQEck0HL"
+      redirect-uri: "http://localhost:8080/auth/kakao/callback"
+    google:
+      clientId: '99694127428-0j6odmodhkrb2df1g80rusn1urnv43fi.apps.googleusercontent.com'
+      clientSecret: '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'
+      redirect-uri: "http://localhost:8080/auth/google/callback"
+  provider:
+    kakao:
+      authorization-uri: "https://kauth.kakao.com/oauth/authorize"
+      token-uri: "https://kauth.kakao.com/oauth/token"
+      user-info-uri: "https://kapi.kakao.com/v2/user/me"
+    google:
+      authorization-uri: "https://accounts.google.com/o/oauth2/v2/auth"
+      token-uri: "https://oauth2.googleapis.com/token"
+      user-info-uri: "https://www.googleapis.com/userinfo/v2/me"
 
 jwt.secret: '8sknjlO3NPTBqo319DHLNqsQAfRJEdKsETOdsalei2sdfe'

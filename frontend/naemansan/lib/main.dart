@@ -4,9 +4,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
+import 'package:naemansan/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+// 알림
 
 void main() async {
   // 환경변수
@@ -57,7 +60,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: '내가 만든 산책로',
       routes: {
-//        '/': (context) => isLogged ? const IndexScreen() : LoginScreen(),
+        '/': (context) => isLogged ? const IndexScreen() : LoginScreen(),
         '/index': (context) => const IndexScreen(),
       },
       initialRoute: '/',
@@ -80,13 +83,9 @@ void main() async {
   await dotenv.load(fileName: 'assets/config/.env');
   // await dotenv.load(fileName: '.env');
 
-  // spalsh(로그인 화면) 시간 조절하기
+  // spalsh 시간 조절하기
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
-  //WidgetsFlutterBinding.ensureInitialized();
-  //WidgetsBinding widgetsBinding = WidgetsBinding.instance;
-  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // prefs 초기화
   final prefs = await SharedPreferences.getInstance();

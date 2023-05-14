@@ -1,6 +1,5 @@
 package com.dongguk.cse.naemansan.security.jwt;
 
-import com.dongguk.cse.naemansan.domain.RefreshToken;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.UserRoleType;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -99,12 +98,14 @@ public class JwtProvider implements InitializingBean {
         return createToken(user.get().getId(), user.get().getUserRoleType(), true);
     }
 
+    public String getUserId(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("id").toString();
+    }
+
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String jwtToken) {
+    public boolean validateToken(String token) {
         try {
-            // test용
-//            String token = jwtToken.substring(7);
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");

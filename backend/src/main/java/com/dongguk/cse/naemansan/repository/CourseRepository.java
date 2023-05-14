@@ -1,24 +1,23 @@
 package com.dongguk.cse.naemansan.repository;
 
 import com.dongguk.cse.naemansan.domain.Course;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourseRepository {
-    Course save(Course course);
-    Optional<Course> findById(Long id);
+public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findByTitle(String title);
-    List<Course> findAll();
-    Optional<Course> orderByKeyword(String tag);
-    Optional<Course> orderByLocation(Point point);
 
-    void deleteCourse(Long id);
+    @Query(value = "SELECT c FROM Course c WHERE ST_Distance_Sphere(:start, c.startLocation) <= 50")
+    Page<Course> findCourseList(@Param("start") Point point, Pageable paging);
 
-    Long updateCourse(Long id, String title, Date created_date, String introduction, String start_location, int status);
+    @Query(value = "SELECT c.title FROM Course c WHERE c.title = :title")
+    Optional<String> findTitle(@Param("title") String title);
 }

@@ -1,87 +1,87 @@
 package com.dongguk.cse.naemansan.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import org.springframework.data.geo.Point;
-
 import java.util.Date;
 import java.util.List;
+
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@DynamicUpdate
+@Table(name="courses")
 public class Course {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private int user_id;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User courseUser;
+
     @Column(name="title",unique = true)
     private String title;
-    private Date created_date;
+
+    @Column(name="created_date")
+    private Timestamp createdDate;
+
+    @Column(name="introduction")
     private String introduction;
-    private String start_location;
-    @ElementCollection
-    private List<Point> locations= new ArrayList<>();
-    private int distance;
-    private int status;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name="start_location_name")
+    private String startLocationName;
 
-    public int getUser_id() {
-        return user_id;
-    }
+    @Column(name="start_location", columnDefinition = "POINT")
+    private Point startLocation;
 
-    public String getTitle() {
-        return title;
-    }
+    @Column(name="locations", columnDefinition = "MULTIPOINT")
+    private MultiPoint locations;
 
-    public Date getCreated_date() {
-        return created_date;
-    }
+    @Column(name="distance")
+    private double distance;
 
-    public String getIntroduction() {
-        return introduction;
-    }
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private boolean status;
 
-    public int getDistance() {
-        return distance;
-    }
-    public int getStatus() {
-        return status;
-    }
-    public String getStart_location() {
-        return start_location;
-    }
+    // ------------------------------------------------------------
 
-    public List<Point> getLocations() {
-        return locations;
-    }
+    @OneToMany(mappedBy = "course")
+    private List<CourseTag> courseTags = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public void setCreated_date(Date created_date) {
-        this.created_date = created_date;
-    }
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-    public void setIntroduction(String introduction) {
+    @OneToMany(mappedBy = "likeCourse")
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "commentCourse")
+    private List<Comment> comments = new ArrayList<>();
+
+    @Builder
+    public Course(User courseUser, String title, String introduction,
+                  String startLocationName, Point startLocation, MultiPoint locations, double distance, boolean status) {
+        this.courseUser = courseUser;
+        this.title = title;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.introduction = introduction;
-    }
-    public void setStart_location(String start_location) {
-        this.start_location = start_location;
-    }
-    public void setStatus(int status) {
+        this.startLocationName = startLocationName;
+        this.startLocation = startLocation;
+        this.locations = locations;
+        this.distance = distance;
         this.status = status;
     }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
 
-    public void setLocations(List<Point> locations) {
-        this.locations = locations;
+    public void updateCourse(String title, String introduction) {
+        setTitle(title);
+        setIntroduction(introduction);
     }
 }
