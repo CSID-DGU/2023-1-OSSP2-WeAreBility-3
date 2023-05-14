@@ -17,4 +17,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query(value = "SELECT c FROM Course c WHERE ST_Distance_Sphere(:start, c.startLocation) <= 50")
     Page<Course> findCourseList(@Param("start") Point point, Pageable paging);
+
+    @Query(value = "SELECT c.title FROM Course c WHERE c.title = :title")
+    Optional<String> findTitle(@Param("title") String title);
 }

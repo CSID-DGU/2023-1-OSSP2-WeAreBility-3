@@ -18,59 +18,47 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-    private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
-    private final BadgeRepository badgeRepository;
-    private final FollowRepository followRepository;
     private final SubscribeRepository subscribeRepository;
 
-    public UserDto getUserInformation(Long id) {
-        log.info("getUserInformation - ID : {}", id);
+    public UserDto readUserProfile(Long userId) {
+        log.info("getUserInformation - ID : {}", userId);
 
-        Optional<User> user = userRepository.findById(id);
-        Optional<Image> image = imageRepository.findByUserId(id);
-        List<Like> likes = likeRepository.findByUserId(id);
-        List<Comment> comments = commentRepository.findByUserId(id);
-        List<Badge> badges = badgeRepository.findByUserId(id);
-        List<Follow> followings = followRepository.findByFollowingId(id);
-        List<Follow> followers = followRepository.findByFollowedId(id);
-        Optional<Subscribe> subscribe = subscribeRepository.findByUserId(id);
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Subscribe> subscribe = subscribeRepository.findBySubscribeUser(user.get());
 
 
         UserDto userDto = null;
         try {
-            if (user.isEmpty() || image.isEmpty() || likes == null || comments == null || badges == null
-            || followings == null || followers == null)
+            if (user.isEmpty())
                 throw new NullPointerException();
             else
                 userDto = UserDto.builder()
                         .user(user.get())
-                        .image(image.get())
+                        .image(user.get().getImage())
                         .isPremium(subscribe.isEmpty() ? false : true)
-                        .commentCnt((long) comments.size())
-                        .likeCnt((long) likes.size())
-                        .badgeCnt((long) badges.size())
-                        .followingCnt((long) followings.size())
-                        .followerCnt((long) followers.size())
+                        .commentCnt((long) user.get().getComments().size())
+                        .likeCnt((long) user.get().getLikes().size())
+                        .badgeCnt((long) user.get().getBadges().size())
+                        .followingCnt((long) user.get().getFollowings().size())
+                        .followerCnt((long) user.get().getFollowers().size())
                         .build();
         } catch (Exception e) {
-            log.info("{}", e);
+            log.info("{}", e.getMessage());
         }
 
         return userDto;
     }
 
     @Transactional
-    public Boolean updateUserInformation(Long id, UserRequestDto userRequestDto) {
+    public Boolean updateUserProfile(Long userId, UserRequestDto userRequestDto) {
         log.info("updateUserInformation - {}", userRequestDto);
-        Optional<User> user = userRepository.findById(id);
-        Optional<Image> image = imageRepository.findByUserId(id);
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Image> image = imageRepository.findByImageUser(user.get());
         if (user.isEmpty() || image.isEmpty()){
             return Boolean.FALSE;
         }
         else {
-            user.get().setName(userRequestDto.getName());
-            user.get().setIntroduction(userRequestDto.getInformation());
+            user.get().updateUser(userRequestDto.getName(), userRequestDto.getInformation());
 //            image.get().setImagePath(userRequestDto.getImagePath());
             // 이미지는 따로 한번 더 요청하는 것을 생각 중
             return Boolean.TRUE;

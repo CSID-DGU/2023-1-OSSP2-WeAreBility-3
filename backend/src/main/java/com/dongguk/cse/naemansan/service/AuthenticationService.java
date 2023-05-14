@@ -81,23 +81,23 @@ public class AuthenticationService {
                     .loginProviderType(loginProviderType)
                     .build());
             imageRepository.save(Image.builder()
-                    .useId(loginUser.getId())
+                    .userObject(loginUser)
                     .imageUseType(ImageUseType.USER)
                     .originName("default_image.png")
-                    .uuidName("ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png")
+                    .uuidName("0_default_image.png")
                     .type("image/png")
-                    .path("C:/Users/HyungJoon/Documents/0_OSSP/resources/images/ca9ee169-6ff4-4ff9-87d4-bc7675eb91ca_default_image.png").build());
+                    .path("C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png").build());
         } else {
             loginUser = user.get();
         }
 
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
 
-        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(loginUser.getId());
+        Optional<Token> refreshToken = tokenRepository.findByTokenUser(loginUser);
 
         if (refreshToken.isEmpty()) {
-            tokenRepository.save(RefreshToken.builder()
-                    .userId(loginUser.getId())
+            tokenRepository.save(Token.builder()
+                    .tokenUser(loginUser)
                     .refreshToken(jwtToken.getRefreshToken())
                     .build());
         } else {
@@ -117,7 +117,7 @@ public class AuthenticationService {
             return;
         }
 
-        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(userId);
+        Optional<Token> refreshToken = tokenRepository.findByTokenUser(user.get());
         refreshToken.get().setRefreshToken(null);
     }
 

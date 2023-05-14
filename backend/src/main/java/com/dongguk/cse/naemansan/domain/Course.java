@@ -11,7 +11,9 @@ import org.locationtech.jts.geom.Point;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,29 +26,50 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name="user_id")
-    private Long userId;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User courseUser;
+
     @Column(name="title",unique = true)
     private String title;
+
     @Column(name="created_date")
     private Timestamp createdDate;
+
     @Column(name="introduction")
     private String introduction;
+
     @Column(name="start_location_name")
     private String startLocationName;
+
     @Column(name="start_location", columnDefinition = "POINT")
     private Point startLocation;
+
     @Column(name="locations", columnDefinition = "MULTIPOINT")
     private MultiPoint locations;
+
     @Column(name="distance")
     private double distance;
+
     @Column(name = "status", columnDefinition = "TINYINT(1)")
     private boolean status;
 
+    // ------------------------------------------------------------
+
+    @OneToMany(mappedBy = "course")
+    private List<CourseTag> courseTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "likeCourse")
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "commentCourse")
+    private List<Comment> comments = new ArrayList<>();
+
     @Builder
-    public Course(Long userId, String title, String introduction,
+    public Course(User courseUser, String title, String introduction,
                   String startLocationName, Point startLocation, MultiPoint locations, double distance, boolean status) {
-        this.userId = userId;
+        this.courseUser = courseUser;
         this.title = title;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.introduction = introduction;
@@ -55,5 +78,10 @@ public class Course {
         this.locations = locations;
         this.distance = distance;
         this.status = status;
+    }
+
+    public void updateCourse(String title, String introduction) {
+        setTitle(title);
+        setIntroduction(introduction);
     }
 }

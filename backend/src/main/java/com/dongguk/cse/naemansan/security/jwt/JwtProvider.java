@@ -1,6 +1,5 @@
 package com.dongguk.cse.naemansan.security.jwt;
 
-import com.dongguk.cse.naemansan.domain.RefreshToken;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.UserRoleType;
 import com.dongguk.cse.naemansan.repository.UserRepository;
