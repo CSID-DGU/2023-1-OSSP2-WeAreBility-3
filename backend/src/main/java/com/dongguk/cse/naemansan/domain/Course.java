@@ -11,7 +11,9 @@ import org.locationtech.jts.geom.Point;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,6 +45,9 @@ public class Course {
     @Column(name = "status", columnDefinition = "TINYINT(1)")
     private boolean status;
 
+    @OneToMany(mappedBy = "course")
+    private List<CourseTag> courseTags = new ArrayList<>();
+
     @Builder
     public Course(Long userId, String title, String introduction,
                   String startLocationName, Point startLocation, MultiPoint locations, double distance, boolean status) {
@@ -55,5 +60,10 @@ public class Course {
         this.locations = locations;
         this.distance = distance;
         this.status = status;
+    }
+
+    public void updateCourse(String title, String introduction) {
+        setTitle(title);
+        setIntroduction(introduction);
     }
 }

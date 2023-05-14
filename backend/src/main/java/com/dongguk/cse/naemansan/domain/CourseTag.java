@@ -17,15 +17,16 @@ public class CourseTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name="course_id")
-    private Long courseId;
+    @JoinColumn(name = "course_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Course course;
     @Column(name = "tag")
     @Enumerated(EnumType.STRING)
     private CourseTagType courseTagType;
 
     @Builder
-    public CourseTag(Long courseId, CourseTagType courseTagType) {
-        this.courseId = courseId;
+    public CourseTag(Course course, CourseTagType courseTagType) {
+        this.course = course;
         this.courseTagType = courseTagType;
     }
 }

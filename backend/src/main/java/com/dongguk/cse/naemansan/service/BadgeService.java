@@ -1,9 +1,6 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.domain.Badge;
-import com.dongguk.cse.naemansan.domain.BadgeName;
 import com.dongguk.cse.naemansan.dto.response.BadgeDto;
-import com.dongguk.cse.naemansan.repository.BadgeNameRepository;
 import com.dongguk.cse.naemansan.repository.BadgeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
