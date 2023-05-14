@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
           children: [
             BannerSwiper(),
             Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
               child: Column(
                 children: [
                   Row(
@@ -158,22 +158,48 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        "위치별",
+                        "🌿 위치별",
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.w800,
                         ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 170,
+                        child: HorizontalSlider(),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "🎋 카테고리별",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 170,
+                        child: HorizontalSlider(),
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 170, child: HorizontalSlider())
           ],
         ),
       ),

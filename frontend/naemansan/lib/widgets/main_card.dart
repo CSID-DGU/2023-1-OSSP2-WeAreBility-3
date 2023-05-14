@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:naemansan/screens/course_detail.dart';
 
 class SlideItem {
   final int id;
@@ -48,43 +49,54 @@ class CardWidget extends StatelessWidget {
       Icons.nature_people_sharp,
     ];
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.7),
-            blurRadius: 5.0,
-            spreadRadius: 0.0,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseDetail(
+              id: id,
+              title: title,
+            ),
           ),
-        ],
-      ),
-      child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(displayedTitle,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.5),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+          boxShadow: const [],
+        ),
+        child: Card(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(displayedTitle,
+                  style: const TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w700,
+                  )),
+              Text(
+                location,
                 style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w700,
-                )),
-            Text(
-              location,
-              style: const TextStyle(
-                fontSize: 14,
+                  fontSize: 14,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(iconList[id % 4]),
-                Text(length),
-              ],
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(iconList[id % 4]),
+                  Text("#${keywords[0]}#${keywords[1]}"),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

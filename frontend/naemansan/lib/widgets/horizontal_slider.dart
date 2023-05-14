@@ -110,7 +110,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: slideItems.length,
-      itemExtent: 200, // 아이템의 높이를 200으로 고정
+      itemExtent: 190, // 아이템의 높이를 200으로 고정
 
       itemBuilder: (context, index) {
         return CardWidget(
