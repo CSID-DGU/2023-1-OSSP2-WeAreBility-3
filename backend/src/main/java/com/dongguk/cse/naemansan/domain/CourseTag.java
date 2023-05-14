@@ -17,9 +17,11 @@ public class CourseTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @JoinColumn(name = "course_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
+
     @Column(name = "tag")
     @Enumerated(EnumType.STRING)
     private CourseTagType courseTagType;

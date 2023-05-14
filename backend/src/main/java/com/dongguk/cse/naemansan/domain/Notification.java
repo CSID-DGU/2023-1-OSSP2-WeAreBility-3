@@ -22,18 +22,23 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "user_id")
-    private Long userId;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User notificationUser;
+
     @Column(name = "content")
     private String content;
+
     @Column(name = "create_date")
     private Timestamp createDate;
+
     @Column(name = "is_read_status", columnDefinition = "TINYINT(1)")
     private Boolean isReadStatus;
 
     @Builder
-    public Notification(Long userId, String content) {
-        this.userId = userId;
+    public Notification(User notificationUser, String content) {
+        this.notificationUser = notificationUser;
         this.content = content;
         this.createDate = Timestamp.valueOf(LocalDateTime.now());
         this.isReadStatus = false;

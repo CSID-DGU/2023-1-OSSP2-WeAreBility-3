@@ -13,21 +13,22 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor
 @Table(name = "tokens")
 @DynamicUpdate
-public class RefreshToken {
+public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id", unique = true)
-    private Long userId;
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    private User tokenUser;
 
     @Column(name = "refresh_token")
     private String refreshToken;
 
     @Builder
-    public RefreshToken(Long userId, String refreshToken) {
-        this.userId = userId;
+    public Token(User tokenUser, String refreshToken) {
+        this.tokenUser = tokenUser;
         this.refreshToken = refreshToken;
     }
 }

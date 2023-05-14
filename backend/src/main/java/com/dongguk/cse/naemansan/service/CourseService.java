@@ -44,6 +44,7 @@ public class CourseService {
     // Course Create
     public CourseDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
         log.info("Create Course - UserID = {}", userId);
+        Optional<User> user = userRepository.findById(userId);
 
         // Title 중복검사, 좌표는 프론트에서 시간으로 Ckeck
         if (!isExistTitle(courseRequestDto.getTitle())) {
@@ -57,7 +58,7 @@ public class CourseService {
         double distance = (double) pointInformation.get("distance");
 
         Course course = courseRepository.save(Course.builder()
-                .userId(userId)
+                .courseUser(user.get())
                 .title(courseRequestDto.getTitle())
                 .introduction(courseRequestDto.getIntroduction())
                 .startLocationName("임시 시작 위치")
@@ -73,7 +74,7 @@ public class CourseService {
         List<CourseTagDto> courseTagDtoList = getTag2TagDto(courseTags);
         return CourseDto.builder()
                 .id(course.getId())
-                .userId(course.getUserId())
+                .userId(course.getCourseUser().getId())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -97,7 +98,7 @@ public class CourseService {
 
         return CourseDto.builder()
                 .id(course.getId())
-                .userId(course.getUserId())
+                .userId(course.getCourseUser().getId())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -113,7 +114,7 @@ public class CourseService {
         if (findCourse.isEmpty()) {
             log.error("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
             return null;
-        } else if (findCourse.get().getUserId() != userId) {
+        } else if (findCourse.get().getCourseUser().getId() != userId) {
             log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
             return null;
         }
@@ -133,7 +134,7 @@ public class CourseService {
                             .course(course)
                             .courseTagType(courseTagDto.getCourseTagType()).build()));
                 }
-                case DELETE -> { courseTagRepository.deleteByCourseIdAndCourseTagType(courseId, courseTagDto.getCourseTagType()); }
+                case DELETE -> { courseTagRepository.deleteByCourseAndCourseTagType(course, courseTagDto.getCourseTagType()); }
                 case DEFAULT -> { courseTagList.add(CourseTag.builder().course(course).courseTagType(courseTagDto.getCourseTagType()).build()); }
                 }
             }
@@ -141,7 +142,7 @@ public class CourseService {
         // Tag 바꾸는거 넣어야 함
         return CourseDto.builder()
                 .id(course.getId())
-                .userId(course.getUserId())
+                .userId(course.getCourseUser().getId())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -157,7 +158,7 @@ public class CourseService {
         if (course.isEmpty()) {
             log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
             return null;
-        } else if (course.get().getUserId() != userId) {
+        } else if (course.get().getCourseUser().getId() != userId) {
             log.info("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
             return Boolean.FALSE;
         }
@@ -183,7 +184,7 @@ public class CourseService {
 
             courseDtoList.add(CourseDto.builder()
                     .id(course.getId())
-                    .userId(course.getUserId())
+                    .userId(course.getCourseUser().getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())
@@ -208,7 +209,7 @@ public class CourseService {
 
             courseDtos.add(CourseDto.builder()
                     .id(course.getId())
-                    .userId(course.getUserId())
+                    .userId(course.getCourseUser().getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())
@@ -235,8 +236,8 @@ public class CourseService {
         }
 
         likeRepository.save(Like.builder()
-                .userId(userId)
-                .courseId(courseId).build());
+                .likeUser(user.get())
+                .likeCourse(course.get()).build());
 
         return Boolean.TRUE;
     }
@@ -255,7 +256,7 @@ public class CourseService {
             return Boolean.FALSE;
         }
 
-        likeRepository.deleteByUserIdAndCourseId(userId, courseId);
+        likeRepository.deleteByLikeUserAndLikeCourse(user.get(), course.get());
 
         return Boolean.TRUE;
     }

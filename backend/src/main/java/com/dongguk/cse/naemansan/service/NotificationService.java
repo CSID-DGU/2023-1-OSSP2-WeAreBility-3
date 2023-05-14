@@ -29,7 +29,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
         notificationRepository.save(Notification.builder()
-                .userId(userId)
+                .notificationUser(user.get())
                 .content(notificationDto.getContent())
                 .build());
         return Boolean.TRUE;
@@ -42,7 +42,7 @@ public class NotificationService {
             return null;
         }
 
-        List<Notification> notifications = notificationRepository.findByUserId(userId);
+        List<Notification> notifications = notificationRepository.findByNotificationUser(user.get());
         List<NotificationDto> notificationDtos = new ArrayList<>();
 
         for (Notification notification : notifications) {
@@ -63,7 +63,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByIdAndUserId(notificationId, userId);
+        Optional<Notification> notification = notificationRepository.findByIdAndNotificationUser(notificationId, user.get());
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;
@@ -80,7 +80,7 @@ public class NotificationService {
             return Boolean.FALSE;
         }
 
-        Optional<Notification> notification = notificationRepository.findByIdAndUserId(notificationId, userId);
+        Optional<Notification> notification = notificationRepository.findByIdAndNotificationUser(notificationId,  user.get());
         if (notification.isEmpty()) {
             log.error("Not Exist Notification - NotificationID: {}", notificationId);
             return Boolean.FALSE;

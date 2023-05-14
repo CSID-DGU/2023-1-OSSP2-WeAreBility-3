@@ -20,16 +20,16 @@ public class UserController {
     private final BadgeService badgeService;
     @GetMapping("")
     public ResponseDto<UserDto> readUser(Authentication authentication) {
-        return new ResponseDto<UserDto>(userService.getUserInformation(Long.valueOf(authentication.getName())));
+        return new ResponseDto<UserDto>(userService.readUserProfile(Long.valueOf(authentication.getName())));
     }
     @GetMapping("/{otherUserId}")
     public ResponseDto<UserDto> readUser(@PathVariable Long otherUserId) {
-        return new ResponseDto<UserDto>(userService.getUserInformation(otherUserId));
+        return new ResponseDto<UserDto>(userService.readUserProfile(otherUserId));
     }
 
     @PutMapping("")
     public ResponseDto<Boolean> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
-        return new ResponseDto<Boolean>(userService.updateUserInformation(Long.valueOf(authentication.getName()), userRequestDto));
+        return new ResponseDto<Boolean>(userService.updateUserProfile(Long.valueOf(authentication.getName()), userRequestDto));
     }
 
     @DeleteMapping("")
