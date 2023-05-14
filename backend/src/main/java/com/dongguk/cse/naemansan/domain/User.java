@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.management.BadBinaryOpValueExpException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,6 +40,9 @@ public class User {
     private String introduction;
     @Column(name = "created_date")
     private Timestamp createdDate;
+
+    @OneToMany(mappedBy = "user")
+    private List<Badge> badges = new ArrayList<>();
 
     @Builder
     public User(String socialLoginId, LoginProviderType loginProviderType, String name) {
