@@ -167,7 +167,11 @@ class _HomeState extends State<Home> {
                         sliderWidget: HorizontalSlider(),
                       ),
                       MainSlider(
-                        title: "🎋 카테고리별",
+                        title: "🎋 키워드별",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                      MainSlider(
+                        title: "🍽️ 상권",
                         sliderWidget: HorizontalSlider(),
                       ),
                     ],
