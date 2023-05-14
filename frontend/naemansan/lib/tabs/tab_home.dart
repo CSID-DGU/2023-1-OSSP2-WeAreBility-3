@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/slide_item.dart';
 import 'package:naemansan/widgets/slider.dart';
@@ -120,7 +121,11 @@ class _HomeState extends State<Home> {
                 color: Colors.black,
               ),
               onPressed: () {
-                // 버튼을 눌렀을 때 실행될 코드 작성
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationScreen()),
+                );
               },
             ),
           ],
