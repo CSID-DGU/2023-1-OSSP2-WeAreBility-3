@@ -3,30 +3,76 @@ import 'package:naemansan/models/trailmodel.dart';
 import 'dart:convert';
 
 class ApiService {
+  //디자인 확인용
   static Future<List<TrailModel>> getTrail() async {
     List<TrailModel> trailInstances = [];
 
     // 테스트 데이터로 주어진 JSON 문자열을 파싱하여 TrailModel 인스턴스를 생성하여 리스트에 추가합니다.
     String jsonData = '''
-    {
-      "userimage": "image",
-      "title": "중구 산책길",
-      "startpoint": "서울특별시 중구",
-      "distance": 0.8,
-      "CourseKeyword": ["둘레길"],
-      "likeCnt": 10,
-      "userCnt": 32,
-      "isLiked": true 
-    }
+    [
+      {
+        "userimage": "image",
+        "title": "중구 산책길",
+        "startpoint": "서울특별시 중구",
+        "distance": 0.8,
+        "CourseKeyword": ["가벼운 산책", "산"],
+        "likeCnt": 10,
+        "userCnt": 32,
+        "isLiked": true 
+      },
+      {
+        "userimage": "image",
+        "title": "마포구 산책길",
+        "startpoint": "서울특별시 마포구",
+        "distance": 0.8,
+        "CourseKeyword": ["가벼운 산책", "산"],
+        "likeCnt": 10,
+        "userCnt": 32,
+        "isLiked": false
+      },
+            {
+        "userimage": "image",
+        "title": "중구 산책길",
+        "startpoint": "서울특별시 중구",
+        "distance": 0.8,
+        "CourseKeyword": ["가벼운 산책", "산"],
+        "likeCnt": 10,
+        "userCnt": 32,
+        "isLiked": true 
+      },
+      {
+        "userimage": "image",
+        "title": "마포구 산책길",
+        "startpoint": "서울특별시 마포구",
+        "distance": 0.8,
+        "CourseKeyword": ["가벼운 산책", "산"],
+        "likeCnt": 10,
+        "userCnt": 32,
+        "isLiked": false
+      },
+                  {
+        "userimage": "image",
+        "title": "중구 산책길",
+        "startpoint": "서울특별시 중구",
+        "distance": 0.8,
+        "CourseKeyword": ["가벼운 산책", "산"],
+        "likeCnt": 10,
+        "userCnt": 32,
+        "isLiked": true 
+      }
+    ]
     ''';
-    TrailModel instance = TrailModel.fromJson(jsonDecode(jsonData));
-    trailInstances.add(instance);
+    List<dynamic> jsonList = jsonDecode(jsonData);
+    List<TrailModel> instances =
+        jsonList.map((json) => TrailModel.fromJson(json)).toList();
+    trailInstances.addAll(instances);
 
     return trailInstances;
   }
 }
 
-/*
+
+/* 실제 사용시 
 //---------------------------------------산책로 페이지----------------------------------------------------------------------------------------
 //---------------------------------------거리순 리스트 불러오기--------------------------------------------------------------------------------
   static Future<List<TrailModel>> getNearestTrail() async {
@@ -174,5 +220,3 @@ class ApiService {
 //
 //   
 */ */
-
-

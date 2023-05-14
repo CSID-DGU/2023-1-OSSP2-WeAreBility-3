@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Trail extends StatelessWidget {
-  //final String userimage;
   final String title;
-  final String startpoint; //시작 위치 불러오기  (Segment ID -startpoint)
-  final double distance; //거리 (endpoint - startpoint)
-  final List<String>? CourseKeyWord; //여러개일수도 있음
+  final String startpoint;
+  final double distance;
+  final List<String>? CourseKeyWord;
   final int likeCnt, userCnt;
   final bool isLiked;
 
   const Trail({
-    super.key,
-    //required this.userimage,
+    Key? key,
     required this.title,
     required this.startpoint,
     required this.distance,
@@ -19,14 +17,14 @@ class Trail extends StatelessWidget {
     required this.likeCnt,
     required this.userCnt,
     required this.isLiked,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 8.0),
       child: Container(
-        height: 100.0,
+        height: 130.0,
         decoration: BoxDecoration(
           color: Colors.grey[300],
           borderRadius: BorderRadius.circular(8.0),
@@ -37,7 +35,7 @@ class Trail extends StatelessWidget {
               width: 100.0,
               child: Icon(Icons.image),
             ),
-            const SizedBox(width: 8.0),
+            const SizedBox(width: 4.0),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -54,53 +52,67 @@ class Trail extends StatelessWidget {
                   Text(
                     startpoint,
                     style: const TextStyle(
-                      fontSize: 10.0,
+                      fontSize: 12.0,
                     ),
                   ),
                   Text(
-                    '$distance' 'km',
+                    '$distance km',
                     style: const TextStyle(
-                      fontSize: 10.0,
+                      fontSize: 12.0,
                     ),
                   ),
                   if (CourseKeyWord != null)
-                    Text(
-                      '$CourseKeyWord',
-                      style: const TextStyle(
-                        fontSize: 10.0,
-                      ),
-                    )
+                    Wrap(
+                      children: CourseKeyWord!
+                          .map((word) => Text(
+                                '#$word ',
+                                style: const TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.black,
+                                ),
+                              ))
+                          .toList(),
+                    ),
                 ],
               ),
             ),
-            const SizedBox(width: 16.0), // 첫 번째 row와 두 번째 row 사이 간격
             Column(
               children: [
-                Row(children: [
-                  const SizedBox(width: 4.0, height: 4.0),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios_outlined),
-                    onPressed: () {}, //산책로 상세 페이지로 이동
-                  ),
-                ]),
-                const SizedBox(width: 10),
-                Row(//좋아요 표시
-                    children: [
-                  const SizedBox(width: 15), //좋아요 하트 이미지 삽입자리
-                  Text('$likeCnt', // 좋아요 수 데이터 불러오기
+                Row(
+                  children: [
+                    const SizedBox(width: 8.0, height: 4.0),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios_outlined),
+                      onPressed: () {}, //산책로 세부 페이지로 이동
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: isLiked ? Colors.red : null,
+                    ),
+                    Text(
+                      '$likeCnt',
                       style: const TextStyle(
                         fontSize: 16.0,
-                      )),
-                ]),
-                Row(//이용자 표시
-                    children: [
-                  const SizedBox(width: 15), //이용자 이미지 삽입자리
-                  Text('$userCnt', // 이용자 수 데이터 불러오기
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.person_outline),
+                    Text(
+                      '$userCnt',
                       style: const TextStyle(
                         fontSize: 16.0,
-                      )),
-                ]),
-                const SizedBox(width: 16.0),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
             const SizedBox(width: 4.0),

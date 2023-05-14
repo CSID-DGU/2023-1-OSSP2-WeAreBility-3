@@ -37,6 +37,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             title: trail.title,
             startpoint: trail.startpoint,
             distance: trail.distance,
+            CourseKeyWord: trail.CourseKeyWord,
             likeCnt: trail.likeCnt,
             userCnt: trail.userCnt,
             isLiked: trail.isLiked);
