@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:naemansan/widgets/main_card.dart';
 
 class HorizontalSlider extends StatefulWidget {
@@ -21,24 +18,90 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
   }
 
   Future<void> fetchItems() async {
-    final response =
-        await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body) as List<dynamic>;
-      final items = data
-          .map((item) => SlideItem(
-                userId: item['userId'],
-                id: item['id'],
-                title: item['title'],
-              ))
-          .toList();
-      setState(() {
-        slideItems = items;
-      });
-    } else {
-      // Handle API error
-      print('Failed to fetch items: ${response.statusCode}');
-    }
+    List<Map<String, dynamic>> dummbyData = [
+      {
+        "id": 1,
+        "title": '힐링 숲속',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 100,
+        "keywords": ['힐링', '도심'],
+      },
+      {
+        "id": 2,
+        "title": '히찬 코스',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 50,
+        "keywords": ['힐링', '도심'],
+      },
+      {
+        "id": '충무 코스',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 75,
+        "keywords": ['힐링', '도심'],
+      },
+      {
+        "id": 4,
+        "title": '힐링 숲속',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 100,
+        "keywords": ['힐링', '도심'],
+      },
+      {
+        "id": 5,
+        "title": '힐링 숲속',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 50,
+        "keywords": ['힐링', '도심'],
+      },
+      {
+        "id": 6,
+        "title": '힐링 숲속',
+        "location": '경기도 가평군 설악면',
+        "length": '1.5km',
+        "likes": 75,
+        "keywords": ['힐링', '도심'],
+      },
+    ];
+
+    final items = dummbyData
+        .map((item) => SlideItem(
+              id: item['id'],
+              title: item['title'],
+              location: item['location'],
+              length: item['length'],
+              likes: item['likes'],
+              keywords: item['keywords'],
+            ))
+        .toList();
+    setState(() {
+      slideItems = items;
+    });
+
+    // 찐 데이터
+
+    // final response =
+    //     await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+    // if (response.statusCode == 200) {
+    //   final data = json.decode(response.body) as List<dynamic>;
+    //   final items = data
+    //       .map((item) => SlideItem(
+    //             userId: item['userId'],
+    //             id: item['id'],
+    //             title: item['title'],
+    //           ))
+    //       .toList();
+    //   setState(() {
+    //     slideItems = items;
+    //   });
+    // } else {
+    //   // Handle API error
+    //   print('Failed to fetch items: ${response.statusCode}');
+    // }
   }
 
   @override
@@ -50,9 +113,12 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
 
       itemBuilder: (context, index) {
         return CardWidget(
-          userId: slideItems[index].userId,
           id: slideItems[index].id,
           title: slideItems[index].title,
+          location: slideItems[index].location,
+          length: slideItems[index].length,
+          likes: slideItems[index].likes,
+          keywords: slideItems[index].keywords,
         );
       },
     );
