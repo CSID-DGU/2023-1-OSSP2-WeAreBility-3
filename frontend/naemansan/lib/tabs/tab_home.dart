@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/horizontal_slider.dart';
+import 'package:naemansan/widgets/main_slider.dart';
 import 'package:naemansan/widgets/notification.dart';
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
@@ -161,39 +162,13 @@ class _HomeState extends State<Home> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text(
-                        "🌿 위치별",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w800,
-                        ),
+                      MainSlider(
+                        title: "🌿 위치별",
+                        sliderWidget: HorizontalSlider(),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 170,
-                        child: HorizontalSlider(),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "🎋 카테고리별",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        height: 170,
-                        child: HorizontalSlider(),
-                      ),
-                      SizedBox(
-                        height: 20,
+                      MainSlider(
+                        title: "🎋 카테고리별",
+                        sliderWidget: HorizontalSlider(),
                       ),
                     ],
                   ),
