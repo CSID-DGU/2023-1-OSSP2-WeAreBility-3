@@ -80,10 +80,10 @@ class _HomeState extends State<Home> {
           _district = results[i]["long_name"];
         }
         if (types.contains("sublocality_level_4")) {
-          print(_street);
+          // print(_street);
           _street = results[i]["long_name"];
         }
-        print(results[i]);
+        // print(results[i]);
       }
       setState(() {});
     }
