@@ -6,9 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
+import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/notification.dart';
-import 'package:naemansan/widgets/slide_item.dart';
-import 'package:naemansan/widgets/slider.dart';
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -135,7 +134,7 @@ class _HomeState extends State<Home> {
         children: [
           BannerSwiper(),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(15),
             child: Column(
               children: [
                 Row(
@@ -173,16 +172,7 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
-          const HorizontalSlider(
-            items: [
-              SlideItem(icon: Icons.forest, text: '산책로 1'),
-              SlideItem(icon: Icons.forest, text: '산책로 2'),
-              SlideItem(icon: Icons.forest, text: '산책로 3'),
-              SlideItem(icon: Icons.forest, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-            ],
-          ),
+          const SizedBox(height: 250, child: HorizontalSlider())
         ],
       ),
     );
