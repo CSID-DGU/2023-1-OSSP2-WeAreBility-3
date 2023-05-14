@@ -8,7 +8,6 @@ import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/main_slider.dart';
-import 'package:naemansan/widgets/notification.dart';
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -122,9 +121,13 @@ class _HomeState extends State<Home> {
               ),
             ),
             const Spacer(),
-            // 알림 icon
-            NotificationIcon(
-              hasUnreadNotifications: true, // 읽지 않은 알림이 있는 경우 true로 설정
+            const Expanded(child: SizedBox(width: 30)), // 여백 추가
+            IconButton(
+              padding: const EdgeInsets.only(left: 25),
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: Colors.black,
+              ),
               onPressed: () {
                 Navigator.push(
                   context,

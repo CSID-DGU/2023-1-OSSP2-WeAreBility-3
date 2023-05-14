@@ -54,7 +54,9 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
+        titleSpacing: 0,
         actions: [
+          const SizedBox(width: 16), // 여백 추가
           IconButton(
             icon: const Icon(
               Icons.add_box_outlined, //산책로 추가 시 버튼으로 사용
@@ -62,8 +64,8 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             ),
             onPressed: () {},
           ),
+          const SizedBox(width: 10)
         ],
-        //오른쪽 여백 넣기
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.black, //선택된 항목 나타내기
@@ -71,31 +73,31 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '거리순',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요순',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '이용자순',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '최신순',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13.5),
               ),
             ),
           ],
