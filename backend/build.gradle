@@ -19,6 +19,9 @@ repositories {
 }
 
 dependencies {
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.1.1'
+	implementation 'com.google.firebase:firebase-admin:8.1.0'
 	implementation 'org.hibernate:hibernate-spatial:6.2.2.Final'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -36,7 +39,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }
-
 tasks.named('test') {
 	useJUnitPlatform()
 }

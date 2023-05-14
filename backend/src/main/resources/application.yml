@@ -56,5 +56,9 @@ client:
       authorization-uri: "https://accounts.google.com/o/oauth2/v2/auth"
       token-uri: "https://oauth2.googleapis.com/token"
       user-info-uri: "https://www.googleapis.com/userinfo/v2/me"
+fmc:
+  key:
+    path: wearebility-303e9-firebase-adminsdk-p4sil-273645b134.json
+    scope: https://www.googleapis.com/auth/cloud-platform
 
 jwt.secret: '8sknjlO3NPTBqo319DHLNqsQAfRJEdKsETOdsalei2sdfe'
