@@ -36,7 +36,8 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
         "keywords": ['힐링', '도심'],
       },
       {
-        "id": '충무 코스',
+        "id": 3,
+        "title": '디디피',
         "location": '경기도 가평군 설악면',
         "length": '1.5km',
         "likes": 75,
@@ -44,7 +45,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
       },
       {
         "id": 4,
-        "title": '힐링 숲속',
+        "title": '충무 코스',
         "location": '경기도 가평군 설악면',
         "length": '1.5km',
         "likes": 100,
