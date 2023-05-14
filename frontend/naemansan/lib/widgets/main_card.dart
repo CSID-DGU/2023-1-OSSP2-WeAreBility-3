@@ -26,20 +26,20 @@ class CardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String displayedTitle =
+        title.length > 6 ? "${title.substring(0, 6)}..." : title;
+
     return Card(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Text(displayedTitle, style: Theme.of(context).textTheme.titleLarge),
           ListTile(
-            leading: const Icon(Icons.person),
             title: Text('User ID: $userId'),
           ),
           ListTile(
-            leading: const Icon(Icons.info),
             title: Text('ID: $id'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.title),
-            title: Text('Title: $title'),
           ),
         ],
       ),
