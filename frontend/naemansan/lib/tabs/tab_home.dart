@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/widgets/banner.dart';
-import 'package:naemansan/widgets/slide_item.dart';
-import 'package:naemansan/widgets/slider.dart';
+import 'package:naemansan/widgets/horizontal_slider.dart';
+import 'package:naemansan/widgets/main_slider.dart';
+import 'package:naemansan/widgets/notification.dart';
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -20,6 +22,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _city = "";
   String _district = "";
+  String _street = "";
   bool nowLocation = false;
 
   @override
@@ -77,6 +80,11 @@ class _HomeState extends State<Home> {
         if (types.contains("administrative_area_level_1")) {
           _district = results[i]["long_name"];
         }
+        if (types.contains("sublocality_level_4")) {
+          print(_street);
+          _street = results[i]["long_name"];
+        }
+        print(results[i]);
       }
       setState(() {});
     }
@@ -114,72 +122,71 @@ class _HomeState extends State<Home> {
               ),
             ),
             const Spacer(),
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_none_rounded,
-                color: Colors.black,
-              ),
+            // 알림 icon
+            NotificationIcon(
+              hasUnreadNotifications: true, // 읽지 않은 알림이 있는 경우 true로 설정
               onPressed: () {
-                // 버튼을 눌렀을 때 실행될 코드 작성
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationScreen()),
+                );
               },
             ),
           ],
         ),
       ),
       // body
-      body: Column(
-        children: [
-          BannerSwiper(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.location_on_rounded, size: 20),
-                    const SizedBox(width: 5),
-                    nowLocation
-                        ? Text("현재 위치:$_city $_district")
-                        : const Text("위치 정보 없음"),
-                    IconButton(
-                      onPressed: () {
-                        _getCurrentLocation();
-                        setState(() {
-                          nowLocation = true;
-                        });
-                      },
-                      icon: const Icon(Icons.refresh_rounded),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "위치별",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            BannerSwiper(),
+            Padding(
+              padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.location_on_rounded, size: 20),
+                      const SizedBox(width: 5),
+                      nowLocation
+                          ? Text("현재 위치:$_district, $_city $_street ")
+                          : const Text("위치 정보 없음"),
+                      IconButton(
+                        onPressed: () {
+                          _getCurrentLocation();
+                          setState(() {
+                            nowLocation = true;
+                          });
+                        },
+                        icon: const Icon(Icons.refresh_rounded),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      MainSlider(
+                        title: "🌿 위치별",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                      MainSlider(
+                        title: "🎋 키워드별",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                      MainSlider(
+                        title: "🍽️ 상권",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const HorizontalSlider(
-            items: [
-              SlideItem(icon: Icons.forest, text: '산책로 1'),
-              SlideItem(icon: Icons.forest, text: '산책로 2'),
-              SlideItem(icon: Icons.forest, text: '산책로 3'),
-              SlideItem(icon: Icons.forest, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

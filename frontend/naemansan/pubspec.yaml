@@ -48,6 +48,7 @@ dependencies:
     uuid: ^3.0.7
     flutter_web_auth: ^0.5.0
     geocoding: ^2.1.0
+    flutter_local_notifications: ^14.0.0+2
 dev_dependencies:
     flutter_test:
         sdk: flutter
