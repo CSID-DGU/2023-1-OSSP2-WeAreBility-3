@@ -136,12 +136,15 @@ class  similarity_Checker():
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
         # userid 추가 필요..(5.14) 참조 테이블?? 
         if token == 0 :
+            query = """SET foreign_key_checks = 0"""
+            cursor.execute(query)
+
             location = wkt.dumps(MultiPoint(user_coordinates))
             query = """
-            INSERT INTO courses (id, title, created_date, introduction, start_location, locations, distance, status) 
-            VALUES (%s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
+            INSERT INTO courses (id, user_id, title, created_date, introduction, start_location, locations, distance, status) 
+            VALUES (%s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
             """
-            data = (self.user_id, self.title, pd.to_datetime(self.createdDatetime), self.introduction, self.startPoint, location, "1", "1")
+            data = (self.user_id, self.userid, self.title, pd.to_datetime(self.createdDatetime), self.introduction, self.startPoint, location, "1", "1")
             cursor.execute(query, data)
             conn.commit()
             return True

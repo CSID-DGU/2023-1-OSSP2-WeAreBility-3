@@ -26,7 +26,6 @@ class  similarity_Checker():
 
     def calculate_Similarity(self, input_coord) :
 
-        print(self.user_id)
         # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
         X_mean, Y_mean = 37.554812, 126.988204
         X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
@@ -137,6 +136,10 @@ class  similarity_Checker():
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
         if token == 0 :
             location = wkt.dumps(MultiPoint(user_coordinates))
+
+            query = """SET foreign_key_checks = 0"""
+            cursor.execute(query)
+
             query = """
             INSERT INTO courses (id, user_id, title, created_date, introduction, start_location, locations, distance, status) 
             VALUES (%s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
@@ -148,5 +151,5 @@ class  similarity_Checker():
             return True
 
 
-cs = similarity_Checker(1, "test","test","test","test","test",1,"test","test","37.4234 127.425555 37.4235 127.425554 37.4233 127.425553")
-cs.calculate_Similarity(cs.points)
+cs = similarity_Checker(3, 3, "test",pd.to_datetime("2018-07-02"),"test","test","test",1,"test","37.6234 127.625555 37.6235 127.625554 37.6233 127.625553")
+print(cs.calculate_Similarity(cs.points))
