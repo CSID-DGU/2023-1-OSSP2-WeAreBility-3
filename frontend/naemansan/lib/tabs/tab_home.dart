@@ -22,6 +22,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _city = "";
   String _district = "";
+  String _street = "";
   bool nowLocation = false;
 
   @override
@@ -79,6 +80,11 @@ class _HomeState extends State<Home> {
         if (types.contains("administrative_area_level_1")) {
           _district = results[i]["long_name"];
         }
+        if (types.contains("sublocality_level_4")) {
+          print(_street);
+          _street = results[i]["long_name"];
+        }
+        print(results[i]);
       }
       setState(() {});
     }
@@ -146,7 +152,7 @@ class _HomeState extends State<Home> {
                       const Icon(Icons.location_on_rounded, size: 20),
                       const SizedBox(width: 5),
                       nowLocation
-                          ? Text("현재 위치:$_city $_district")
+                          ? Text("현재 위치:$_district, $_city $_street ")
                           : const Text("위치 정보 없음"),
                       IconButton(
                         onPressed: () {
