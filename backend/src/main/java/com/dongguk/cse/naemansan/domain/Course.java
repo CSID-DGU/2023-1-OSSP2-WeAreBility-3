@@ -57,13 +57,13 @@ public class Course {
 
     // ------------------------------------------------------------
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private List<CourseTag> courseTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "likeCourse")
+    @OneToMany(mappedBy = "likeCourse", fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commentCourse")
+    @OneToMany(mappedBy = "commentCourse", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     @Builder

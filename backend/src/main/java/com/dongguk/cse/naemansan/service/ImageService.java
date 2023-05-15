@@ -74,17 +74,16 @@ public class ImageService {
 
     public byte[] downloadImage(String fileName) throws IOException {
         String filePath = null;
+        Optional<Image> image = imageRepository.findByUuidName(fileName);
 
         if (fileName.equals("0_default_image.png")) {
             filePath = "C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png";
         } else {
-            Optional<Image> image = imageRepository.findByUuidName(fileName);
-
             if (image.isEmpty()) {
                 log.error("존재하지 않는 파일입니다 - UUID: {}", fileName);
                 return null;
             }
-            fileName = image.get().getPath();
+            filePath = image.get().getPath();
         }
 
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
