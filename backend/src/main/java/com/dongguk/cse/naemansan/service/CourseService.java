@@ -100,6 +100,7 @@ public class CourseService {
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -140,10 +141,10 @@ public class CourseService {
                 }
             }
 
-        // Tag 바꾸는거 넣어야 함
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
