@@ -75,6 +75,7 @@ public class CourseService {
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -99,6 +100,7 @@ public class CourseService {
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
@@ -109,7 +111,11 @@ public class CourseService {
 
     public CourseDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
         log.info("Update Course - CourseID: {}", courseId);
+        // 수정할 Course 탐색
         Optional<Course> findCourse = courseRepository.findById(courseId);
+        
+        // 수정할 Title 중복검사용 Course 탐색
+        Optional<Course> findTitle = courseRepository.findByTitle(courseRequestDto.getTitle());
 
         if (findCourse.isEmpty()) {
             log.error("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
@@ -117,8 +123,7 @@ public class CourseService {
         } else if (findCourse.get().getCourseUser().getId() != userId) {
             log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
             return null;
-        }
-        else if (findCourse.get().getTitle().equals(courseRequestDto.getTitle())) {
+        } else if (!findTitle.isEmpty() && !findCourse.get().equals(findTitle.get())) {
             log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
             return null;
         }
@@ -126,6 +131,7 @@ public class CourseService {
         Course course = findCourse.get();
         course.updateCourse(courseRequestDto.getTitle(), courseRequestDto.getIntroduction());
 
+        List<PointDto> locations = getPoint2PointDto(course.getLocations());
         List<CourseTag> courseTagList = new ArrayList<>();
         for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
             switch (courseTagDto.getStatusType()) {
@@ -139,16 +145,16 @@ public class CourseService {
                 }
             }
 
-        // Tag 바꾸는거 넣어야 함
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
                 .courseTags(getTag2TagDto(courseTagList))
                 .startLocationName(course.getStartLocationName())
-                .locations(courseRequestDto.getPointDtos()).build();
+                .locations(locations).build();
     }
 
     public Boolean deleteCourse(Long userId, Long courseId) {
@@ -185,6 +191,7 @@ public class CourseService {
             courseDtoList.add(CourseDto.builder()
                     .id(course.getId())
                     .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())
@@ -210,6 +217,7 @@ public class CourseService {
             courseDtos.add(CourseDto.builder()
                     .id(course.getId())
                     .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())
@@ -221,44 +229,66 @@ public class CourseService {
         return courseDtos;
     }
 
-    public Boolean likeCourse(Long userId, Long courseId) {
+    public Map<String, Object> likeCourse(Long userId, Long courseId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (user.isEmpty()) {
             log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return Boolean.FALSE;
+            return null;
         }
 
         if (course.isEmpty()) {
             log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return Boolean.FALSE;
+            return null;
+        }
+
+        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
+
+        if (!like.isEmpty()) {
+            log.error("해당 유저는 좋아요 중입니다. - UserID: {}, CourseID: {}", userId, courseId);
+            return null;
         }
 
         likeRepository.save(Like.builder()
                 .likeUser(user.get())
                 .likeCourse(course.get()).build());
 
-        return Boolean.TRUE;
+        Map<String, Object> map = new HashMap<>();
+        map.put("likeCnt", course.get().getLikes().size());
+        map.put("isLike", Boolean.TRUE);
+
+        return map;
     }
 
-    public Boolean dislikeCourse(Long userId, Long courseId) {
+    public Map<String, Object> dislikeCourse(Long userId, Long courseId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (user.isEmpty()) {
             log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return Boolean.FALSE;
+            return null;
         }
 
         if (course.isEmpty()) {
             log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return Boolean.FALSE;
+            return null;
+        }
+
+        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
+
+        if (like.isEmpty()) {
+            log.error("해당 유저는 좋아요하지 않았습니다. - UserID: {}, CourseID: {}", userId, courseId);
+            return null;
         }
 
         likeRepository.deleteByLikeUserAndLikeCourse(user.get(), course.get());
 
-        return Boolean.TRUE;
+        Map<String, Object> map = new HashMap<>();
+        map.put("likeCnt", course.get().getLikes().size());
+        map.put("isLike", Boolean.FALSE);
+
+        return map;
     }
 
 

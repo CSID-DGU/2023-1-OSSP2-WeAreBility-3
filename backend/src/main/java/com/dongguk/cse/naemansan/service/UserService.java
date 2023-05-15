@@ -50,18 +50,28 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean updateUserProfile(Long userId, UserRequestDto userRequestDto) {
+    public UserDto updateUserProfile(Long userId, UserRequestDto userRequestDto) {
         log.info("updateUserInformation - {}", userRequestDto);
         Optional<User> user = userRepository.findById(userId);
         Optional<Image> image = imageRepository.findByImageUser(user.get());
+        Optional<Subscribe> subscribe = subscribeRepository.findBySubscribeUser(user.get());
         if (user.isEmpty() || image.isEmpty()){
-            return Boolean.FALSE;
+            return null;
         }
         else {
             user.get().updateUser(userRequestDto.getName(), userRequestDto.getInformation());
 //            image.get().setImagePath(userRequestDto.getImagePath());
             // 이미지는 따로 한번 더 요청하는 것을 생각 중
-            return Boolean.TRUE;
+            return UserDto.builder()
+                    .user(user.get())
+                    .image(user.get().getImage())
+                    .isPremium(subscribe.isEmpty() ? false : true)
+                    .commentCnt((long) user.get().getComments().size())
+                    .likeCnt((long) user.get().getLikes().size())
+                    .badgeCnt((long) user.get().getBadges().size())
+                    .followingCnt((long) user.get().getFollowings().size())
+                    .followerCnt((long) user.get().getFollowers().size())
+                    .build();
         }
     }
 

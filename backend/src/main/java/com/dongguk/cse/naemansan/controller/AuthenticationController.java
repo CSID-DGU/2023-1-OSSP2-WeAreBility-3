@@ -12,6 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SimpleTimeZone;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -20,8 +24,10 @@ public class AuthenticationController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/kakao")
-    public ResponseEntity<String> getKakaoRedirectUrl() {
-        return ResponseEntity.ok(authenticationService.getRedirectUrl(LoginProviderType.KAKAO));
+    public ResponseEntity<Map<String, String>> getKakaoRedirectUrl() {
+        Map<String, String> map = new HashMap<>();
+        map.put("Url", authenticationService.getRedirectUrl(LoginProviderType.KAKAO));
+        return ResponseEntity.ok(map);
     }
 
     @GetMapping("/kakao/callback")
@@ -30,8 +36,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/google")
-    public ResponseEntity<String> getGoogleRedirectUrl() {
-        return ResponseEntity.ok(authenticationService.getRedirectUrl(LoginProviderType.GOOGLE));
+    public ResponseEntity<Map<String, String>> getGoogleRedirectUrl() {
+        Map<String, String> map = new HashMap<>();
+        map.put("Url", authenticationService.getRedirectUrl(LoginProviderType.GOOGLE));
+        return ResponseEntity.ok(map);
     }
 
     @GetMapping("/google/callback")
@@ -60,7 +68,7 @@ public class AuthenticationController {
     }
 
     // test용
-    @PostMapping("/renewal")
+    @PostMapping("/refresh")
     public ResponseEntity<TokenDto> UpdateAccessToken(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 

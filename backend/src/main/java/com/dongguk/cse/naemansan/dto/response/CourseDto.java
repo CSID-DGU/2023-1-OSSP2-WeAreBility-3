@@ -14,6 +14,7 @@ import java.util.List;
 public class CourseDto {
     private Long id;
     private Long userId;
+    private String userName;
     private String title;
     private Timestamp createdDateTime;
     private String introduction;
@@ -22,10 +23,11 @@ public class CourseDto {
     private List<PointDto> locations;
 
     @Builder
-    public CourseDto(Long id, Long userId, String title, Timestamp createdDateTime, String introduction,
+    public CourseDto(Long id, Long userId, String userName, String title, Timestamp createdDateTime, String introduction,
                      List<CourseTagDto> courseTags, String startLocationName, List<PointDto> locations) {
         this.id = id;
         this.userId = userId;
+        this.userName = userName;
         this.title = title;
         this.createdDateTime = createdDateTime;
         this.introduction = introduction;
