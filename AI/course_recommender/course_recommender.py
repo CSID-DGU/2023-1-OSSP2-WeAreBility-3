@@ -61,7 +61,7 @@ example1 = "힐링 스타벅스 자연"
 example1_vector = course_vector_calculator(tokenizer(example1))
 print(example1_vector)
 
-example2 = "자연 스타벅스 힐링 도심"
+example2 = "스타벅스 힐링 자연"
 example2_vecotr = course_vector_calculator(tokenizer(example2))
 print(example2_vecotr)
 
