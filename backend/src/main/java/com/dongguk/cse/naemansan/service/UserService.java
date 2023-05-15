@@ -9,6 +9,7 @@ import com.dongguk.cse.naemansan.dto.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.repository.*;
+import kotlin.OptIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.MultiPoint;
@@ -161,6 +162,42 @@ public class UserService {
 
         List<CourseDto> courseDtos = new ArrayList<>();
         for (Course course : courseList) {
+            List<PointDto> pointDtoList = getPoint2PointDto(course.getLocations());
+            List<CourseTagDto> courseTags = getTag2TagDto(course.getCourseTags());
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.getId())
+                    .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .introduction(course.getIntroduction())
+                    .courseTags(courseTags)
+                    .startLocationName(course.getStartLocationName())
+                    .locations(pointDtoList).build());
+        }
+
+        return courseDtos;
+    }
+
+    public List<CourseDto> readFinishCourseList(Long userId) {
+        log.info("User 찾는 중");
+        Optional<User> findUser = userRepository.findById(userId);
+
+        if (findUser.isEmpty()){
+            return null;
+        }
+
+        List<UsingCourse> usingCourseList = findUser.get().getUsingCourses();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (UsingCourse usingCourse : usingCourseList) {
+            if (!usingCourse.getFinishStatus()) {
+                continue;
+            }
+
+            Course course = usingCourse.getCourse();
+
             List<PointDto> pointDtoList = getPoint2PointDto(course.getLocations());
             List<CourseTagDto> courseTags = getTag2TagDto(course.getCourseTags());
 

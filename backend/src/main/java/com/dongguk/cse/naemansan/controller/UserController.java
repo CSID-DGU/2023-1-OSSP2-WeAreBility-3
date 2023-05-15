@@ -58,4 +58,9 @@ public class UserController {
     public ResponseDto<List<CourseDto>> readEnrollmentCourseList(Authentication authentication) {
         return new ResponseDto<List<CourseDto>>(userService.readEnrollmentCourseList(Long.valueOf(authentication.getName())));
     }
+
+    @GetMapping("/finishCourse")
+    public ResponseDto<List<CourseDto>> readFinishCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseDto>>(userService.readFinishCourseList(Long.valueOf(authentication.getName())));
+    }
 }
