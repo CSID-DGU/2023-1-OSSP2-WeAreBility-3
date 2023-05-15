@@ -5,7 +5,7 @@ import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
 class IndexScreen extends StatefulWidget {
-  const IndexScreen({super.key});
+  const IndexScreen({Key? key}) : super(key: key);
 
   @override
   _IndexScreenState createState() => _IndexScreenState();
