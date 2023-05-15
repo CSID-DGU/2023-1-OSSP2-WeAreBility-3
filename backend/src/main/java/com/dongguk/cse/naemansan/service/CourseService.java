@@ -131,6 +131,7 @@ public class CourseService {
         Course course = findCourse.get();
         course.updateCourse(courseRequestDto.getTitle(), courseRequestDto.getIntroduction());
 
+        List<PointDto> locations = getPoint2PointDto(course.getLocations());
         List<CourseTag> courseTagList = new ArrayList<>();
         for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
             switch (courseTagDto.getStatusType()) {
@@ -153,7 +154,7 @@ public class CourseService {
                 .introduction(course.getIntroduction())
                 .courseTags(getTag2TagDto(courseTagList))
                 .startLocationName(course.getStartLocationName())
-                .locations(courseRequestDto.getPointDtos()).build();
+                .locations(locations).build();
     }
 
     public Boolean deleteCourse(Long userId, Long courseId) {
@@ -190,6 +191,7 @@ public class CourseService {
             courseDtoList.add(CourseDto.builder()
                     .id(course.getId())
                     .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())
@@ -215,6 +217,7 @@ public class CourseService {
             courseDtos.add(CourseDto.builder()
                     .id(course.getId())
                     .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
                     .introduction(course.getIntroduction())

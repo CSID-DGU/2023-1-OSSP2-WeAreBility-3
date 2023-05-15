@@ -12,49 +12,50 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/course")
 public class CourseController {
     private final CourseService courseService;
 
     // Course Create
-    @PostMapping("/course")
+    @PostMapping("")
     public ResponseDto<CourseDto> createCourse(Authentication authentication, @RequestBody CourseRequestDto courseRequestDto){
         return new ResponseDto<CourseDto>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
     }
 
     // Course Read
-    @GetMapping("/course/{courseId}")
+    @GetMapping("/{courseId}")
     public ResponseDto<CourseDto> readCourse(@PathVariable Long courseId) {
         return new ResponseDto<CourseDto>(courseService.readCourse(Long.valueOf(courseId)));
     }
 
     // Course Update
-    @PutMapping("/course/{courseId}")
+    @PutMapping("/{courseId}")
     public ResponseDto<CourseDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
         return new ResponseDto<CourseDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
     }
 
     // Course Delete
-    @DeleteMapping("/course/{courseId}")
+    @DeleteMapping("/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
 
-    @GetMapping("/course/location/{latitude}/{longitude}")
-    public ResponseDto<List<CourseDto>> getCourseListByLocations(@PathVariable Double latitude, @PathVariable Double longitude) {
+    @GetMapping("/location")
+    public ResponseDto<List<CourseDto>> getCourseListByLocations(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
         return new ResponseDto<List<CourseDto>>(courseService.getCourseListByLocation(latitude, longitude));
     }
 
-    @GetMapping("/course/tag/{tag}")
-    public ResponseDto<List<CourseDto>> getCourseListByTag(@PathVariable String tag) {
+    @GetMapping("/tag")
+    public ResponseDto<List<CourseDto>> getCourseListByTag(@RequestParam("name") String tag) {
         return new ResponseDto<List<CourseDto>>(courseService.getCourseListByTag(tag));
     }
 
-    @GetMapping("/course/like/{courseId}")
+    @PostMapping("/like/{courseId}")
     public ResponseDto<Boolean> likeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
-    @DeleteMapping("/course/like/{courseId}")
+    @DeleteMapping("/like/{courseId}")
     public ResponseDto<Boolean> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
     }
