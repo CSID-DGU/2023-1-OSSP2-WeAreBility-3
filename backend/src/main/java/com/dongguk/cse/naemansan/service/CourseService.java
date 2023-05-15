@@ -229,44 +229,66 @@ public class CourseService {
         return courseDtos;
     }
 
-    public Boolean likeCourse(Long userId, Long courseId) {
+    public Map<String, Object> likeCourse(Long userId, Long courseId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (user.isEmpty()) {
             log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return Boolean.FALSE;
+            return null;
         }
 
         if (course.isEmpty()) {
             log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return Boolean.FALSE;
+            return null;
+        }
+
+        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
+
+        if (!like.isEmpty()) {
+            log.error("해당 유저는 좋아요 중입니다. - UserID: {}, CourseID: {}", userId, courseId);
+            return null;
         }
 
         likeRepository.save(Like.builder()
                 .likeUser(user.get())
                 .likeCourse(course.get()).build());
 
-        return Boolean.TRUE;
+        Map<String, Object> map = new HashMap<>();
+        map.put("likeCnt", course.get().getLikes().size());
+        map.put("isLike", Boolean.TRUE);
+
+        return map;
     }
 
-    public Boolean dislikeCourse(Long userId, Long courseId) {
+    public Map<String, Object> dislikeCourse(Long userId, Long courseId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Course> course = courseRepository.findById(courseId);
 
         if (user.isEmpty()) {
             log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return Boolean.FALSE;
+            return null;
         }
 
         if (course.isEmpty()) {
             log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return Boolean.FALSE;
+            return null;
+        }
+
+        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
+
+        if (like.isEmpty()) {
+            log.error("해당 유저는 좋아요하지 않았습니다. - UserID: {}, CourseID: {}", userId, courseId);
+            return null;
         }
 
         likeRepository.deleteByLikeUserAndLikeCourse(user.get(), course.get());
 
-        return Boolean.TRUE;
+        Map<String, Object> map = new HashMap<>();
+        map.put("likeCnt", course.get().getLikes().size());
+        map.put("isLike", Boolean.FALSE);
+
+        return map;
     }
 
 

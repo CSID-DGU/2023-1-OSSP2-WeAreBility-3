@@ -69,7 +69,7 @@ public class ImageService {
             findImage.get().updateImage(file.getOriginalFilename(), uuidImageName, filePath, file.getContentType());
         }
 
-        return "file uploaded successfully : " + filePath;
+        return uuidImageName;
     }
 
     public byte[] downloadImage(String fileName) throws IOException {

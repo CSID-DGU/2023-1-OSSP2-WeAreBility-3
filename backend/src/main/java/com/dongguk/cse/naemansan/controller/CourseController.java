@@ -5,10 +5,13 @@ import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.type.descriptor.java.BooleanJavaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,12 +54,12 @@ public class CourseController {
     }
 
     @PostMapping("/like/{courseId}")
-    public ResponseDto<Boolean> likeCourse(Authentication authentication, @PathVariable Long courseId) {
-        return new ResponseDto<Boolean>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
+    public ResponseDto<Map<String, Object>> likeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Map<String, Object>>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
     @DeleteMapping("/like/{courseId}")
-    public ResponseDto<Boolean> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
-        return new ResponseDto<Boolean>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
+    public ResponseDto<Map<String, Object>> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<Map<String, Object>>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 }
