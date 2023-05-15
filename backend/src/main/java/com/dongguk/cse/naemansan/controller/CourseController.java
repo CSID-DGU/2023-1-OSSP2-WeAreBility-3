@@ -5,11 +5,9 @@ import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.type.descriptor.java.BooleanJavaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -1,9 +1,11 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.dto.CommentDto;
 import com.dongguk.cse.naemansan.dto.ResponseDto;
 import com.dongguk.cse.naemansan.dto.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.dto.response.BadgeDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.service.BadgeService;
 import com.dongguk.cse.naemansan.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +42,25 @@ public class UserController {
     @GetMapping("/badge")
     public ResponseDto<List<BadgeDto>> readBadgeList(Authentication authentication) {
         return new ResponseDto<List<BadgeDto>>(badgeService.readBadgeList(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/comment")
+    public ResponseDto<List<CommentDto>> readCommentList(Authentication authentication) {
+        return new ResponseDto<List<CommentDto>>(userService.readCommentList(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/likeCourse")
+    public ResponseDto<List<CourseDto>> readLikeCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseDto>>(userService.readLikeCourseList(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/enrollmentCourse")
+    public ResponseDto<List<CourseDto>> readEnrollmentCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseDto>>(userService.readEnrollmentCourseList(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/finishCourse")
+    public ResponseDto<List<CourseDto>> readFinishCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseDto>>(userService.readFinishCourseList(Long.valueOf(authentication.getName())));
     }
 }

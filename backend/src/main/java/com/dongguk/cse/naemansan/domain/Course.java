@@ -66,6 +66,9 @@ public class Course {
     @OneToMany(mappedBy = "commentCourse", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<UsingCourse> usingCourses = new ArrayList<>();
+
     @Builder
     public Course(User courseUser, String title, String introduction,
                   String startLocationName, Point startLocation, MultiPoint locations, double distance, boolean status) {

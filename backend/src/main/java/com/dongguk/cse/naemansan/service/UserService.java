@@ -1,14 +1,22 @@
 package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.domain.type.StatusType;
+import com.dongguk.cse.naemansan.dto.CommentDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
+import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.dto.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.repository.*;
+import kotlin.OptIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.MultiPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,5 +91,152 @@ public class UserService {
             log.info(e.getMessage());
         }
         return Boolean.FALSE;
+    }
+
+    public List<CommentDto> readCommentList(Long userId) {
+        Optional<User> findUser = userRepository.findById(userId);
+
+        if (findUser.isEmpty()){
+            return null;
+        }
+
+        List<Comment> commentList = findUser.get().getComments();
+        List<CommentDto> commentDtoList = new ArrayList<>();
+
+        for (Comment comment: commentList) {
+            commentDtoList.add(CommentDto.builder()
+                    .id(comment.getId())
+                    .userId(comment.getCommentUser().getId())
+                    .courseId(comment.getCommentCourse().getId())
+                    .userName(comment.getCommentUser().getName())
+                    .content(comment.getContent())
+                    .createdDateTime(comment.getCreatedDate())
+                    .isEdit(comment.getIsEdit()).build());
+        }
+
+        return commentDtoList;
+    }
+
+    public List<CourseDto> readLikeCourseList(Long userId) {
+        log.info("User 찾는 중");
+        Optional<User> findUser = userRepository.findById(userId);
+
+        if (findUser.isEmpty()){
+            return null;
+        }
+
+        log.info("Like한 Course List 찾는 중");
+        List<Like> likeList = findUser.get().getLikes();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Like like : likeList) {
+            log.info("Like Course 찾는 중");
+            Course course = like.getLikeCourse();
+            List<PointDto> pointDtoList = getPoint2PointDto(course.getLocations());
+            List<CourseTagDto> courseTags = getTag2TagDto(course.getCourseTags());
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.getId())
+                    .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .introduction(course.getIntroduction())
+                    .courseTags(courseTags)
+                    .startLocationName(course.getStartLocationName())
+                    .locations(pointDtoList).build());
+            }
+
+        return courseDtos;
+    }
+
+    public List<CourseDto> readEnrollmentCourseList(Long userId) {
+        log.info("User 찾는 중");
+        Optional<User> findUser = userRepository.findById(userId);
+
+        if (findUser.isEmpty()){
+            return null;
+        }
+
+        List<Course> courseList = findUser.get().getCourses();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (Course course : courseList) {
+            List<PointDto> pointDtoList = getPoint2PointDto(course.getLocations());
+            List<CourseTagDto> courseTags = getTag2TagDto(course.getCourseTags());
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.getId())
+                    .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .introduction(course.getIntroduction())
+                    .courseTags(courseTags)
+                    .startLocationName(course.getStartLocationName())
+                    .locations(pointDtoList).build());
+        }
+
+        return courseDtos;
+    }
+
+    public List<CourseDto> readFinishCourseList(Long userId) {
+        log.info("User 찾는 중");
+        Optional<User> findUser = userRepository.findById(userId);
+
+        if (findUser.isEmpty()){
+            return null;
+        }
+
+        List<UsingCourse> usingCourseList = findUser.get().getUsingCourses();
+
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for (UsingCourse usingCourse : usingCourseList) {
+            if (!usingCourse.getFinishStatus()) {
+                continue;
+            }
+
+            Course course = usingCourse.getCourse();
+
+            List<PointDto> pointDtoList = getPoint2PointDto(course.getLocations());
+            List<CourseTagDto> courseTags = getTag2TagDto(course.getCourseTags());
+
+            courseDtos.add(CourseDto.builder()
+                    .id(course.getId())
+                    .userId(course.getCourseUser().getId())
+                    .userName(course.getCourseUser().getName())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .introduction(course.getIntroduction())
+                    .courseTags(courseTags)
+                    .startLocationName(course.getStartLocationName())
+                    .locations(pointDtoList).build());
+        }
+
+        return courseDtos;
+    }
+
+
+    private List<CourseTagDto> getTag2TagDto(List<CourseTag> tagList) {
+        List<CourseTagDto> dtoList = new ArrayList<>();
+
+        for (CourseTag courseTag : tagList) {
+            dtoList.add(CourseTagDto.builder()
+                    .courseTagType(courseTag.getCourseTagType())
+                    .statusType(StatusType.DEFAULT).build());
+        }
+
+        return dtoList;
+    }
+
+    private List<PointDto> getPoint2PointDto(MultiPoint multiPoint) {
+        List<PointDto> locations = new ArrayList<>();
+
+        for (int i = 0; i < multiPoint.getNumGeometries(); i++) {
+            locations.add(new PointDto(multiPoint.getGeometryN(i).getCoordinate().getY(),
+                    multiPoint.getGeometryN(i).getCoordinate().getX()));
+        }
+
+        return locations;
     }
 }

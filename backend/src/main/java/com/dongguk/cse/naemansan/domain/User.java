@@ -78,6 +78,9 @@ public class User {
     @OneToMany(mappedBy = "badgeUser", fetch = FetchType.LAZY)
     private List<Badge> badges = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UsingCourse> usingCourses = new ArrayList<>();
+
     @Builder
     public User(String socialLoginId, LoginProviderType loginProviderType, String name) {
         this.socialLoginId = socialLoginId;
