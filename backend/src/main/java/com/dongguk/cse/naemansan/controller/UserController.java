@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @PutMapping("")
-    public ResponseDto<Boolean> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
-        return new ResponseDto<Boolean>(userService.updateUserProfile(Long.valueOf(authentication.getName()), userRequestDto));
+    public ResponseDto<UserDto> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
+        return new ResponseDto<UserDto>(userService.updateUserProfile(Long.valueOf(authentication.getName()), userRequestDto));
     }
 
     @DeleteMapping("")

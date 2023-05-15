@@ -75,6 +75,7 @@ public class CourseService {
         return CourseDto.builder()
                 .id(course.getId())
                 .userId(course.getCourseUser().getId())
+                .userName(course.getCourseUser().getName())
                 .title(course.getTitle())
                 .createdDateTime(course.getCreatedDate())
                 .introduction(course.getIntroduction())
