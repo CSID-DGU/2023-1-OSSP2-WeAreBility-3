@@ -111,7 +111,11 @@ public class CourseService {
 
     public CourseDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
         log.info("Update Course - CourseID: {}", courseId);
+        // 수정할 Course 탐색
         Optional<Course> findCourse = courseRepository.findById(courseId);
+        
+        // 수정할 Title 중복검사용 Course 탐색
+        Optional<Course> findTitle = courseRepository.findByTitle(courseRequestDto.getTitle());
 
         if (findCourse.isEmpty()) {
             log.error("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
@@ -119,8 +123,7 @@ public class CourseService {
         } else if (findCourse.get().getCourseUser().getId() != userId) {
             log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
             return null;
-        }
-        else if (findCourse.get().getTitle().equals(courseRequestDto.getTitle())) {
+        } else if (!findTitle.isEmpty() && !findCourse.get().equals(findTitle.get())) {
             log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
             return null;
         }
