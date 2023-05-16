@@ -1,6 +1,5 @@
 //로그인 권한 문제로 main.dart주석 처리 후 이전 버전으로 사용하였습니다//
 
-/*
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
@@ -21,7 +20,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // prefs 초기화
-  final prefs = await SharedPreferences.getInstance();
+  // final prefs = await SharedPreferences.getInstance();
   // 로그인 여부 확인
   //final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
@@ -43,17 +42,16 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    // _checkLoginStatus();
+    _checkLoginStatus();
   }
 
-/*
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       isLogged = prefs.getBool('isLogged') ?? false;
     });
   }
-*/
+
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove(); // 초기화가 끝나는 시점에 삽입
@@ -67,7 +65,7 @@ class _AppState extends State<App> {
     );
   }
 }
-*/
+/*
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -120,7 +118,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '내가 만든 산책로',
+      title: '내가 만든 산책로ㅋ',
       routes: {
         '/index': (context) => const IndexScreen(),
       },
@@ -128,3 +126,4 @@ class App extends StatelessWidget {
     );
   }
 }
+*/

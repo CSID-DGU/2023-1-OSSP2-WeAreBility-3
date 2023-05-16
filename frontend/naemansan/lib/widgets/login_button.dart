@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
@@ -8,12 +11,52 @@ class LoginBtn extends StatelessWidget {
   final String logo;
   final BuildContext routeContext;
 
-  const LoginBtn({
-    super.key,
-    required this.whatsLogin,
-    required this.logo,
-    required this.routeContext,
-  });
+  const LoginBtn(
+      {super.key,
+      required this.whatsLogin,
+      required this.logo,
+      required this.routeContext});
+
+// 서버에 토큰 보내주고 user profile가져오기
+  Future<void> fetchUserProfile(String accessToken) async {
+    try {
+      // backend server url
+      const url = 'https://your-server-url.com/profile';
+
+      // response 받아오기
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Profile fetched successfully
+        final userProfile = jsonDecode(response.body);
+        print('User Profile: $userProfile');
+        // TODO: Handle the user profile data as per your requirement
+      } else {
+        // Error fetching profile
+        print('Error fetching user profile: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+// 로그인 유지
+  Future<void> persistLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', true);
+  }
+
+// Function to check if the user is logged in
+  Future<bool> isLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLogged') ?? false;
+  }
 
   login() async {
     if (await isKakaoTalkInstalled()) {
@@ -69,10 +112,16 @@ class LoginBtn extends StatelessWidget {
         // // 토큰 저장
         // TokenManagerProvider.instance.manager.setToken(token);
 
-        // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
-        final prefs = await SharedPreferences.getInstance();
+        // // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
+        // final prefs = await SharedPreferences.getInstance();
 
-        prefs.setBool('isLogged', true);
+        // prefs.setBool('isLogged', true);
+
+        // Send the access token to the server and fetch the user profile
+        await fetchUserProfile(token.accessToken);
+
+        // Persist the login status
+        await persistLogin();
 
         final navigator = Navigator.of(routeContext);
         navigator.pushNamed('/index');

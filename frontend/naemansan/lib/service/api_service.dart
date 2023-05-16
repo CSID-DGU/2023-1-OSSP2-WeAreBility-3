@@ -2,6 +2,27 @@ import 'package:naemansan/models/trailmodel.dart';
 //http
 import 'dart:convert';
 
+import 'package:http/http.dart' as http;
+
+// 토큰 얻어 오기
+Future<String> getTokenFromServer(String code) async {
+  // Make an HTTP request to your server to exchange the authorization code for an access token
+  var response = await http.post(
+    Uri.parse('YOUR_SERVER_TOKEN_ENDPOINT'),
+    body: {
+      'code': code,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // Parse the response to extract the access token
+    var token = 'PARSE_ACCESS_TOKEN_FROM_RESPONSE';
+    return token;
+  } else {
+    throw Exception('Failed to get token from server');
+  }
+}
+
 class ApiService {
   //디자인 확인용
   static Future<List<TrailModel>> getTrail() async {

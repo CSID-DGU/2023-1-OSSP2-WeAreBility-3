@@ -6,12 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Mypage extends StatelessWidget {
   const Mypage({super.key});
 
-  signOut(BuildContext context) async {
+// 로그아웃
+  logout(BuildContext context) async {
     try {
+      // Clear the login status in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLogged', false);
+
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-      await UserApi.instance.unlink();
+
       await UserApi.instance.logout();
     } catch (error) {
       print('카카오계정으로 로그인 아웃 실패 $error');
@@ -71,7 +74,7 @@ class Mypage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => signOut(context),
+              onPressed: () => logout(context),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.green),
               ),
