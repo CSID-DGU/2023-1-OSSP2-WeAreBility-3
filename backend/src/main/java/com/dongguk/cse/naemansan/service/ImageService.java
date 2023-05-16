@@ -7,6 +7,7 @@ import com.dongguk.cse.naemansan.repository.AdvertisementRepository;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.ShopRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
+import com.google.api.client.util.Value;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,8 @@ public class ImageService {
     private final AdvertisementRepository advertisementRepository;
     private final ImageRepository imageRepository;
 
-    private final String FOLDER_PATH="C:/Users/HyungJoon/Documents/0_OSSP/resources/images/";
+    @Value("${spring.image.path: aaa.bbb.ccc}")
+    private String FOLDER_PATH;
 
     public String uploadImage(Long useId, ImageUseType imageUseType, MultipartFile file) throws IOException {
         log.info("이미지 저장 시작 유저: {} , 파일이름: {}", useId, file.getOriginalFilename());
@@ -72,15 +74,16 @@ public class ImageService {
         return uuidImageName;
     }
 
-    public byte[] downloadImage(String fileName) throws IOException {
+    public byte[] downloadImage(String UuidName) throws IOException {
         String filePath = null;
-        Optional<Image> image = imageRepository.findByUuidName(fileName);
+        Optional<Image> image = null;
 
-        if (fileName.equals("0_default_image.png")) {
+        if (UuidName.equals("0_default_image.png")) {
             filePath = "C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png";
         } else {
+            image = imageRepository.findByUuidName(UuidName);
             if (image.isEmpty()) {
-                log.error("존재하지 않는 파일입니다 - UUID: {}", fileName);
+                log.error("존재하지 않는 파일입니다 - UUID: {}", UuidName);
                 return null;
             }
             filePath = image.get().getPath();
