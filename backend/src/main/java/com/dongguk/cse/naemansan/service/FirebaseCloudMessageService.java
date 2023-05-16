@@ -19,18 +19,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
-    private final String API_URL= "https://fcm.googleapis.com/v1/projects/wearebility-303e9/messages:send";
-    private  final ObjectMapper objectMapper;
+    private final String API_URL = "https://fcm.googleapis.com/v1/projects/wearebility-303e9/messages:send";
+    private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException{
-        String message = makeMessage(targetToken,title,body);
+    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+        String message = makeMessage(targetToken, title, body);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer "+ getAccessToken())
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
 
@@ -38,7 +38,7 @@ public class FirebaseCloudMessageService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException{
+    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
                         .token(targetToken)
@@ -48,6 +48,7 @@ public class FirebaseCloudMessageService {
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
+        System.out.println(targetToken + " " + title + " " + body);
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
