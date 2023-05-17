@@ -10,6 +10,7 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.dongguk.cse.naemansan.util.Oauth2Util;
+import com.google.api.client.util.Value;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,10 @@ public class AuthenticationService {
     private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
     private final Oauth2Util oauth2Util;
+
+    @Value("${spring.image.path: aaa.bbb.ccc}")
+    private String FOLDER_PATH;
+
     public String getRedirectUrl(LoginProviderType loginProviderType) {
         switch (loginProviderType) {
             case KAKAO -> {
@@ -86,7 +91,7 @@ public class AuthenticationService {
                     .originName("default_image.png")
                     .uuidName("0_default_image.png")
                     .type("image/png")
-                    .path("C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png").build());
+                    .path(FOLDER_PATH + "0_default_image.png").build());
         } else {
             loginUser = user.get();
         }

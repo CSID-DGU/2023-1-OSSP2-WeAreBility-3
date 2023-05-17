@@ -22,7 +22,8 @@ bin/
 *.iws
 *.iml
 *.ipr
-*.yml
+application-local.yml
+application-server.yml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
