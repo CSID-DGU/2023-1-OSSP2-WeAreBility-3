@@ -2,7 +2,7 @@ package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.CommentDto;
 import com.dongguk.cse.naemansan.dto.FollowDto;
-import com.dongguk.cse.naemansan.dto.ResponseDto;
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.dto.response.BadgeDto;

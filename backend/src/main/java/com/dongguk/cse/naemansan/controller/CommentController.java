@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.*;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
 import com.dongguk.cse.naemansan.service.CommentService;
