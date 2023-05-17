@@ -1,13 +1,10 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.FollowDto;
-import com.dongguk.cse.naemansan.dto.ResponseDto;
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
