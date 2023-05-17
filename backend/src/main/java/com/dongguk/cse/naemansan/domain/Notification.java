@@ -26,7 +26,10 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User notificationUser;
-
+    /*
+    @Column(name="title")
+    private String title; //추가
+*/
     @Column(name = "content")
     private String content;
 

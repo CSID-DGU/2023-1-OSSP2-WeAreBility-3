@@ -164,7 +164,7 @@ CREATE TABLE `notifications` (
     `create_date` timestamp,
     `is_read_status` boolean,
     CONSTRAINT NOTIFICATIONS_PK PRIMARY KEY (`id`),
-    CONSTRAINT BADGES_USER_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+    CONSTRAINT NOTIFICATIONS_USER_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 )
 
 INSERT INTO users (`social_login_id`, `provider`, `name`, `introduction`, `role`, `created_date`)VALUES ("00000000", 'KAKAO', "DEFAULT_ADMIM", "THIS IS ADIMN", 'ADMIN', null);
