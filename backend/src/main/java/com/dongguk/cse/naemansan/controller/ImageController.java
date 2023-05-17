@@ -1,8 +1,10 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.common.ExceptionDto;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
-import com.dongguk.cse.naemansan.dto.ResponseDto;
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.service.ImageService;
+import com.sun.nio.sctp.IllegalUnbindException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,8 +35,17 @@ public class ImageController {
 
     @GetMapping("/{fileName}")
     public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
-        byte[] imageData=imageService.downloadImage(fileName);
-        return ResponseEntity.status(HttpStatus.OK)
+        byte[] imageData = imageService.downloadImage(fileName);
+
+        // 임시 체크
+        if (imageData.length == 0)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDto.builder()
+                            .success(false)
+                            .data(null)
+                            .error(new ExceptionDto(new IllegalUnbindException())).build());
+        else
+            return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
     }

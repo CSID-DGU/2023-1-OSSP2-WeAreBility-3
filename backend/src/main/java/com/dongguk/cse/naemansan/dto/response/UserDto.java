@@ -1,4 +1,4 @@
-package com.dongguk.cse.naemansan.dto;
+package com.dongguk.cse.naemansan.dto.response;
 
 import com.dongguk.cse.naemansan.domain.Image;
 import com.dongguk.cse.naemansan.domain.User;

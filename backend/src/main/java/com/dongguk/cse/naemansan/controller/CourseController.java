@@ -2,7 +2,8 @@ package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
-import com.dongguk.cse.naemansan.dto.ResponseDto;
+import com.dongguk.cse.naemansan.common.ResponseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseListDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -42,13 +43,13 @@ public class CourseController {
     }
 
     @GetMapping("/location")
-    public ResponseDto<List<CourseDto>> getCourseListByLocations(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByLocation(latitude, longitude));
+    public ResponseDto<List<CourseListDto>> getCourseListByLocations(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByLocation(latitude, longitude));
     }
 
     @GetMapping("/tag")
-    public ResponseDto<List<CourseDto>> getCourseListByTag(@RequestParam("name") String tag) {
-        return new ResponseDto<List<CourseDto>>(courseService.getCourseListByTag(tag));
+    public ResponseDto<List<CourseListDto>> getCourseListByTag(@RequestParam("name") String tag) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(tag));
     }
 
     @PostMapping("/like/{courseId}")

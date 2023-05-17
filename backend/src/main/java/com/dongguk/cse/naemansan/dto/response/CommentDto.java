@@ -1,4 +1,4 @@
-package com.dongguk.cse.naemansan.dto;
+package com.dongguk.cse.naemansan.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

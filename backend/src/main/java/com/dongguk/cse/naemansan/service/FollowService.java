@@ -2,7 +2,7 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.Follow;
 import com.dongguk.cse.naemansan.domain.User;
-import com.dongguk.cse.naemansan.dto.FollowDto;
+import com.dongguk.cse.naemansan.dto.response.FollowDto;
 import com.dongguk.cse.naemansan.repository.FollowRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
