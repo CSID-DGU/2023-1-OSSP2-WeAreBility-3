@@ -2,14 +2,13 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.StatusType;
-import com.dongguk.cse.naemansan.dto.CommentDto;
+import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
-import com.dongguk.cse.naemansan.dto.UserDto;
+import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.repository.*;
-import kotlin.OptIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.MultiPoint;
