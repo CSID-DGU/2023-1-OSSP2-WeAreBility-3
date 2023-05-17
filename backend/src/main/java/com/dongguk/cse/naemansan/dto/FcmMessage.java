@@ -3,7 +3,7 @@ package com.dongguk.cse.naemansan.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
+//삭제 예정
 @Builder
 @AllArgsConstructor
 @Getter

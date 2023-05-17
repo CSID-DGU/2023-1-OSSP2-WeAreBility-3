@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.dto.FcmMessage;
+import com.dongguk.cse.naemansan.dto.NotificationDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -38,18 +38,18 @@ public class FirebaseCloudMessageService {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
+    private String makeMessage(String targetToken, String title, String content) throws JsonParseException, JsonProcessingException {
+        NotificationDto notificationDto = NotificationDto.builder()
+                .message(NotificationDto.Message.builder()
                         .token(targetToken)
-                        .notification(FcmMessage.Notification.builder()
+                        .notification(NotificationDto.Notification.builder()
                                 .title(title)
-                                .body(body)
+                                .content(content)
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-        System.out.println(targetToken + " " + title + " " + body);
-        return objectMapper.writeValueAsString(fcmMessage);
+        System.out.println(targetToken + " " + title + " " + content);
+        return objectMapper.writeValueAsString(notificationDto);
     }
 
     private String getAccessToken() throws IOException {

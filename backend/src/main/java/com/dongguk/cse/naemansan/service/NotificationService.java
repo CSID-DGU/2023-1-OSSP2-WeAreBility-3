@@ -9,6 +9,7 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,22 +27,25 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    public Boolean createNotification(Long userId, NotificationDto notificationDto, NotificationRequestDto notificationRequestDto) throws IOException {
+    //NotificationDto 삭제
+    public ResponseEntity createNotification(Long userId, NotificationRequestDto notificationRequestDto) throws IOException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             log.error("Not Exist User - UserID: {}", userId);
-            return Boolean.FALSE;
+            return null;
         }
         notificationRepository.save(Notification.builder()
                 .notificationUser(user.get())
-                .content(notificationDto.getMessage().getNotification().getContent())
+                .title(notificationRequestDto.getTitle())
+                .content(notificationRequestDto.getContent())
+                //.content(notificationDto.getMessage().getNotification().getContent())
                 .build());
         //알림 보내기 추가 sendMessageTo 추가, makeMessage 추가
         firebaseCloudMessageService.sendMessageTo(
                 notificationRequestDto.getTargetToken(),
                 notificationRequestDto.getTitle(),
                 notificationRequestDto.getContent());
-        return Boolean.TRUE;
+        return ResponseEntity.ok().build();
     }
 
     public List<NotificationDto> readNotification(Long userId) {
