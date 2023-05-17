@@ -18,6 +18,18 @@ def user_list(request):
         query_set = Users.objects.all() # ORM으로 Users의 모든 객체 받아옴
         query_set.delete() # 모든 데이터 삭제
         data = JSONParser().parse(request) # 요청들어온 데이터를 JSON 타입으로 파싱
+
+        # parsing 부분
+        id_data = data["data"]["id"]
+        userId_data = data["data"]["userId"]
+        userName_data = data["data"]["userName"]
+        title_data = data["data"]["title"]
+        createdDateTime_data = data["data"]["createdDateTime"]
+        introduction_data = data["data"]["introduction"]
+        courseTags_data = data["data"]["courseTags"] # 내부 for 문 추가요망
+        startLocationName_data = data["data"]["startLocationName"]
+        locations_data = data["data"]["locations"] # 내부 for 문 추가요망
+
         serializer = userSerializer(data=data) # Serializer를 사용해 전송받은 데이터를 변환하기 위함
         if serializer.is_valid():
             serializer.save() # 데이터 저장

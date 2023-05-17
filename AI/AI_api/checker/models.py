@@ -9,11 +9,9 @@ class Users(models.Model):
     title = models.CharField(max_length=50)
     createdDateTime = models.CharField(max_length=50)
     introduction = models.CharField(max_length=999)
-    coursekeyword = models.CharField(max_length=300)
-    segmentId = models.IntegerField()
-    startPoint = models.TextField(max_length=100)
-    endPoint = models.TextField(max_length=100)
-    points = models.TextField(max_length=9999)
+    courseTags = models.CharField(max_length=300)
+    startLocationName = models.CharField(max_length=100)
+    locations = models.CharField(max_length=9999)
 
     # 5-12 db body 구체화
     
