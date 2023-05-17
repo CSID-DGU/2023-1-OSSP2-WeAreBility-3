@@ -7,9 +7,9 @@ import com.dongguk.cse.naemansan.repository.AdvertisementRepository;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.ShopRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
-import com.google.api.client.util.Value;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +30,7 @@ public class ImageService {
     private final AdvertisementRepository advertisementRepository;
     private final ImageRepository imageRepository;
 
-    @Value("${spring.image.path: aaa.bbb.ccc}")
+    @Value("${spring.image.path}")
     private String FOLDER_PATH;
 
     public String uploadImage(Long useId, ImageUseType imageUseType, MultipartFile file) throws IOException {
@@ -63,7 +63,7 @@ public class ImageService {
                     .type(file.getContentType())
                     .path(filePath).build());
         } else {
-            if (!findImage.get().getOriginName().equals("default_image.png")) {
+            if (!findImage.get().getOriginName().equals("0_default_image.png")) {
                 File currentFile = new File(findImage.get().getPath());
                 boolean result = currentFile.delete();
             }
@@ -79,7 +79,8 @@ public class ImageService {
         Optional<Image> image = null;
 
         if (UuidName.equals("0_default_image.png")) {
-            filePath = "C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png";
+            log.info("0_default_image.png loading");
+            filePath = FOLDER_PATH + "0_default_image.png";
         } else {
             image = imageRepository.findByUuidName(UuidName);
             if (image.isEmpty()) {
