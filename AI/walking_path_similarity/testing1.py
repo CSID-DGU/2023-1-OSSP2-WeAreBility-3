@@ -19,6 +19,6 @@ query = """
     INSERT INTO course_tags (id, course_id, tag) 
     VALUES (%s, %s, %s)
     """
-data = ("3", "3", "성북구 개울가 스트레스해소 자연 힐링 러닝 강아지 퇴근길 고양이")
+data = ("5", "5", "공원 사색 마포구 자연 야경")
 cursor.execute(query, data)
 conn.commit()

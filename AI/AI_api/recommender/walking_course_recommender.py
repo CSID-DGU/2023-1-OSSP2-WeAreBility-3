@@ -17,25 +17,121 @@ from gensim.models import Word2Vec
 from gensim.models import KeyedVectors
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+import pymysql
+from shapely import wkt
+from shapely.geometry import MultiPoint
+from shapely.wkb import loads
+import pandas as pd
 
-# 산책로 tag를 pasing 하는 함수
-def tokenizer(text):
-    temp = text.split(" ")
-    temp_list = [[single] for single in temp]
-    return temp_list
 
-# pasing한 산책로 tag를 통해서 산책로의 vector를 생성하는 함수
-def course_vector_calculator(temp_list):
-    course_vector = np.zeros((1,20))
-    for i in temp_list :
-        course_vector = course_vector + model.wv[i]
-    course_vector = course_vector / len(temp_list)
-    return course_vector
 
-def similarity_calculator(vector1, vector2):
-    similarity_vector = cosine_similarity(vector1, vector2)
-    similarity_score = similarity_vector.mean()
-    return similarity_vector, similarity_score
+class course_recommender():
+
+    
+
+    def __init__(self, user_id = int) :
+        self.user_id = user_id
+        self.model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
+        self.best = 1
+
+    # 산책로 tag를 pasing 하는 함수
+    def tokenizer(self, text):
+        temp = text.split(" ")
+        temp_list = [[single] for single in temp]
+        return temp_list
+
+    # pasing한 산책로 tag를 통해서 산책로의 vector를 생성하는 함수
+    def course_vector_calculator(self, temp_list):
+        course_vector = np.zeros((1,20))
+        for i in temp_list :
+            course_vector = course_vector + self.model.wv[i]
+        course_vector = course_vector / len(temp_list)
+        return course_vector
+
+    def similarity_calculator(self, vector1, vector2):
+        similarity_vector = cosine_similarity(vector1, vector2)
+        similarity_score = similarity_vector.mean()
+        return similarity_score
+
+    def recommend(self):
+        id_input = self.user_id
+        
+
+        # db읽기 -1 finish table 가져오기
+        conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
+        cursor = conn.cursor()
+        query = """
+        SELECT course_id 
+        FROM finish_courses 
+        WHERE user_id = %d""" % (id_input)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        number = len(results)
+
+        if number == 0 :
+            return { "courseid" : []}
+
+
+    # db읽기 -2 user_id에 담긴 정보로 tag 읽어서 vector 만들기
+        user_vector = np.zeros((1,20))
+        course_list =[]
+        for i in range(number):
+            course_list.append(results[i][0])
+        
+        # 유저 vector 계산
+        for co_id in course_list :
+            query = """
+            SELECT tag 
+            FROM course_tags 
+            WHERE course_id = %d""" % (co_id)
+            cursor.execute(query)
+            results = cursor.fetchall()
+
+            raw_tags = results[0][0]
+            token_tags = self.tokenizer(raw_tags)
+            course_vector = self.course_vector_calculator(token_tags)
+            user_vector += course_vector
+        user_vector = user_vector / number
+
+        # 유저 vector와 전체 course tag의 유사도 점수 계산
+
+        query = """
+        SELECT tag, course_id 
+        FROM course_tags
+        """ 
+        cursor.execute(query)
+        results = cursor.fetchall()
+        candidates_score = []
+        candidates_id = []
+        for i in range(len(results)) :
+            course_id = results[i][1]
+            course_tag = results[i][0]
+            if course_id in course_list :
+                continue
+            candidates_id.append(course_id)
+            candidates_score.append(self.similarity_calculator(user_vector, self.course_vector_calculator(self.tokenizer(course_tag))))
+        
+        if len(candidates_id) != 0 :
+            temp = np.argsort(np.array(candidates_score))[::-1]
+            best_courses = []
+            for i in range(len(temp)) :
+                best_courses.append(candidates_id[temp[i]])
+            
+            return { "courseid" : best_courses[0:self.best]}
+        
+        else :
+            return { "courseid" : []}
+
+
+            
+
+            
+            
+
+
+
+test = course_recommender(1)
+test.recommend()
 
 
 """
@@ -55,7 +151,7 @@ model.save("word2vec.model")
 """
 
 
-model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
+"""model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
 
 example1 = "힐링 스타벅스 자연"
 example1_vector = course_vector_calculator(tokenizer(example1))
@@ -68,3 +164,4 @@ print(example2_vecotr)
 vector, score = similarity_calculator(example1_vector, example2_vecotr)
 print("유사도 vector : ", vector)
 print("점수 : ", score)
+"""

@@ -19,9 +19,4 @@ def user_list(request):
         checker = similarity_Checker()
         return JsonResponse(checker.calculate_Similarity(points), safe=False)
 
-        
-        "checker.calculate_Similarity(user.points)"
-        """if serializer.is_valid(): # 생성한 모델과 일치하면
-            serializer.save() # 데이터 저장
-            return JsonResponse(serializer.data, status=201) # 정상 응답 201
-        return JsonResponse(serializer.errors, status=400) # 모델에 일치하지 않는 데이터일 경우"""
+    
