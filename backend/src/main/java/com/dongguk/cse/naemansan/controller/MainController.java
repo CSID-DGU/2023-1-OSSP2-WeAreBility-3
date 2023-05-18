@@ -1,7 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
-import com.dongguk.cse.naemansan.dto.request.RequestDto;
 import com.dongguk.cse.naemansan.service.FirebaseCloudMessageService;
 import com.dongguk.cse.naemansan.service.NotificationService;
 import com.google.firebase.iid.FirebaseInstanceId;

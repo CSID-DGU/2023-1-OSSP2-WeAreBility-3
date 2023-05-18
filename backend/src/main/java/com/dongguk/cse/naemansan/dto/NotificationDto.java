@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @Getter
 public class NotificationDto {
     private Long id;
-    //private String content;
     private Timestamp createDate;
     private Boolean isReadStatus;
     private boolean validateOnly; //추가

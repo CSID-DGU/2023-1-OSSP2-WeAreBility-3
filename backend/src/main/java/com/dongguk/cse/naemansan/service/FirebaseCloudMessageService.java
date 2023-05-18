@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.dto.FcmMessage;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
+        System.out.println("sendMessageTo 시작");
         String message = makeMessage(targetToken, title, body);
 
         OkHttpClient client = new OkHttpClient();
@@ -35,21 +37,24 @@ public class FirebaseCloudMessageService {
                 .build();
 
         Response response = client.newCall(request).execute();
+        System.out.println("sendMessageTo 끝나기 전");
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String content) throws JsonParseException, JsonProcessingException {
-        NotificationDto notificationDto = NotificationDto.builder()
-                .message(NotificationDto.Message.builder()
+    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
+        System.out.println("makeMessage 시작");
+        FcmMessage fcmMessage = FcmMessage.builder()
+                .message(FcmMessage.Message.builder()
                         .token(targetToken)
-                        .notification(NotificationDto.Notification.builder()
+                        .notification(FcmMessage.Notification.builder()
                                 .title(title)
-                                .content(content)
+                                .body(body)
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-        System.out.println(targetToken + " " + title + " " + content);
-        return objectMapper.writeValueAsString(notificationDto);
+        System.out.println(targetToken + " / " + title + " / " + body);
+        System.out.println("makeMessage 끝");
+        return objectMapper.writeValueAsString(fcmMessage);
     }
 
     private String getAccessToken() throws IOException {

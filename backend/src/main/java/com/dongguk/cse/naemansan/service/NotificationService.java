@@ -45,6 +45,7 @@ public class NotificationService {
                 notificationRequestDto.getTargetToken(),
                 notificationRequestDto.getTitle(),
                 notificationRequestDto.getContent());
+        System.out.println("create 끝");
         return ResponseEntity.ok().build();
     }
 
