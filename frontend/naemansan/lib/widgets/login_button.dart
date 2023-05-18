@@ -50,6 +50,7 @@ class LoginBtn extends StatelessWidget {
   Future<void> persistLogin() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLogged', true);
+    // print(prefs.getBool('isLogged'));
   }
 
 // Function to check if the user is logged in

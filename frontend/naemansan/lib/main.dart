@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
-import 'package:naemansan/screens/login_screen.dart';
+import 'package:naemansan/screens/login_screen_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,9 +20,9 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // prefs 초기화
-  // final prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
   // 로그인 여부 확인
-  //final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
+  // final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
 
   runApp(const App());
@@ -37,18 +37,20 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  bool isLogged = false;
+  bool isLogged_local = false;
 
   @override
   void initState() {
     super.initState();
     _checkLoginStatus();
+    // 새로고침하면 로그인 상태가 반영이 안됨
+    print("지?금 main.dart가 파악하는 로그인 상태는$isLogged_local");
   }
 
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isLogged = prefs.getBool('isLogged') ?? false;
+      isLogged_local = prefs.getBool('isLogged') ?? false;
     });
   }
 
@@ -58,7 +60,8 @@ class _AppState extends State<App> {
     return MaterialApp(
       title: '내가 만든 산책로',
       routes: {
-        '/': (context) => isLogged ? const IndexScreen() : LoginScreen(),
+        '/': (context) =>
+            isLogged_local ? const IndexScreen() : const LoginPage(),
         '/index': (context) => const IndexScreen(),
       },
       initialRoute: '/',

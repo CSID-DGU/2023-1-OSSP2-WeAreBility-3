@@ -10,10 +10,16 @@ class Mypage extends StatelessWidget {
   logout(BuildContext context) async {
     try {
       // Clear the login status in SharedPreferences
+
       final prefs = await SharedPreferences.getInstance();
       prefs.setBool('isLogged', false);
 
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      prefs.setBool('isLogged', false);
+      print("로그아웃 성공");
+
+      print(prefs.getBool('isLogged'));
+
+      Navigator.pushReplacementNamed(context, '/');
 
       await UserApi.instance.logout();
     } catch (error) {
