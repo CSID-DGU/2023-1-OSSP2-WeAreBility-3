@@ -1,27 +1,37 @@
+# 토큰으로 입력 받기 api 문서 post로 request return은 bool값
 import pymysql
 from shapely import wkt
 from shapely.geometry import MultiPoint
 from shapely.wkb import loads
+import struct
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
 class  similarity_Checker():
+    def __init__(self, user_id = int, userid = int, title = str, createdDatetime = str,
+                 introduction = str, coursekeyword = str, segmentId = int, startPoint = str,
+                 endPoint = str, points = str) :
+        self.user_id = user_id
+        self.userid = userid
+        self.title = title
+        self.createdDatetime = createdDatetime
+        self.introduction = introduction
+        self.coursekeyword = coursekeyword
+        self.segmentId = segmentId
+        self.startPoint = startPoint
+        self.endPoint = endPoint
+        self.points = points
+
     def calculate_Similarity(self, input_coord) :
-        # Token
-        token_true = {
-            "success" : True
-        }
-        token_false = {
-            "success" : False
-        }
 
         # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
         X_mean, Y_mean = 37.554812, 126.988204
         X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
 
         # 유저 input(좌표의 x,y 값을 순서대로 입력한다.)
+        
         temp = np.array(input_coord.split())
         user_input = np.array([])
         for i in temp:
@@ -116,7 +126,7 @@ class  similarity_Checker():
             if (np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
             )) or np.all(np.isclose(np.trace(similarity_vector), 1.0)) :
-                return token_false
+                return False
                 token = 1
                 break
             else:
@@ -126,6 +136,17 @@ class  similarity_Checker():
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
         # userid 추가 필요..(5.14) 참조 테이블?? 
         if token == 0 :
-            return token_true
+            query = """SET foreign_key_checks = 0"""
+            cursor.execute(query)
+
+            location = wkt.dumps(MultiPoint(user_coordinates))
+            query = """
+            INSERT INTO courses (id, user_id, title, created_date, introduction, start_location, locations, distance, status) 
+            VALUES (%s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
+            """
+            data = (self.user_id, self.userid, self.title, pd.to_datetime(self.createdDatetime), self.introduction, self.startPoint, location, "1", "1")
+            cursor.execute(query, data)
+            conn.commit()
+            return True
 
 
