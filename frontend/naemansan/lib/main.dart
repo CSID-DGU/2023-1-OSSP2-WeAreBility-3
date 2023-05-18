@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
-import 'package:naemansan/screens/login_screen_test.dart';
+import 'package:naemansan/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -54,17 +55,39 @@ class _AppState extends State<App> {
     });
   }
 
+  Future<bool> isUserLoggedIn() async {
+    const storage = FlutterSecureStorage();
+    String? accessToken = await storage.read(key: 'accessToken');
+    String? refreshToken = await storage.read(key: 'refreshToken');
+    return accessToken != null && refreshToken != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove(); // 초기화가 끝나는 시점에 삽입
-    return MaterialApp(
-      title: '내가 만든 산책로',
-      routes: {
-        '/': (context) =>
-            isLogged_local ? const IndexScreen() : const LoginPage(),
-        '/index': (context) => const IndexScreen(),
+    return FutureBuilder<bool>(
+      future: isUserLoggedIn(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // 데이터 로딩 중인 경우 표시할 위젯 (예: 로딩 스피너)
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // 오류 발생 시 처리할 위젯 (예: 오류 메시지 표시)
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // 데이터가 정상적으로 로드된 경우 조건에 따라 페이지 이동
+          return Directionality(
+            textDirection: TextDirection.ltr, // 텍스트 방향 설정
+            child: MaterialApp(
+              title: '내가 만든 산책로',
+              home: snapshot.data! ? const IndexScreen() : LoginScreen(),
+              routes: {
+                '/index': (context) => const IndexScreen(),
+              },
+            ),
+          );
+        }
       },
-      initialRoute: '/',
     );
   }
 }

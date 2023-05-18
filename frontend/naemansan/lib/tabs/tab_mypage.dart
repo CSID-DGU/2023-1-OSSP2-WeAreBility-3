@@ -1,34 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Mypage extends StatelessWidget {
   const Mypage({super.key});
 
 // 로그아웃
-  logout(BuildContext context) async {
-    try {
-      // Clear the login status in SharedPreferences
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLogged', false);
-
-      prefs.setBool('isLogged', false);
-      print("로그아웃 성공");
-
-      print(prefs.getBool('isLogged'));
-
-      Navigator.pushReplacementNamed(context, '/');
-
-      await UserApi.instance.logout();
-    } catch (error) {
-      print('카카오계정으로 로그인 아웃 실패 $error');
-    }
+  Future<void> deleteTokens() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logout() async {
+      await deleteTokens();
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -80,7 +71,7 @@ class Mypage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => logout(context),
+              onPressed: () => logout(),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.green),
               ),

@@ -52,6 +52,7 @@ dependencies:
     url_launcher: ^6.1.11
     jwt_decoder: ^2.0.1
     webview_flutter: ^3.0.4
+    flutter_secure_storage: ^8.0.0
 dev_dependencies:
     flutter_test:
         sdk: flutter
