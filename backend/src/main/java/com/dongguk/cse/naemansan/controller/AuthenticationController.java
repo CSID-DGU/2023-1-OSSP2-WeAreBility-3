@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.response.LoginResponse;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.response.TokenDto;
@@ -7,6 +8,7 @@ import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -24,27 +27,28 @@ public class AuthenticationController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/kakao")
-    public ResponseEntity<Map<String, String>> getKakaoRedirectUrl() {
+    public ResponseDto<Map<String, String>> getKakaoRedirectUrl() {
         Map<String, String> map = new HashMap<>();
-        map.put("Url", authenticationService.getRedirectUrl(LoginProviderType.KAKAO));
-        return ResponseEntity.ok(map);
+        map.put("url", authenticationService.getRedirectUrl(LoginProviderType.KAKAO));
+        return new ResponseDto(map);
     }
 
     @GetMapping("/kakao/callback")
-    public ResponseEntity<LoginResponse> loginKakao(@RequestParam("code") String code) {
-        return ResponseEntity.ok(authenticationService.login(code, LoginProviderType.KAKAO));
+    public ResponseDto<LoginResponse> loginKakao(@RequestParam("code") String code) {
+        log.info("loginKakao 시도 인가코드 - {}", code);
+        return new ResponseDto(authenticationService.login(code, LoginProviderType.KAKAO));
     }
 
     @GetMapping("/google")
-    public ResponseEntity<Map<String, String>> getGoogleRedirectUrl() {
+    public ResponseDto<Map<String, String>> getGoogleRedirectUrl() {
         Map<String, String> map = new HashMap<>();
-        map.put("Url", authenticationService.getRedirectUrl(LoginProviderType.GOOGLE));
-        return ResponseEntity.ok(map);
+        map.put("url", authenticationService.getRedirectUrl(LoginProviderType.GOOGLE));
+        return new ResponseDto(map);
     }
 
     @GetMapping("/google/callback")
-    public ResponseEntity<LoginResponse> loginGoogle(@RequestParam("code") String code) {
-        return ResponseEntity.ok(authenticationService.login(code, LoginProviderType.GOOGLE));
+    public ResponseDto<LoginResponse> loginGoogle(@RequestParam("code") String code) {
+        return new ResponseDto(authenticationService.login(code, LoginProviderType.GOOGLE));
     }
 
 //    @GetMapping("/apple")
@@ -69,14 +73,14 @@ public class AuthenticationController {
 
     // test용
     @PostMapping("/refresh")
-    public ResponseEntity<TokenDto> UpdateAccessToken(HttpServletRequest request) {
+    public ResponseDto<TokenDto> UpdateAccessToken(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             headerAuth =  headerAuth.substring(7, headerAuth.length());
         }
 
-        return ResponseEntity.ok(TokenDto.builder()
+        return new ResponseDto(TokenDto.builder()
                 .token(jwtProvider.validRefreshToken(headerAuth)).build());
     }
 }

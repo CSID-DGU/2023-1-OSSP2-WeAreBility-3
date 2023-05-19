@@ -24,7 +24,7 @@ public class CustomUserDetail implements UserDetails {
 
     public static CustomUserDetail create(User user) {
         List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                singletonList(new SimpleGrantedAuthority("ROLE_" + user.getUserRoleType()));
 
         return new CustomUserDetail(
                 user.getId(),

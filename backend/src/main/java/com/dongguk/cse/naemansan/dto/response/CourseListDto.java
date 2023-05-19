@@ -1,7 +1,6 @@
 package com.dongguk.cse.naemansan.dto.response;
 
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
-import com.dongguk.cse.naemansan.dto.PointDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,15 +14,20 @@ public class CourseListDto {
     private List<CourseTagDto> courseTags;
     private String startLocationName;
     private Double distance;
+    private Long likeCnt;
+    private Long usingCnt;
 
     @Builder
     public CourseListDto(Long id, String title, Timestamp createdDateTime,
-                         List<CourseTagDto> courseTags, String startLocationName, Double distance) {
+                         List<CourseTagDto> courseTags, String startLocationName,
+                         Double distance, Long likeCnt, Long usingCnt) {
         this.id = id;
         this.title = title;
         this.createdDateTime = createdDateTime;
         this.courseTags = courseTags;
         this.startLocationName = startLocationName;
         this.distance = distance;
+        this.likeCnt = likeCnt;
+        this.usingCnt = usingCnt;
     }
 }

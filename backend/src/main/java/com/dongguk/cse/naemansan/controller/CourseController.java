@@ -52,12 +52,12 @@ public class CourseController {
         return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(tag));
     }
 
-    @PostMapping("/like/{courseId}")
+    @PostMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> likeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Map<String, Object>>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
-    @DeleteMapping("/like/{courseId}")
+    @DeleteMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Map<String, Object>>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
     }

@@ -1,9 +1,9 @@
 package com.dongguk.cse.naemansan.config;
 
-import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.CustomUserDetailService;
 import com.dongguk.cse.naemansan.security.JwtEntryPoint;
-import com.dongguk.cse.naemansan.security.filter.JwtAuthenticationFilter;
+import com.dongguk.cse.naemansan.security.filter.JwtAuthorizationFilter;
+import com.dongguk.cse.naemansan.security.filter.JwtExceptionFilter;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtProvider tokenService;
+    private final JwtProvider jwtProvider;
     private final CustomUserDetailService customUserDetailService;
     private final JwtEntryPoint jwtPoint;
 
@@ -31,14 +32,15 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeHttpRequests()
-                    .anyRequest().permitAll()               // 개발용이므로 지워야함!!!!!!!
-//                    .requestMatchers("/auth/**").permitAll()
-//                    .anyRequest().authenticated()
+//                    .anyRequest().permitAll()               // 개발용이므로 지워야함!!!!!!!
+                    .requestMatchers("/auth/**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtPoint)
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(tokenService, customUserDetailService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthorizationFilter(jwtProvider, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JwtExceptionFilter(), JwtAuthorizationFilter.class);
         return httpSecurity.build();
     }
 }

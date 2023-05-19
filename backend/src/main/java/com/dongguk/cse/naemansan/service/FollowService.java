@@ -31,7 +31,7 @@ public class FollowService {
             return Boolean.FALSE;
         }
 
-        Follow save = followRepository.save(Follow.builder()
+        followRepository.save(Follow.builder()
                 .followingUser(followingUser.get())
                 .followerUser(followerUser.get()).build());
 
