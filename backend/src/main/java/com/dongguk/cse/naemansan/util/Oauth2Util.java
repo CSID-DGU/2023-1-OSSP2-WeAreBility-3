@@ -77,7 +77,6 @@ public class Oauth2Util {
 
         HttpEntity<MultiValueMap<String,String>> kakaoTokenRequest = new HttpEntity<>(params,httpHeaders);
 
-        log.info(kakaoTokenUrl);
         ResponseEntity<String> response = restTemplate.exchange(
                 kakaoTokenUrl,
                 HttpMethod.POST,

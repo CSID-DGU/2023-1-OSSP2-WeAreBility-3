@@ -43,21 +43,21 @@ public class CourseController {
     }
 
     @GetMapping("/location")
-    public ResponseDto<List<CourseListDto>> getCourseListByLocations(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByLocation(latitude, longitude));
+    public ResponseDto<List<CourseListDto>> getCourseListByLocations(Authentication authentication, @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByLocation(Long.valueOf(authentication.getName()), latitude, longitude));
     }
 
     @GetMapping("/tag")
-    public ResponseDto<List<CourseListDto>> getCourseListByTag(@RequestParam("name") String tag) {
-        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(tag));
+    public ResponseDto<List<CourseListDto>> getCourseListByTag(Authentication authentication, @RequestParam("name") String tag) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(Long.valueOf(authentication.getName()), tag));
     }
 
-    @PostMapping("/like/{courseId}")
+    @PostMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> likeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Map<String, Object>>(courseService.likeCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
-    @DeleteMapping("/like/{courseId}")
+    @DeleteMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Map<String, Object>>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
     }

@@ -7,18 +7,35 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    DEFAULT_ERROR_CODE("5000", HttpStatus.INTERNAL_SERVER_ERROR, "기본 에러 메시지입니다."),
-    INVALID_TOWN_LINK("4000", HttpStatus.NOT_FOUND, "유효하지 않은 마을 링크입니다."),
-    NOT_FOUND_SNOWMAN("4001", HttpStatus.NOT_FOUND, "찾을 수 없는 눈사람입니다."),
-    ALREADY_EXIST_LETTER("4002", HttpStatus.BAD_REQUEST, "해당 눈사람에는 이미 편지가 존재합니다."),
-    NOT_FOUND_USER("4003", HttpStatus.NOT_FOUND, "찾을 수 없는 회원입니다."),
-    NOT_FOUND_TOWN("4004", HttpStatus.NOT_FOUND, "찾을 수 없는 마을입니다."),
-    UNAUTHORIZED("4005", HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
-    REQUIRED_LOGIN("4006", HttpStatus.BAD_REQUEST, "로그인이 필요합니다."),
-    DELETED_USER_TOWN("4007", HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 계정의 마을입니다.");
+    NOT_FOUND_USER("404", HttpStatus.NOT_FOUND, "Not Exist User"),
+    NOT_FOUND_COURSE("404", HttpStatus.NOT_FOUND, "Not Exist Course"),
+    NOT_FOUND_COURSE_TAG("404", HttpStatus.NOT_FOUND, "Not Exist CourseTag"),
+    NOT_FOUND_COMMENT("404", HttpStatus.NOT_FOUND, "Not Exist Comment"),
+
+    DUPLICATION_COURSE_TITLE("400", HttpStatus.BAD_REQUEST, "Duplication Course Title"),
+    EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
+    NOT_EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
+
+
+    FILE_UPLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),
+    FILE_DOWNLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),
+
+    NOT_EQUAL("400", HttpStatus.BAD_REQUEST , "Not Equal Error"),
+
+    DEFAULT_ERROR_CODE("500", HttpStatus.INTERNAL_SERVER_ERROR, "기본 에러 메시지입니다."),
+
+    // Access Denied Error
+    ACCESS_DENIED_ERROR("401", HttpStatus.UNAUTHORIZED, "Access Denied Token Error"),
+
+    // Token Error Set
+    TOKEN_INVALID_ERROR("4010", HttpStatus.UNAUTHORIZED, "Invalid Token Error"),
+    TOKEN_MALFORMED_ERROR("4011", HttpStatus.UNAUTHORIZED, "Malformed Token Error"),
+    TOKEN_EXPIRED_ERROR("4013", HttpStatus.UNAUTHORIZED, "Expired Token Error"),
+    TOKEN_TYPE_ERROR("4012", HttpStatus.UNAUTHORIZED, "Type Token Error"),
+    TOKEN_UNSUPPORTED_ERROR("4014", HttpStatus.UNAUTHORIZED, "Unsupported Token Error"),
+    TOKEN_UNKNOWN_ERROR("4015", HttpStatus.UNAUTHORIZED, "Unknown Error");
 
     private final String code;
     private final HttpStatus httpStatus;
     private final String message;
 }
-

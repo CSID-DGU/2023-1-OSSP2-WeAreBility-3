@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
@@ -47,8 +49,7 @@ public class AuthenticationService {
         return null;
     }
     public LoginResponse login(String authorizationCode, LoginProviderType loginProviderType) {
-        log.info("유저 로그인 시작 Oauth: {}, 인가코드: {}", loginProviderType, authorizationCode);
-
+        // Load User Data in Oauth Server
         String accessToken = null;
         String socialId = null;
         switch (loginProviderType) {
@@ -64,21 +65,21 @@ public class AuthenticationService {
             }
         }
 
-        if (socialId == null) {
-            log.error("유저 정보를 들고 오지 못했습니다. - {}", loginProviderType);
-            return null;
-        }
+        // User Data 존재 여부 확인
+        if (socialId == null) { throw new RestApiException(ErrorCode.NOT_FOUND_USER); }
 
+        // 랜덤 닉네임 생성
         Random random = new Random();
         String userName = loginProviderType.toString() + "-";
         for (int i = 0; i < 3; i++) {
             userName += String.format("%04d", random.nextInt(1000));
         }
 
-
+        // User 탐색
         Optional<User> user = userRepository.findBySocialLoginIdAndLoginProviderType(socialId, loginProviderType);
         User loginUser;
 
+        // 기존 유저가 아니라면 새로운 Data 저장, 기존 유저라면 Load
         if (user.isEmpty()) {
             loginUser = userRepository.save(User.builder()
                     .socialLoginId(socialId)
@@ -96,10 +97,11 @@ public class AuthenticationService {
             loginUser = user.get();
         }
 
+        // JwtToken 생성, 기존 Refresh Token 탐색
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
-
         Optional<Token> refreshToken = tokenRepository.findByTokenUser(loginUser);
 
+        // 기존 유저가 아니라면 새로운 Token 저장, 아니라면 Token Update
         if (refreshToken.isEmpty()) {
             tokenRepository.save(Token.builder()
                     .tokenUser(loginUser)
@@ -109,31 +111,19 @@ public class AuthenticationService {
             refreshToken.get().setRefreshToken(jwtToken.getRefreshToken());
         }
 
+        // Jwt 반환
         return LoginResponse.builder()
                 .jwt(jwtToken)
                 .build();
     }
 
     public void logout(Long userId) {
-        Optional<User> user =  userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            log.error("존재하지 않은 유저입니다. UserID: {}", userId);
-            return;
-        }
-
-        Optional<Token> refreshToken = tokenRepository.findByTokenUser(user.get());
-        refreshToken.get().setRefreshToken(null);
+        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        user.getToken().setRefreshToken(null);
     }
 
     public void withdrawal(Long userId) {
-        Optional<User> user =  userRepository.findById(userId);
-
-        if (user.isEmpty()) {
-            log.error("존재하지 않은 유저입니다. UserID: {}", userId);
-            return;
-        }
-
-        userRepository.delete(user.get());
+        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        userRepository.delete(user);
     }
 }

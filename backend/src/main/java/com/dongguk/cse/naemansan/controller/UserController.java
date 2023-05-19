@@ -1,12 +1,8 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.response.CommentDto;
-import com.dongguk.cse.naemansan.dto.response.FollowDto;
+import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.common.ResponseDto;
-import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
-import com.dongguk.cse.naemansan.dto.response.BadgeDto;
-import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.service.BadgeService;
 import com.dongguk.cse.naemansan.service.FollowService;
 import com.dongguk.cse.naemansan.service.UserService;
@@ -39,7 +35,7 @@ public class UserController {
 
     @DeleteMapping("")
     public ResponseDto<Boolean> deleteUser(Authentication authentication) {
-        return new ResponseDto<Boolean>(userService.deleteUserInformation(Long.valueOf(authentication.getName())));
+        return new ResponseDto<Boolean>(userService.deleteUserProfile(Long.valueOf(authentication.getName())));
     }
 
     @GetMapping("/badge")
@@ -53,18 +49,18 @@ public class UserController {
     }
 
     @GetMapping("/likeCourse")
-    public ResponseDto<List<CourseDto>> readLikeCourseList(Authentication authentication) {
-        return new ResponseDto<List<CourseDto>>(userService.readLikeCourseList(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<CourseListDto>> readLikeCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseListDto>>(userService.readLikeCourseList(Long.valueOf(authentication.getName())));
     }
 
     @GetMapping("/enrollmentCourse")
-    public ResponseDto<List<CourseDto>> readEnrollmentCourseList(Authentication authentication) {
-        return new ResponseDto<List<CourseDto>>(userService.readEnrollmentCourseList(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<CourseListDto>> readEnrollmentCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseListDto>>(userService.readEnrollmentCourseList(Long.valueOf(authentication.getName())));
     }
 
     @GetMapping("/finishCourse")
-    public ResponseDto<List<CourseDto>> readFinishCourseList(Authentication authentication) {
-        return new ResponseDto<List<CourseDto>>(userService.readFinishCourseList(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<CourseListDto>> readFinishCourseList(Authentication authentication) {
+        return new ResponseDto<List<CourseListDto>>(userService.readFinishCourseList(Long.valueOf(authentication.getName())));
     }
 
     // User가 팔로우한 사람들의 List를 얻음 - Follow Read#1

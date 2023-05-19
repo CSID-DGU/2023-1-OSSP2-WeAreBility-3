@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.Image;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
@@ -34,17 +36,18 @@ public class ImageService {
     private String FOLDER_PATH;
 
     public String uploadImage(Long useId, ImageUseType imageUseType, MultipartFile file) throws IOException {
-        log.info("이미지 저장 시작 유저: {} , 파일이름: {}", useId, file.getOriginalFilename());
+        // File Path Fetch
         String uuidImageName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         String filePath = FOLDER_PATH + uuidImageName;
 
+        // File Upload
         try {
             file.transferTo(new File(filePath));
         } catch (Exception e) {
-            log.error("파일 저장 실패 - {}", file.getOriginalFilename());
-            return "file uploaded Fail : " + filePath;
+            throw new RestApiException(ErrorCode.FILE_UPLOAD);
         }
 
+        // Path DB Save
         Optional<? extends Object> useObject = null;
         switch (imageUseType) {
             case USER -> { useObject = userRepository.findById(useId); }
@@ -52,8 +55,8 @@ public class ImageService {
             case ADVERTISEMENT -> { useObject = advertisementRepository.findById(useId); }
         }
 
+        // 기존 파일이 없다면 새롭게 추가, 아니라면 기존 파일 삭제 후 저장
         Optional<Image> findImage = imageRepository.findByImageUser((User) useObject.get());
-
         if (findImage.isEmpty()) {
             imageRepository.save(Image.builder()
                     .userObject(useObject)
@@ -76,18 +79,13 @@ public class ImageService {
 
     public byte[] downloadImage(String UuidName) throws IOException {
         String filePath = null;
-        Optional<Image> image = null;
+        Image image = null;
 
         if (UuidName.equals("0_default_image.png")) {
-            log.info("0_default_image.png loading");
             filePath = FOLDER_PATH + "0_default_image.png";
         } else {
-            image = imageRepository.findByUuidName(UuidName);
-            if (image.isEmpty()) {
-                log.error("존재하지 않는 파일입니다 - UUID: {}", UuidName);
-                return null;
-            }
-            filePath = image.get().getPath();
+            image = imageRepository.findByUuidName(UuidName).orElseThrow(() -> new RestApiException(ErrorCode.FILE_DOWNLOAD));
+            filePath = image.getPath();
         }
 
         byte[] images = Files.readAllBytes(new File(filePath).toPath());

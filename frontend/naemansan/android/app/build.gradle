@@ -6,8 +6,6 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-
-
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -71,9 +69,3 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-
-android {                                                                                        
-  defaultConfig {                                                                                
-   minSdkVersion 21                                                                             
-  }                                                                                              
-}      
