@@ -35,7 +35,7 @@ public class UserController {
 
     @DeleteMapping("")
     public ResponseDto<Boolean> deleteUser(Authentication authentication) {
-        return new ResponseDto<Boolean>(userService.deleteUserInformation(Long.valueOf(authentication.getName())));
+        return new ResponseDto<Boolean>(userService.deleteUserProfile(Long.valueOf(authentication.getName())));
     }
 
     @GetMapping("/badge")

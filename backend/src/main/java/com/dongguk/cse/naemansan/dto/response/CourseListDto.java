@@ -16,11 +16,12 @@ public class CourseListDto {
     private Double distance;
     private Long likeCnt;
     private Long usingCnt;
+    private Boolean isLike;
 
     @Builder
     public CourseListDto(Long id, String title, Timestamp createdDateTime,
                          List<CourseTagDto> courseTags, String startLocationName,
-                         Double distance, Long likeCnt, Long usingCnt) {
+                         Double distance, Long likeCnt, Long usingCnt, Boolean isLike) {
         this.id = id;
         this.title = title;
         this.createdDateTime = createdDateTime;
@@ -29,5 +30,6 @@ public class CourseListDto {
         this.distance = distance;
         this.likeCnt = likeCnt;
         this.usingCnt = usingCnt;
+        this.isLike = isLike;
     }
 }

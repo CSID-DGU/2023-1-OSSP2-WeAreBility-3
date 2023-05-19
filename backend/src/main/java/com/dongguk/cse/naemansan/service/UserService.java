@@ -63,7 +63,7 @@ public class UserService {
                 .build();
     }
 
-    public Boolean deleteUserInformation(Long id) {
+    public Boolean deleteUserProfile(Long id) {
         try {
             userRepository.deleteById(id);
             return Boolean.TRUE;
@@ -101,16 +101,16 @@ public class UserService {
         List<CourseListDto> courseListDtoList = new ArrayList<>();
         for (Like like : likeList) {
             Course course = like.getLikeCourse();
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
             courseListDtoList.add(CourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseTags)
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
                     .startLocationName(course.getStartLocationName())
                     .distance(course.getDistance())
                     .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size()).build());
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
             }
 
         return courseListDtoList;
@@ -123,14 +123,16 @@ public class UserService {
 
         List<CourseListDto> courseListDtoList = new ArrayList<>();
         for (Course course : courseList) {
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
             courseListDtoList.add(CourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
+                    .startLocationName(course.getStartLocationName())
                     .distance(course.getDistance())
                     .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size()).build());
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
         }
 
         return courseListDtoList;
@@ -146,19 +148,18 @@ public class UserService {
             if (!usingCourse.getFinishStatus()) {
                 continue;
             }
-
             Course course = usingCourse.getCourse();
 
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
             courseListDtoList.add(CourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseTags)
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
                     .startLocationName(course.getStartLocationName())
                     .distance(course.getDistance())
                     .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size()).build());
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
         }
 
         return courseListDtoList;

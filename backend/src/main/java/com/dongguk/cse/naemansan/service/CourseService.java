@@ -8,7 +8,6 @@ import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.CourseMapping;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
-import com.dongguk.cse.naemansan.domain.type.StatusType;
 import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
@@ -21,17 +20,9 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.parser.BooleanNode;
 import org.locationtech.jts.geom.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -171,7 +162,8 @@ public class CourseService {
         return Boolean.TRUE;
     }
 
-    public List<CourseListDto> getCourseListByTag(String tag) {
+    public List<CourseListDto> getCourseListByTag(Long userId, String tag) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         // Tag 존재유무 확인
         CourseTagType courseTagType = CourseTagType.existType(tag);
         if (courseTagType == null) {
@@ -184,102 +176,74 @@ public class CourseService {
 
         for (CourseTag courseTag : courseTagList) {
             Course course = courseTag.getCourse();
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
+
             courseListDtoList.add(CourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseTags)
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
                     .startLocationName(course.getStartLocationName())
                     .distance(course.getDistance())
                     .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size()).build());
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, course)).build());
         }
 
         return courseListDtoList;
     }
 
-    public List<CourseListDto> getCourseListByLocation(Double latitude, Double longitude) {
+    public List<CourseListDto> getCourseListByLocation(Long userId, Double latitude, Double longitude) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         List<CourseMapping> courseMappingList =  courseRepository.findCourseList(courseUtil.getLatLng2Point(latitude, longitude), 5L);
 
         List<CourseListDto> courseListDtoList = new ArrayList<>();
         for (CourseMapping courseMapping : courseMappingList) {
             Course course = courseRepository.findById(courseMapping.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
-
-            log.info("{} - radius: {}", courseMapping.getId(), courseMapping.getRadius());
 
             courseListDtoList.add(CourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
                     .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseTags)
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
                     .startLocationName(course.getStartLocationName())
                     .distance(course.getDistance())
                     .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size()).build());
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, course)).build());
         }
 
         return courseListDtoList;
     }
 
     public Map<String, Object> likeCourse(Long userId, Long courseId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Course> course = courseRepository.findById(courseId);
+        // User, Course 존재, 이미 Like 했는지 여부 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        likeRepository.findByLikeUserAndLikeCourse(user, course).ifPresent(i -> { throw new RestApiException(ErrorCode.EXIST_LIKE); });
 
-        if (user.isEmpty()) {
-            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return null;
-        }
-
-        if (course.isEmpty()) {
-            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return null;
-        }
-
-        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
-
-        if (!like.isEmpty()) {
-            log.error("해당 유저는 좋아요 중입니다. - UserID: {}, CourseID: {}", userId, courseId);
-            return null;
-        }
-
+        // Like 저장
         likeRepository.save(Like.builder()
-                .likeUser(user.get())
-                .likeCourse(course.get()).build());
+                .likeUser(user)
+                .likeCourse(course).build());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", course.get().getLikes().size());
+        map.put("likeCnt", course.getLikes().size());
         map.put("isLike", Boolean.TRUE);
 
         return map;
     }
 
     public Map<String, Object> dislikeCourse(Long userId, Long courseId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Course> course = courseRepository.findById(courseId);
+        // User, Course 존재, Like 하지 않았는지 여부 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        Like like = likeRepository.findByLikeUserAndLikeCourse(user, course).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_LIKE));
 
-        if (user.isEmpty()) {
-            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return null;
-        }
-
-        if (course.isEmpty()) {
-            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return null;
-        }
-
-        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
-
-        if (like.isEmpty()) {
-            log.error("해당 유저는 좋아요하지 않았습니다. - UserID: {}, CourseID: {}", userId, courseId);
-            return null;
-        }
-
-        likeRepository.deleteByLikeUserAndLikeCourse(user.get(), course.get());
+        // Like 삭제
+        likeRepository.delete(like);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", course.get().getLikes().size());
+        map.put("likeCnt", course.getLikes().size());
         map.put("isLike", Boolean.FALSE);
 
         return map;

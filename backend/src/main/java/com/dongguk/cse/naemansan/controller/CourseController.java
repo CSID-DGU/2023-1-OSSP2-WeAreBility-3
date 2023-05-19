@@ -43,13 +43,13 @@ public class CourseController {
     }
 
     @GetMapping("/location")
-    public ResponseDto<List<CourseListDto>> getCourseListByLocations(@RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByLocation(latitude, longitude));
+    public ResponseDto<List<CourseListDto>> getCourseListByLocations(Authentication authentication, @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByLocation(Long.valueOf(authentication.getName()), latitude, longitude));
     }
 
     @GetMapping("/tag")
-    public ResponseDto<List<CourseListDto>> getCourseListByTag(@RequestParam("name") String tag) {
-        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(tag));
+    public ResponseDto<List<CourseListDto>> getCourseListByTag(Authentication authentication, @RequestParam("name") String tag) {
+        return new ResponseDto<List<CourseListDto>>(courseService.getCourseListByTag(Long.valueOf(authentication.getName()), tag));
     }
 
     @PostMapping("/{courseId}/like")

@@ -2,6 +2,8 @@ package com.dongguk.cse.naemansan.util;
 
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.CourseTag;
+import com.dongguk.cse.naemansan.domain.Like;
+import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.StatusType;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
@@ -157,5 +159,15 @@ public class CourseUtil {
         }
 
         return dtoList;
+    }
+
+    public boolean existLike(User user, Course course) {
+        for (Like like : user.getLikes()) {
+            if (!like.getLikeCourse().equals(course)) {
+                continue;
+            }
+            return true;
+        }
+        return false;
     }
 }
