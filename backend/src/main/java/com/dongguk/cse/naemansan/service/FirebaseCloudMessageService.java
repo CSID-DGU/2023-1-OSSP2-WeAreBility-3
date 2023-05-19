@@ -1,7 +1,7 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.dto.FcmMessage;
-import com.dongguk.cse.naemansan.dto.NotificationDto;
+import com.dongguk.cse.naemansan.dto.MessageDto;
+//import com.dongguk.cse.naemansan.dto.NotificationDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -43,18 +43,21 @@ public class FirebaseCloudMessageService {
 
     private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
         System.out.println("makeMessage 시작");
-        FcmMessage fcmMessage = FcmMessage.builder()
-                .message(FcmMessage.Message.builder()
+
+        MessageDto messageDto = MessageDto.builder()
+                .message(MessageDto.Message.builder()
                         .token(targetToken)
-                        .notification(FcmMessage.Notification.builder()
+                        .notification(MessageDto.Notification.builder()
                                 .title(title)
                                 .body(body)
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
+
+
         System.out.println(targetToken + " / " + title + " / " + body);
         System.out.println("makeMessage 끝");
-        return objectMapper.writeValueAsString(fcmMessage);
+        return objectMapper.writeValueAsString(messageDto);
     }
 
     private String getAccessToken() throws IOException {

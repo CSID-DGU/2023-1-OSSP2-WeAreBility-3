@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-public class FcmMessage {
+public class MessageDto {
     private boolean validateOnly;
     private Message message;
 

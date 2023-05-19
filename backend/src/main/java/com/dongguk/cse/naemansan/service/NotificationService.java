@@ -38,9 +38,8 @@ public class NotificationService {
                 .notificationUser(user.get())
                 .title(notificationRequestDto.getTitle())
                 .content(notificationRequestDto.getContent())
-                //.content(notificationDto.getMessage().getNotification().getContent())
                 .build());
-        //알림 보내기 추가 sendMessageTo 추가, makeMessage 추가
+
         firebaseCloudMessageService.sendMessageTo(
                 notificationRequestDto.getTargetToken(),
                 notificationRequestDto.getTitle(),
@@ -58,18 +57,25 @@ public class NotificationService {
 
         List<Notification> notifications = notificationRepository.findByNotificationUser(user.get());
         List<NotificationDto> notificationDtos = new ArrayList<>();
-
+/*
         for (Notification notification : notifications) {
             notificationDtos.add(NotificationDto.builder()
                     .id(notification.getId())
                     .message(NotificationDto.Message.builder()
                             .notification(NotificationDto.Notification.builder()
-                                    .content(notification.getContent())
+                                    .body(notification.getContent())
                                     .build()).build())
                     .createDate(notification.getCreateDate())
                     .isReadStatus(notification.getIsReadStatus()).build());
+        }*/
+        for(Notification notification : notifications){
+            notificationDtos.add(NotificationDto.builder()
+                    .id(notification.getId())
+                    .title(notification.getTitle())
+                    .content(notification.getContent())
+                    .createDate(notification.getCreateDate())
+                    .isReadStatus(notification.getIsReadStatus()).build());
         }
-
         return notificationDtos;
     }
 

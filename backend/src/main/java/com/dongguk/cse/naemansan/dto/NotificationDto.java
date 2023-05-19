@@ -12,36 +12,19 @@ import java.sql.Timestamp;
 @Getter
 public class NotificationDto {
     private Long id;
+    private String title;
+    private String content;
     private Timestamp createDate;
     private Boolean isReadStatus;
-    private boolean validateOnly; //추가
-    private Message message; //추가
 
-    //추가
+/*
     @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class Message {
-        private Notification notification;
-        private String token;
-    }
-
-    //추가
-    @Builder
-    @AllArgsConstructor
-    @Getter
-    public static class Notification {
-        private String title;
-        private String content; //수정
-        private String image;
-    }
-
-    @Builder
-    public NotificationDto(Long id, Timestamp createDate, Boolean isReadStatus) {
+    public NotificationDto(Long id, String title, String content, Timestamp createDate, Boolean isReadStatus) {
         this.id = id;
-        // this.content = content;
+        this.title=title;
+        this.content=content;
         this.createDate = createDate;
         this.isReadStatus = isReadStatus;
-    }
-
+    }*/
 }
+
