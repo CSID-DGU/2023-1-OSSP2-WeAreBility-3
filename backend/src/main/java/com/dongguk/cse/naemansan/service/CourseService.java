@@ -103,11 +103,9 @@ public class CourseService {
     }
 
     public CourseDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
-        // User 존재유무 확인
+        // User, Course 존재유무, Course Title 중복유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        // Course 존재유무 확인
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
-        // Course Title 중복유무 확인
         courseRepository.findByIdNotAndTitle(courseId, courseRequestDto.getTitle()).ifPresent(c -> new RestApiException(ErrorCode.DUPLICATION_COURSE_TITLE));
 
         // Course User 와 Request User 동등유무 확인
@@ -121,7 +119,7 @@ public class CourseService {
         // Course Tag Data Update, 최적화 필요
         List<CourseTag> courseTagList = new ArrayList<>();
         for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
-            switch (courseTagDto.getStatusType()) {
+            switch (courseTagDto.getTagStatusType()) {
                 case NEW -> {
                     courseTagList.add(courseTagRepository.save(CourseTag.builder()
                             .course(course)
@@ -219,7 +217,7 @@ public class CourseService {
         // User, Course 존재, 이미 Like 했는지 여부 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
-        likeRepository.findByLikeUserAndLikeCourse(user, course).ifPresent(i -> { throw new RestApiException(ErrorCode.EXIST_LIKE); });
+        likeRepository.findByLikeUserAndLikeCourse(user, course).ifPresent(i -> { throw new RestApiException(ErrorCode.EXIST_ENTITY_REQUEST); });
 
         // Like 저장
         likeRepository.save(Like.builder()
@@ -237,7 +235,7 @@ public class CourseService {
         // User, Course 존재, Like 하지 않았는지 여부 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
-        Like like = likeRepository.findByLikeUserAndLikeCourse(user, course).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_LIKE));
+        Like like = likeRepository.findByLikeUserAndLikeCourse(user, course).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_ENTITY_REQUEST));
 
         // Like 삭제
         likeRepository.delete(like);

@@ -3,25 +3,19 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
-import com.dongguk.cse.naemansan.domain.type.StatusType;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
-import com.dongguk.cse.naemansan.dto.CourseTagDto;
-import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.dto.response.CourseListDto;
 import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
-import com.dongguk.cse.naemansan.dto.response.CourseDto;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.MultiPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

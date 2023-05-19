@@ -10,14 +10,19 @@ public enum ErrorCode {
     NOT_FOUND_USER("404", HttpStatus.NOT_FOUND, "Not Exist User"),
     NOT_FOUND_COURSE("404", HttpStatus.NOT_FOUND, "Not Exist Course"),
     NOT_FOUND_COURSE_TAG("404", HttpStatus.NOT_FOUND, "Not Exist CourseTag"),
+    NOT_FOUND_COMMENT("404", HttpStatus.NOT_FOUND, "Not Exist Comment"),
+
+    DUPLICATION_COURSE_TITLE("400", HttpStatus.BAD_REQUEST, "Duplication Course Title"),
+    EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
+    NOT_EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
 
 
-    DUPLICATION_COURSE_TITLE("4003", HttpStatus.BAD_REQUEST, "Duplication Course Title"),
-    EXIST_LIKE("404", HttpStatus.BAD_REQUEST, "Exist Like"),
-    NOT_EXIST_LIKE("404", HttpStatus.BAD_REQUEST, "Not Exist Like"),
+    FILE_UPLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),
+    FILE_DOWNLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),
 
-    NOT_EQUAL("404", HttpStatus.BAD_REQUEST , "Not Equal Error"),
-    DEFAULT_ERROR_CODE("5000", HttpStatus.INTERNAL_SERVER_ERROR, "기본 에러 메시지입니다."),
+    NOT_EQUAL("400", HttpStatus.BAD_REQUEST , "Not Equal Error"),
+
+    DEFAULT_ERROR_CODE("500", HttpStatus.INTERNAL_SERVER_ERROR, "기본 에러 메시지입니다."),
 
     // Access Denied Error
     ACCESS_DENIED_ERROR("401", HttpStatus.UNAUTHORIZED, "Access Denied Token Error"),
