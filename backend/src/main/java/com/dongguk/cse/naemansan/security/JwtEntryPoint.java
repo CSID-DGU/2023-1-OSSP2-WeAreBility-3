@@ -10,11 +10,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -27,6 +31,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
             setErrorResponse(response, ErrorCode.TOKEN_INVALID_ERROR);
         } else {
             switch (errorCode) {
+                case NOT_FOUND_USER -> { setErrorResponse(response, ErrorCode.NOT_FOUND_USER); }
                 case ACCESS_DENIED_ERROR -> { setErrorResponse(response, ErrorCode.ACCESS_DENIED_ERROR); }
                 case TOKEN_MALFORMED_ERROR -> { setErrorResponse(response, ErrorCode.TOKEN_MALFORMED_ERROR); }
                 case TOKEN_EXPIRED_ERROR -> { setErrorResponse(response, ErrorCode.TOKEN_EXPIRED_ERROR); }
@@ -41,11 +46,11 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        JSONObject responseJson = new JSONObject();
-        responseJson.put("success", false);
-        responseJson.put("data", null);
-        responseJson.put("error", new ExceptionDto(errorCode));
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", Boolean.FALSE);
+        map.put("data", null);
+        map.put("error", new ExceptionDto(errorCode));
 
-        response.getWriter().print(responseJson);
+        response.getWriter().print(JSONValue.toJSONString(map));
     }
 }

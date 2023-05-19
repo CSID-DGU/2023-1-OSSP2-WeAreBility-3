@@ -1,12 +1,9 @@
 package com.dongguk.cse.naemansan.security.filter;
 
-import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.security.CustomUserDetail;
 import com.dongguk.cse.naemansan.security.CustomUserDetailService;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +19,7 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService userDetailsService;
 
