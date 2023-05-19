@@ -14,14 +14,18 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "user_id")
-    private Long userId;
-    @Column(name = "course_id")
-    private Long courseId;
+
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User likeUser;
+
+    @JoinColumn(name = "course_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Course likeCourse;
 
     @Builder
-    public Like(Long userId, Long courseId) {
-        this.userId = userId;
-        this.courseId = courseId;
+    public Like(User likeUser, Course likeCourse) {
+        this.likeUser = likeUser;
+        this.likeCourse = likeCourse;
     }
 }

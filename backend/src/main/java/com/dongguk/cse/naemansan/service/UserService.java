@@ -1,82 +1,63 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
-import com.dongguk.cse.naemansan.dto.UserDto;
+import com.dongguk.cse.naemansan.dto.response.CommentDto;
+import com.dongguk.cse.naemansan.dto.response.CourseListDto;
+import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
+import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final ImageRepository imageRepository;
-    private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
-    private final BadgeRepository badgeRepository;
-    private final FollowRepository followRepository;
-    private final SubscribeRepository subscribeRepository;
+    private final CourseUtil courseUtil;
 
-    public UserDto getUserInformation(Long id) {
-        log.info("getUserInformation - ID : {}", id);
+    public UserDto readUserProfile(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
-        Optional<User> user = userRepository.findById(id);
-        Optional<Image> image = imageRepository.findByUserId(id);
-        List<Like> likes = likeRepository.findByUserId(id);
-        List<Comment> comments = commentRepository.findByUserId(id);
-        List<Badge> badges = badgeRepository.findByUserId(id);
-        List<Follow> followings = followRepository.findByFollowingId(id);
-        List<Follow> followers = followRepository.findByFollowedId(id);
-        Optional<Subscribe> subscribe = subscribeRepository.findByUserId(id);
-
-
-        UserDto userDto = null;
-        try {
-            if (user.isEmpty() || image.isEmpty() || likes == null || comments == null || badges == null
-            || followings == null || followers == null)
-                throw new NullPointerException();
-            else
-                userDto = UserDto.builder()
-                        .user(user.get())
-                        .image(image.get())
-                        .isPremium(subscribe.isEmpty() ? false : true)
-                        .commentCnt((long) comments.size())
-                        .likeCnt((long) likes.size())
-                        .badgeCnt((long) badges.size())
-                        .followingCnt((long) followings.size())
-                        .followerCnt((long) followers.size())
-                        .build();
-        } catch (Exception e) {
-            log.info("{}", e);
-        }
-
-        return userDto;
+        return UserDto.builder()
+                .user(user)
+                .image(user.getImage())
+                .isPremium(user.getSubscribe() != null)
+                .commentCnt((long) user.getComments().size())
+                .likeCnt((long) user.getLikes().size())
+                .badgeCnt((long) user.getBadges().size())
+                .followingCnt((long) user.getFollowings().size())
+                .followerCnt((long) user.getFollowers().size())
+                .build();
     }
 
     @Transactional
-    public Boolean updateUserInformation(Long id, UserRequestDto userRequestDto) {
-        log.info("updateUserInformation - {}", userRequestDto);
-        Optional<User> user = userRepository.findById(id);
-        Optional<Image> image = imageRepository.findByUserId(id);
-        if (user.isEmpty() || image.isEmpty()){
-            return Boolean.FALSE;
-        }
-        else {
-            user.get().setName(userRequestDto.getName());
-            user.get().setIntroduction(userRequestDto.getInformation());
-            image.get().setImagePath(userRequestDto.getImagePath());
-            return Boolean.TRUE;
-        }
+    public UserDto updateUserProfile(Long userId, UserRequestDto userRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        user.updateUser(userRequestDto.getName(), userRequestDto.getInformation());
+
+        return UserDto.builder()
+                .user(user)
+                .image(user.getImage())
+                .isPremium(user.getSubscribe() != null)
+                .commentCnt((long) user.getComments().size())
+                .likeCnt((long) user.getLikes().size())
+                .badgeCnt((long) user.getBadges().size())
+                .followingCnt((long) user.getFollowings().size())
+                .followerCnt((long) user.getFollowers().size())
+                .build();
     }
 
-    public Boolean deleteUserInformation(Long id) {
+    public Boolean deleteUserProfile(Long id) {
         try {
             userRepository.deleteById(id);
             return Boolean.TRUE;
@@ -84,5 +65,97 @@ public class UserService {
             log.info(e.getMessage());
         }
         return Boolean.FALSE;
+    }
+
+    public List<CommentDto> readCommentList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<Comment> commentList = user.getComments();
+        List<CommentDto> commentDtoList = new ArrayList<>();
+
+        for (Comment comment: commentList) {
+            commentDtoList.add(CommentDto.builder()
+                    .id(comment.getId())
+                    .userId(comment.getCommentUser().getId())
+                    .courseId(comment.getCommentCourse().getId())
+                    .userName(comment.getCommentUser().getName())
+                    .content(comment.getContent())
+                    .createdDateTime(comment.getCreatedDate())
+                    .isEdit(comment.getIsEdit()).build());
+        }
+
+        return commentDtoList;
+    }
+
+    public List<CourseListDto> readLikeCourseList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<Like> likeList = user.getLikes();
+
+        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        for (Like like : likeList) {
+            Course course = like.getLikeCourse();
+            courseListDtoList.add(CourseListDto.builder()
+                    .id(course.getId())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
+                    .startLocationName(course.getStartLocationName())
+                    .distance(course.getDistance())
+                    .likeCnt((long) course.getLikes().size())
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
+            }
+
+        return courseListDtoList;
+    }
+
+    public List<CourseListDto> readEnrollmentCourseList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<Course> courseList = user.getCourses();
+
+        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        for (Course course : courseList) {
+            courseListDtoList.add(CourseListDto.builder()
+                    .id(course.getId())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
+                    .startLocationName(course.getStartLocationName())
+                    .distance(course.getDistance())
+                    .likeCnt((long) course.getLikes().size())
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
+        }
+
+        return courseListDtoList;
+    }
+
+    public List<CourseListDto> readFinishCourseList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<UsingCourse> usingCourseList = user.getUsingCourses();
+
+        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        for (UsingCourse usingCourse : usingCourseList) {
+            if (!usingCourse.getFinishStatus()) {
+                continue;
+            }
+            Course course = usingCourse.getCourse();
+
+            courseListDtoList.add(CourseListDto.builder()
+                    .id(course.getId())
+                    .title(course.getTitle())
+                    .createdDateTime(course.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
+                    .startLocationName(course.getStartLocationName())
+                    .distance(course.getDistance())
+                    .likeCnt((long) course.getLikes().size())
+                    .usingCnt((long) course.getUsingCourses().size())
+                    .isLike(true).build());
+        }
+
+        return courseListDtoList;
     }
 }

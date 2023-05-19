@@ -17,17 +17,22 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "following_user_id")
-    private Long followingId;
-    @Column(name = "followed_user_id")
-    private Long followedId;
+
+    @JoinColumn(name = "following_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User followingUser;
+
+    @JoinColumn(name = "followed_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User followerUser;
+
     @Column(name = "created_at")
     private Timestamp createdDate;
 
     @Builder
-    public Follow(Long followingId, Long followedId) {
-        this.followingId = followingId;
-        this.followedId = followedId;
+    public Follow(User followingUser, User followerUser) {
+        this.followingUser = followingUser;
+        this.followerUser = followerUser;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
     }
 }
