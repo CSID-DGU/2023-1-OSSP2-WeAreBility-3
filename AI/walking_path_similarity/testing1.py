@@ -1,4 +1,24 @@
-a = b"\xe6\x10\x00\x00\x01\x04\x00\x00\x00\x02\x00\x00\x00\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\xc0_@\x00\x00\x00\x00\x00\x80B@\x01\x01\x00\x00\x00fffff\xc6_@\xcd\xcc\xcc\xcc\xcc\x8cB@"
-print(type(a))
-c = a.decode("utf-32-be")
-print(c)
+import pymysql
+from shapely import wkt
+from shapely.geometry import MultiPoint
+from shapely.wkb import loads
+import struct
+import pandas as pd
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+# Example byte sequence
+conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
+
+cursor = conn.cursor()
+
+
+
+query = """
+    INSERT INTO course_tags (id, course_id, tag) 
+    VALUES (%s, %s, %s)
+    """
+data = ("5", "5", "공원 사색 마포구 자연 야경")
+cursor.execute(query, data)
+conn.commit()

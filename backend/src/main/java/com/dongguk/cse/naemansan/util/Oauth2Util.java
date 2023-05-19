@@ -3,7 +3,6 @@ package com.dongguk.cse.naemansan.util;
 import com.nimbusds.jose.shaded.gson.JsonElement;
 import com.nimbusds.jose.shaded.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,11 +13,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
+// 겹치는 함수 및 코드  합치는 용도
 public class Oauth2Util {
-    // KAKAO 용 Data
+    // KAKAO 용 DAta
     @Value("${client.provider.kakao.authorization-uri: aaa.bbb.ccc}")
     private String kakaoAuthorizationUrl;
     @Value("${client.provider.kakao.token-uri: aaa.bbb.ccc}")
@@ -47,7 +46,6 @@ public class Oauth2Util {
     private String GoogleRedirectURL;
 
     private static final RestTemplate restTemplate = new RestTemplate();
-
     public String getKakaoRedirectUrl() {
         String url = kakaoAuthorizationUrl
                 + "?client_id=" + kakaoClientId
@@ -68,7 +66,7 @@ public class Oauth2Util {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoClientId);
         params.add("client_secret", kakaoClientSecret);
@@ -77,7 +75,6 @@ public class Oauth2Util {
 
         HttpEntity<MultiValueMap<String,String>> kakaoTokenRequest = new HttpEntity<>(params,httpHeaders);
 
-        log.info(kakaoTokenUrl);
         ResponseEntity<String> response = restTemplate.exchange(
                 kakaoTokenUrl,
                 HttpMethod.POST,

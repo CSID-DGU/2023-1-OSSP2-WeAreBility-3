@@ -1,9 +1,7 @@
-# 토큰으로 입력 받기 api 문서 post로 request return은 bool값
 import pymysql
 from shapely import wkt
 from shapely.geometry import MultiPoint
 from shapely.wkb import loads
-import struct
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -11,13 +9,19 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class  similarity_Checker():
     def calculate_Similarity(self, input_coord) :
+        # Token
+        token_true = {
+            "success" : True
+        }
+        token_false = {
+            "success" : False
+        }
 
         # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
         X_mean, Y_mean = 37.554812, 126.988204
         X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
 
         # 유저 input(좌표의 x,y 값을 순서대로 입력한다.)
-        
         temp = np.array(input_coord.split())
         user_input = np.array([])
         for i in temp:
@@ -109,10 +113,10 @@ class  similarity_Checker():
             threshold = 0.975
 
             # 유사도가 높으면 반복문 멈추고 등록 불가
-            if np.any(np.isclose(similarity_vector, 1.0)) and (
+            if (np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
-            ):
-                return False
+            )) or np.all(np.isclose(np.trace(similarity_vector), 1.0)) :
+                return token_false
                 token = 1
                 break
             else:
@@ -120,12 +124,8 @@ class  similarity_Checker():
 
 
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
+        # userid 추가 필요..(5.14) 참조 테이블?? 
         if token == 0 :
-            location = wkt.dumps(MultiPoint(user_coordinates))
-            query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
-            data = ("Hoin6", "서울", location)
-            cursor.execute(query, data)
-            conn.commit()
-            return True
+            return token_true
 
 

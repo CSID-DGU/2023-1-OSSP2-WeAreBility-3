@@ -3,19 +3,18 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
-import com.dongguk.cse.naemansan.dto.response.LoginResponse;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
 import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.dongguk.cse.naemansan.util.Oauth2Util;
-import com.google.api.client.util.Value;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Ref;
 import java.util.Optional;
 import java.util.Random;
 
@@ -29,10 +28,6 @@ public class AuthenticationService {
     private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
     private final Oauth2Util oauth2Util;
-
-    @Value("${spring.image.path: aaa.bbb.ccc}")
-    private String FOLDER_PATH;
-
     public String getRedirectUrl(LoginProviderType loginProviderType) {
         switch (loginProviderType) {
             case KAKAO -> {
@@ -86,23 +81,20 @@ public class AuthenticationService {
                     .loginProviderType(loginProviderType)
                     .build());
             imageRepository.save(Image.builder()
-                    .userObject(loginUser)
+                    .useId(loginUser.getId())
                     .imageUseType(ImageUseType.USER)
-                    .originName("default_image.png")
-                    .uuidName("0_default_image.png")
-                    .type("image/png")
-                    .path(FOLDER_PATH + "0_default_image.png").build());
+                    .build());
         } else {
             loginUser = user.get();
         }
 
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
 
-        Optional<Token> refreshToken = tokenRepository.findByTokenUser(loginUser);
+        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(loginUser.getId());
 
         if (refreshToken.isEmpty()) {
-            tokenRepository.save(Token.builder()
-                    .tokenUser(loginUser)
+            tokenRepository.save(RefreshToken.builder()
+                    .userId(loginUser.getId())
                     .refreshToken(jwtToken.getRefreshToken())
                     .build());
         } else {
@@ -122,7 +114,7 @@ public class AuthenticationService {
             return;
         }
 
-        Optional<Token> refreshToken = tokenRepository.findByTokenUser(user.get());
+        Optional<RefreshToken> refreshToken = tokenRepository.findByUserId(userId);
         refreshToken.get().setRefreshToken(null);
     }
 

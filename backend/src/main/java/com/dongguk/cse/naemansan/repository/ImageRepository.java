@@ -1,7 +1,6 @@
 package com.dongguk.cse.naemansan.repository;
 
 import com.dongguk.cse.naemansan.domain.Image;
-import com.dongguk.cse.naemansan.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    Optional<Image> findByImageUser(User user);
-    Optional<Image> findByUuidName(String uuidName);
+    Optional<Image> findByUserId(Long id);
 }

@@ -1,10 +1,12 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.NotificationDto;
-import com.dongguk.cse.naemansan.common.ResponseDto;
+import com.dongguk.cse.naemansan.dto.ResponseDto;
+import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,10 +16,6 @@ import java.util.List;
 @RequestMapping("/notification")
 public class NotificationController {
     private final NotificationService notificationService;
-
-
-
-
 
     //Notification Read
     @GetMapping("")

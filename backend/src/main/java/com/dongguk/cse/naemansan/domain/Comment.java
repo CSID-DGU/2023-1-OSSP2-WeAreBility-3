@@ -21,33 +21,25 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @JoinColumn(name = "user_id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User commentUser;
-
-    @JoinColumn(name = "course_id", nullable = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Course commentCourse;
-
-    @Column(name = "create_date", nullable = false)
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "course_id")
+    private Long courseId;
+    @Column(name = "create_date")
     private Timestamp createdDate;
-
     @Column(name = "context", nullable = false)
-    private String content;
-
-    @Column(name = "is_edit", columnDefinition = "TINYINT(1)", nullable = false)
+    private String context;
+    @Column(name = "is_edit", columnDefinition = "TINYINT(1)")
     private Boolean isEdit;
-
-    @Column(name = "status", columnDefinition = "TINYINT(1)", nullable = false)
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
     private Boolean status;
 
     @Builder
-    public Comment(User commentUser, Course commentCourse, String content) {
-        this.commentUser = commentUser;
-        this.commentCourse = commentCourse;
+    public Comment(Long userId, Long courseId, String context) {
+        this.userId = userId;
+        this.courseId = courseId;
+        this.context = context;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
-        this.content = content;
         this.isEdit = false;
         this.status = true;
     }
