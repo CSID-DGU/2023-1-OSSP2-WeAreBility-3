@@ -32,7 +32,7 @@ class course_recommender():
     def __init__(self, user_id = int) :
         self.user_id = user_id
         self.model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
-        self.best = 1
+        self.best = 3
 
     # 산책로 tag를 pasing 하는 함수
     def tokenizer(self, text):
@@ -62,7 +62,7 @@ class course_recommender():
         cursor = conn.cursor()
         query = """
         SELECT course_id 
-        FROM finish_courses 
+        FROM using_courses 
         WHERE user_id = %d""" % (id_input)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -111,6 +111,7 @@ class course_recommender():
             candidates_id.append(course_id)
             candidates_score.append(self.similarity_calculator(user_vector, self.course_vector_calculator(self.tokenizer(course_tag))))
         
+
         if len(candidates_id) != 0 :
             temp = np.argsort(np.array(candidates_score))[::-1]
             best_courses = []
