@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
+import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/main_slider.dart';
@@ -19,6 +20,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late Future<Map<String, dynamic>?> user;
   String _city = "";
   String _district = "";
   String _street = "";
@@ -27,6 +29,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    ApiService apiService = ApiService();
+    user = apiService.getUserInfo();
   }
 
   // 위도, 경도로 주소 가져오기
@@ -165,6 +169,30 @@ class _HomeState extends State<Home> {
                           });
                         },
                         icon: const Icon(Icons.refresh_rounded),
+                      ),
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: user,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.hasData) {
+                              // Access user data
+                              Map<String, dynamic>? userData = snapshot.data;
+                              print(userData);
+                              String? name = userData?['name'];
+
+                              // Use the name in your widget tree
+                              return Text('User Name: $name');
+                            } else {
+                              return const Text('No user data available.');
+                            }
+                          }
+                        },
                       ),
                     ],
                   ),
