@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/webview_kakao_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LoginBtn extends StatelessWidget {
   final String whatsLogin;
@@ -30,11 +33,18 @@ class LoginBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void login() {
+    void login() async {
+      var response = await http.get(
+        Uri.parse("http://ossp.dcs-hyungjoon.com/auth/kakao"),
+      );
+      var parsedResponse = jsonDecode(response.body);
+      String loginUrl = parsedResponse['data']['url'];
+
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const WebViewScreenKakao(),
+          builder: (context) =>
+              WebViewScreenKakao(loginUrl: loginUrl), // Pass the loginUrl value
         ),
       );
     }
