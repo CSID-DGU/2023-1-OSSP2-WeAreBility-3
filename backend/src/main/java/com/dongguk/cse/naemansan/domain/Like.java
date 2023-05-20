@@ -17,15 +17,15 @@ public class Like {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User likeUser;
+    private User user;
 
     @JoinColumn(name = "course_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Course likeCourse;
+    private EnrollmentCourse enrollmentCourse;
 
     @Builder
-    public Like(User likeUser, Course likeCourse) {
-        this.likeUser = likeUser;
-        this.likeCourse = likeCourse;
+    public Like(User user, EnrollmentCourse enrollmentCourse) {
+        this.user = user;
+        this.enrollmentCourse = enrollmentCourse;
     }
 }

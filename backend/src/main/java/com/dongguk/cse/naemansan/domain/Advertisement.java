@@ -28,7 +28,7 @@ public class Advertisement {
 
     // ------------------------------------------------------------
 
-    @OneToOne(mappedBy = "imageAdvertisement", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "advertisement", fetch = FetchType.LAZY)
     private Image image;
 
     @Builder

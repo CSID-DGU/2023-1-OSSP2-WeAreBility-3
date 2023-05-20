@@ -1,6 +1,5 @@
-package com.dongguk.cse.naemansan.dto.response;
+package com.dongguk.cse.naemansan.dto;
 
-import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import lombok.Builder;
 import lombok.Getter;

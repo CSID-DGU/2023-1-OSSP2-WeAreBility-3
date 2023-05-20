@@ -24,11 +24,11 @@ public class Comment {
 
     @JoinColumn(name = "user_id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User commentUser;
+    private User user;
 
     @JoinColumn(name = "course_id", nullable = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Course commentCourse;
+    private EnrollmentCourse enrollmentCourse;
 
     @Column(name = "create_date", nullable = false)
     private Timestamp createdDate;
@@ -43,9 +43,9 @@ public class Comment {
     private Boolean status;
 
     @Builder
-    public Comment(User commentUser, Course commentCourse, String content) {
-        this.commentUser = commentUser;
-        this.commentCourse = commentCourse;
+    public Comment(User user, EnrollmentCourse enrollmentCourse, String content) {
+        this.user = user;
+        this.enrollmentCourse = enrollmentCourse;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.content = content;
         this.isEdit = false;

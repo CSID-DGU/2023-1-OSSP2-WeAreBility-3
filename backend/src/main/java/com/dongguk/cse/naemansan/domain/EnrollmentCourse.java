@@ -19,8 +19,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @DynamicUpdate
-@Table(name="courses")
-public class Course {
+@Table(name="enrollment_courses")
+public class EnrollmentCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,7 +28,7 @@ public class Course {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User courseUser;
+    private User user;
 
     @Column(name="title",unique = true)
     private String title;
@@ -52,26 +52,26 @@ public class Course {
     private double distance;
 
     @Column(name = "status", columnDefinition = "TINYINT(1)")
-    private boolean status;
+    private Boolean status;
 
     // ------------------------------------------------------------
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "enrollmentCourse", fetch = FetchType.LAZY)
     private List<CourseTag> courseTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "likeCourse", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "enrollmentCourse", fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commentCourse", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "enrollmentCourse", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "enrollmentCourse", fetch = FetchType.LAZY)
     private List<UsingCourse> usingCourses = new ArrayList<>();
 
     @Builder
-    public Course(User courseUser, String title, String introduction,
-                  String startLocationName, Point startLocation, MultiPoint locations, double distance, boolean status) {
-        this.courseUser = courseUser;
+    public EnrollmentCourse(User user, String title, String introduction,
+                            String startLocationName, Point startLocation, MultiPoint locations, double distance) {
+        this.user = user;
         this.title = title;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.introduction = introduction;
@@ -79,7 +79,7 @@ public class Course {
         this.startLocation = startLocation;
         this.locations = locations;
         this.distance = distance;
-        this.status = status;
+        this.status = true;
     }
 
     public void updateCourse(String title, String introduction) {

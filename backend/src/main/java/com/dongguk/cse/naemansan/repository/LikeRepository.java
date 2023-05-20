@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.repository;
 
-import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
-    List<Like> findByLikeUser(User user);
-    List<Like> findByLikeCourse(Course course);
-
-    Optional<Like> findByLikeUserAndLikeCourse(User user, Course course);
-    void deleteByLikeUserAndLikeCourse(User user, Course course);
+    List<Like> findByUserId(Long userId);
+    List<Like> findByEnrollmentCourseId(Long enrollmentCourseId);
+    Optional<Like> findByUserAndEnrollmentCourse(User user, EnrollmentCourse enrollmentCourse);
+    void deleteByUserIdAndEnrollmentCourseId(Long userId, Long enrollmentCourseId);
 }
