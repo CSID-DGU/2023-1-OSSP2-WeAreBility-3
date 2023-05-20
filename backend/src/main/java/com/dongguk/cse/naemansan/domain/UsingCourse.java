@@ -1,6 +1,5 @@
 package com.dongguk.cse.naemansan.domain;
 
-import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public class UsingCourse {
 
     @JoinColumn(name = "course_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
+    private EnrollmentCourse enrollmentCourse;
 
     @Column(name = "finish_status", columnDefinition = "TINYINT(1)", nullable = false)
     private Boolean finishStatus;
@@ -36,9 +35,9 @@ public class UsingCourse {
     private Timestamp usingDate;
 
     @Builder
-    public UsingCourse(User user, Course course, Boolean finishStatus) {
+    public UsingCourse(User user, EnrollmentCourse enrollmentCourse, Boolean finishStatus) {
         this.user = user;
-        this.course = course;
+        this.enrollmentCourse = enrollmentCourse;
         this.finishStatus = finishStatus;
         this.usingDate = Timestamp.valueOf(LocalDateTime.now());
     }

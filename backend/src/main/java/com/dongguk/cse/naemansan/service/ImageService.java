@@ -56,10 +56,10 @@ public class ImageService {
         }
 
         // 기존 파일이 없다면 새롭게 추가, 아니라면 기존 파일 삭제 후 저장
-        Optional<Image> findImage = imageRepository.findByImageUser((User) useObject.get());
+        Optional<Image> findImage = imageRepository.findByUser((User) useObject.get());
         if (findImage.isEmpty()) {
             imageRepository.save(Image.builder()
-                    .userObject(useObject)
+                    .useObject(useObject)
                     .imageUseType(imageUseType)
                     .originName(file.getOriginalFilename())
                     .uuidName(uuidImageName)
@@ -86,8 +86,10 @@ public class ImageService {
         } else {
             image = imageRepository.findByUuidName(UuidName).orElseThrow(() -> new RestApiException(ErrorCode.FILE_DOWNLOAD));
             filePath = image.getPath();
+
         }
 
+        log.info(filePath);
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;
     }

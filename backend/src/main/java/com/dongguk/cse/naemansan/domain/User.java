@@ -26,16 +26,12 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "social_login_id")
-    private String socialLoginId;
+    @Column(name = "social_id")
+    private String socialId;
 
     @Column(name = "provider")
     @Enumerated(EnumType.STRING)
     private LoginProviderType loginProviderType;
-
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private UserRoleType userRoleType;
 
     @Column(name = "name")
     private String name;
@@ -43,15 +39,28 @@ public class User {
     @Column(name = "introduction")
     private String introduction;
 
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRoleType userRoleType;
+
     @Column(name = "created_date")
     private Timestamp createdDate;
 
+    @Column(name = "is_login", columnDefinition = "TINYINT(1)", nullable = false)
+    private Boolean isLogin;
+
+    @Column(name = "refresh_Token")
+    private String refreshToken;
+
+    @Column(name = "device_Token")
+    private String deviceToken;
+
     // ------------------------------------------------------------
 
-    @OneToMany(mappedBy = "notificationUser", fetch = FetchType.LAZY)
-    private List<Notification> notifications = new ArrayList<>();
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Image image;
 
-    @OneToOne(mappedBy = "subscribeUser", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Subscribe subscribe;
 
     @OneToMany(mappedBy = "followingUser", fetch = FetchType.LAZY)
@@ -60,35 +69,42 @@ public class User {
     @OneToMany(mappedBy = "followerUser", fetch = FetchType.LAZY)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToOne(mappedBy = "tokenUser", fetch = FetchType.LAZY)
-    private Token token;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Notification> notifications = new ArrayList<>();
 
-    @OneToOne(mappedBy = "imageUser", fetch = FetchType.LAZY)
-    private Image image;
-
-    @OneToMany(mappedBy = "courseUser", fetch = FetchType.LAZY)
-    private List<Course> courses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "likeUser", fetch = FetchType.LAZY)
-    private List<Like> likes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "commentUser", fetch = FetchType.LAZY)
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "badgeUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Badge> badges = new ArrayList<>();
+
+    // ------------------------------------------------------------
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<IndividualCourse> individualCourses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<EnrollmentCourse> enrollmentCourses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UsingCourse> usingCourses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
+
+
     @Builder
-    public User(String socialLoginId, LoginProviderType loginProviderType, String name) {
-        this.socialLoginId = socialLoginId;
+    public User(String socialId, LoginProviderType loginProviderType, String name, UserRoleType userRoleType,
+                String refreshToken, String deviceToken) {
+        this.socialId = socialId;
         this.loginProviderType = loginProviderType;
-        this.userRoleType = UserRoleType.USER;
+        this.userRoleType = userRoleType;
         this.name = name;
         this.introduction = "안녕하세요!";
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.isLogin = true;
+        this.refreshToken = refreshToken;
+        this.deviceToken = deviceToken;
     }
 
     public void updateUser(String name, String introduction) {

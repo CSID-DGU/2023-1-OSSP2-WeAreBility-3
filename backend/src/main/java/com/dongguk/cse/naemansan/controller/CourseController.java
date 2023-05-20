@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.response.CourseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDetailDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.response.CourseListDto;
@@ -20,20 +20,20 @@ public class CourseController {
 
     // Course Create
     @PostMapping("")
-    public ResponseDto<CourseDto> createCourse(Authentication authentication, @RequestBody CourseRequestDto courseRequestDto){
-        return new ResponseDto<CourseDto>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
+    public ResponseDto<CourseDetailDto> createCourse(Authentication authentication, @RequestBody CourseRequestDto courseRequestDto){
+        return new ResponseDto<CourseDetailDto>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
     }
 
     // Course Read
     @GetMapping("/{courseId}")
-    public ResponseDto<CourseDto> readCourse(@PathVariable Long courseId) {
-        return new ResponseDto<CourseDto>(courseService.readCourse(Long.valueOf(courseId)));
+    public ResponseDto<CourseDetailDto> readCourse(@PathVariable Long courseId) {
+        return new ResponseDto<CourseDetailDto>(courseService.readCourse(Long.valueOf(courseId)));
     }
 
     // Course Update
     @PutMapping("/{courseId}")
-    public ResponseDto<CourseDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
-        return new ResponseDto<CourseDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
+    public ResponseDto<CourseDetailDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
+        return new ResponseDto<CourseDetailDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
     }
 
     // Course Delete

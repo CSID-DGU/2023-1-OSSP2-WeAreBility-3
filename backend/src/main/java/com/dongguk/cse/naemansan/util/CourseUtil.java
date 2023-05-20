@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.util;
 
-import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.CourseTag;
 import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.domain.User;
@@ -138,12 +138,12 @@ public class CourseUtil {
         return locations;
     }
 
-    public List<CourseTag> getTagDto2Tag(Course course, List<CourseTagDto> dtoList) {
+    public List<CourseTag> getTagDto2Tag(EnrollmentCourse enrollmentCourse, List<CourseTagDto> dtoList) {
         List<CourseTag> tagList = new ArrayList<>();
 
         for (CourseTagDto courseTagDto : dtoList) {
             tagList.add(CourseTag.builder()
-                    .course(course).courseTagType(courseTagDto.getCourseTagType()).build());
+                    .enrollmentCourse(enrollmentCourse).courseTagType(courseTagDto.getCourseTagType()).build());
         }
 
         return tagList;
@@ -161,9 +161,9 @@ public class CourseUtil {
         return dtoList;
     }
 
-    public boolean existLike(User user, Course course) {
+    public boolean existLike(User user, EnrollmentCourse enrollmentCourse) {
         for (Like like : user.getLikes()) {
-            if (!like.getLikeCourse().equals(course)) {
+            if (!like.getEnrollmentCourse().equals(enrollmentCourse)) {
                 continue;
             }
             return true;

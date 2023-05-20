@@ -1,7 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.common.ResponseDto;
-import com.dongguk.cse.naemansan.dto.response.LoginResponse;
+import com.dongguk.cse.naemansan.dto.response.JwtResponseDto;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.response.TokenDto;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
@@ -9,14 +9,12 @@ import com.dongguk.cse.naemansan.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SimpleTimeZone;
 
 @Slf4j
 @RestController
@@ -34,8 +32,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/kakao/callback")
-    public ResponseDto<LoginResponse> loginKakao(@RequestParam("code") String code) {
-        log.info("loginKakao 시도 인가코드 - {}", code);
+    public ResponseDto<JwtResponseDto> loginKakao(@RequestParam("code") String code) {
         return new ResponseDto(authenticationService.login(code, LoginProviderType.KAKAO));
     }
 
@@ -47,7 +44,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/google/callback")
-    public ResponseDto<LoginResponse> loginGoogle(@RequestParam("code") String code) {
+    public ResponseDto<JwtResponseDto> loginGoogle(@RequestParam("code") String code) {
         return new ResponseDto(authenticationService.login(code, LoginProviderType.GOOGLE));
     }
 
