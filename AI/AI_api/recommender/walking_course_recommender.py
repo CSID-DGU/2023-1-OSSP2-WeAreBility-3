@@ -32,7 +32,7 @@ class course_recommender():
     def __init__(self, user_id = int) :
         self.user_id = user_id
         self.model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
-        self.best = 1
+        self.best = 3
 
     # 산책로 tag를 pasing 하는 함수
     def tokenizer(self, text):
