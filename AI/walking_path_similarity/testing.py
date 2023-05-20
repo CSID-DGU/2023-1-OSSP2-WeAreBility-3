@@ -1,7 +1,7 @@
 import json
 import pymysql
 from shapely import wkt
-from shapely.geometry import MultiPoint
+from shapely.geometry import MultiPoint, Point
 from shapely.wkb import loads
 import struct
 import pandas as pd
@@ -28,9 +28,8 @@ with open('C:\\Hoin666\\2023-1-OSSP2-WeAreBility-3\\AI\\walking_path_similarity\
     points = []
     for i in locations_data :
         points.append((i["latitude"], i["longitude"]))
-userid=7
+userid=6
 user_id=2
-course_id=7
 title=json_data["title"]
 introduction=json_data["introduction"]
 
@@ -39,15 +38,24 @@ coordinates = [(37.58390867551281, 126.97538108722037), (37.58518352258369,126.9
                (37.584976265454124, 126.97496748977429), (37.5839309066819, 126.97401116070839)
                ]
 coordinates_start = [(37.5555, 126.8998)]
-location_start = wkt.dumps(MultiPoint(coordinates_start))
+location_start = wkt.dumps(Point(coordinates_start))
 location = wkt.dumps(MultiPoint(points))
 print(location)
-print(location_start)
+
 query = """
-    INSERT INTO finish_courses (id, user_id, course_id, finish_date) 
-    VALUES (%s, %s, %s, %s)
+    INSERT INTO enrollment_courses (id, user_id, title, created_date, introduction, start_location_name, locations, distance, status, start_location) 
+    VALUES (%s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s, ST_GeomFromText(%s, 4326))
     """
-data = (str(userid), str(user_id), str(course_id), pd.to_datetime("2023-05-20"))
+data = (str(userid), str(user_id), title, pd.to_datetime("2023-05-20"),
+        introduction, "서울", location, "1", "1", location_start)
+cursor.execute(query, data)
+conn.commit()
+
+query = """
+    INSERT INTO course_tags (id, course_id, tag) 
+    VALUES (%s, %s, %s)
+    """
+data = (str(userid), str(userid), tags)
 cursor.execute(query, data)
 conn.commit()
 

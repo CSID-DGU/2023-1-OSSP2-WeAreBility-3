@@ -28,8 +28,9 @@ with open('C:\\Hoin666\\2023-1-OSSP2-WeAreBility-3\\AI\\walking_path_similarity\
     points = []
     for i in locations_data :
         points.append((i["latitude"], i["longitude"]))
-userid=22
-user_id=4
+userid=1
+user_id=2
+course_id=1
 title=json_data["title"]
 introduction=json_data["introduction"]
 
@@ -45,18 +46,10 @@ location = wkt.dumps(MultiPoint(points))
 print(location)
 print(location_start)
 query = """
-    INSERT INTO finish_courses (id, user_id, course_id, finish_date, introduction, start_location_name, locations, distance, status) 
-    VALUES (%s, %s, %s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s, %s)
+    INSERT INTO using_courses (id, user_id, course_id, using_date, finish_status) 
+    VALUES (%s, %s, %s, %s, %s)
     """
-data = (str(userid), str(user_id), title, pd.to_datetime("2023-05-20"),
-        introduction, "서울", location, "1", "1")
+data = (str(userid), str(user_id), str(course_id), np.datetime64("2023-05-20"), "1")
 cursor.execute(query, data)
 conn.commit()
 
-query = """
-    INSERT INTO course_tags (id, course_id, tag) 
-    VALUES (%s, %s, %s)
-    """
-data = (str(userid), str(userid), tags)
-cursor.execute(query, data)
-conn.commit()

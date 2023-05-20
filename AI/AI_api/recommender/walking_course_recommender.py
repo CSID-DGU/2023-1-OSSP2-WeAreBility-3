@@ -62,7 +62,7 @@ class course_recommender():
         cursor = conn.cursor()
         query = """
         SELECT course_id 
-        FROM finish_courses 
+        FROM using_courses 
         WHERE user_id = %d""" % (id_input)
         cursor.execute(query)
         results = cursor.fetchall()
