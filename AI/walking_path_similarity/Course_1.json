@@ -1,0 +1,52 @@
+{
+    "title": "동국대에서 한강까지",
+    "introduction": "동국대에서 한강까지 가는 산책로입니다.",
+    "courseTags": [
+        {
+            "courseTagType": "중구",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "한강",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "사색",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "스트레스해소",
+            "statusType": "NEW"
+        }
+    ],
+    "pointDtos": [
+        {
+            "latitude": 37.55913148434144,
+            "longitude": 127.00571553601067
+        },
+        {
+            "latitude": 37.558176275839,
+            "longitude": 127.0082732742313
+        },
+        {
+            "latitude": 37.554842390656695,
+            "longitude": 127.01069479594982
+        },
+        {
+            "latitude": 37.551850833277854,
+            "longitude": 127.01311616194913
+        },
+        {
+            "latitude": 37.54831859557159,
+            "longitude": 127.01576354735278
+        },
+        {
+            "latitude": 37.54498476551676,
+            "longitude": 127.01673600018404
+        },
+        {
+            "latitude": 37.54078593164794,
+            "longitude": 127.01793446427125
+        }
+    ]
+}
