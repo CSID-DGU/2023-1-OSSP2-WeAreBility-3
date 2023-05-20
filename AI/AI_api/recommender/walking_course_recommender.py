@@ -111,6 +111,7 @@ class course_recommender():
             candidates_id.append(course_id)
             candidates_score.append(self.similarity_calculator(user_vector, self.course_vector_calculator(self.tokenizer(course_tag))))
         
+
         if len(candidates_id) != 0 :
             temp = np.argsort(np.array(candidates_score))[::-1]
             best_courses = []

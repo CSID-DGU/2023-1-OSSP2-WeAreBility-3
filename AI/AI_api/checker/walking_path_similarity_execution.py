@@ -105,17 +105,17 @@ class  similarity_Checker():
             # 유사도 벡터와 점수
             walking_std = temp_frame.values
             similarity_vector = cosine_similarity(walking_std, user_std)
-            similarity_score = similarity_vector.mean()
-            #print("코사인 유사도 점수 : ", similarity_score)
-            #print("코사인 유사도 벡터 : ", cosine_similarity(walking_std, user_std))
+            similarity_score = np.mean(np.max(similarity_vector, axis=0))
+            print("코사인 유사도 점수 : ", similarity_score)
+            print("코사인 유사도 벡터 : ", cosine_similarity(walking_std, user_std))
 
             # threshold -> 0.975 (나중에 바뀔수도..??)
-            threshold = 0.975
+            threshold = 0.9985
 
             # 유사도가 높으면 반복문 멈추고 등록 불가
             if (np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
-            )) or np.all(np.isclose(np.trace(similarity_vector), 1.0)) :
+            )) or np.all(np.isclose(np.diag(similarity_vector), 1.0)) :
                 return token_false
                 token = 1
                 break
