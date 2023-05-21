@@ -5,18 +5,17 @@ import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.CourseMapping;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
-import com.dongguk.cse.naemansan.dto.response.CourseDetailDto;
+import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseDetailDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
-import com.dongguk.cse.naemansan.dto.response.CourseListDto;
-import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
-import com.dongguk.cse.naemansan.repository.CourseTagRepository;
-import com.dongguk.cse.naemansan.repository.LikeRepository;
-import com.dongguk.cse.naemansan.repository.UserRepository;
+import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
+import com.dongguk.cse.naemansan.dto.response.IndividualCourseListDto;
+import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,13 +33,14 @@ import java.util.*;
 public class CourseService {
     private final UserRepository userRepository;
     private final EnrollmentCourseRepository enrollmentCourseRepository;
+    private final IndividualCourseRepository individualCourseRepository;
     private final CourseTagRepository courseTagRepository;
     private final LikeRepository likeRepository;
     private final CourseUtil courseUtil;
 
 
     // Course Create
-    public CourseDetailDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
+    public EnrollmentCourseDetailDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
         // User 존재, Course Title 중복유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         enrollmentCourseRepository.findByTitleAndStatus(courseRequestDto.getTitle(), true).ifPresent(s -> new RestApiException(ErrorCode.DUPLICATION_COURSE_TITLE));
@@ -68,7 +68,7 @@ public class CourseService {
         // ResponseDto 를 위한 TagDto 생성
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(courseTags);
 
-        return CourseDetailDto.builder()
+        return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
                 .userId(enrollmentCourse.getUser().getId())
                 .userName(enrollmentCourse.getUser().getName())
@@ -81,7 +81,7 @@ public class CourseService {
     }
 
     // Course Read
-    public CourseDetailDto readCourse(Long courseId) {
+    public EnrollmentCourseDetailDto readCourse(Long courseId) {
         // Course 존재유무 확인
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
@@ -89,7 +89,7 @@ public class CourseService {
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags());
 
-        return CourseDetailDto.builder()
+        return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
                 .userId(enrollmentCourse.getUser().getId())
                 .userName(enrollmentCourse.getUser().getName())
@@ -101,7 +101,7 @@ public class CourseService {
                 .locations(locations).build();
     }
 
-    public CourseDetailDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
+    public EnrollmentCourseDetailDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
         // User, Course 존재유무, Course Title 중복유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
@@ -134,7 +134,7 @@ public class CourseService {
         // ResponseDto 를 위한 PointDto 생성
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
 
-        return CourseDetailDto.builder()
+        return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
                 .userId(enrollmentCourse.getUser().getId())
                 .userName(enrollmentCourse.getUser().getName())
@@ -161,7 +161,61 @@ public class CourseService {
         return Boolean.TRUE;
     }
 
-    public List<CourseListDto> getCourseListByTag(Long userId, String tag) {
+    // 나만의 Tap - 개인 산책로 조회용
+    public List<IndividualCourseListDto> getIndividualCourseList(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<IndividualCourse> page =  individualCourseRepository.findListByUser(user, paging);
+
+        List<IndividualCourseListDto> individualCourseListDtoList = new ArrayList<>();
+        for (IndividualCourse course : page.getContent()) {
+            individualCourseListDtoList.add(IndividualCourseListDto.builder()
+                    .id(course.getId())
+                    .title(course.getTitle())
+                    .createdDate(course.getCreatedDate())
+                    .distance(course.getDistance()).build());
+        }
+
+        return individualCourseListDtoList;
+    }
+
+    // 나만의 Tap - 등록한 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByUser(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByUser(user, paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+
+        return list;
+    }
+
+    // 나만의 Tap - 좋아요한 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByLikeAndUser(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByLikeAndUser(user, paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        return list;
+    }
+
+    // 나만의 Tap - 이용한 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByUsingAndUser(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByUsingAndUser(user, paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        return list;
+    }
+
+    // 나만의 Tap, Main Tap - 태그를 가진 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByTag(Long userId, Long pageNum, Long Num, String tag) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         // Tag 존재유무 확인
         CourseTagType courseTagType = CourseTagType.existType(tag);
@@ -169,45 +223,64 @@ public class CourseService {
             throw new RestApiException(ErrorCode.NOT_FOUND_COURSE_TAG);
         }
 
-        Pageable paging = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<EnrollmentCourse> pages =  enrollmentCourseRepository.findCourseListByTag(courseTagType, paging);
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByTag(courseTagType, paging);
 
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
-        for (EnrollmentCourse enrollmentCourse : pages.getContent()) {
-            if (!enrollmentCourse.getStatus()) {
-                continue;
-            }
-
-            courseListDtoList.add(CourseListDto.builder()
-                    .id(enrollmentCourse.getId())
-                    .title(enrollmentCourse.getTitle())
-                    .createdDateTime(enrollmentCourse.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
-                    .startLocationName(enrollmentCourse.getStartLocationName())
-                    .distance(enrollmentCourse.getDistance())
-                    .likeCnt((long) enrollmentCourse.getLikes().size())
-                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
-                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
-        }
-
-        return courseListDtoList;
+        return list;
     }
 
-    public List<CourseListDto> getCourseListByLocation(Long userId, Double latitude, Double longitude) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        List<CourseMapping> courseMappingList =  enrollmentCourseRepository.findCourseListByLocation(courseUtil.getLatLng2Point(latitude, longitude), 5L);
+    // 산책로 Tap - 해당 유저의 성향에 따라 추천 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByRecommend(Long userId, Long pageNum, Long Num) {
+        return null;
+    }
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
-        for (CourseMapping courseMapping : courseMappingList) {
+    // 산책로 Tap - 최신순 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseList(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+
+        return list;
+    }
+
+    // 산책로 Tap - 좋아요순 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByLikeCount(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+
+        return list;
+    }
+
+    // 산책로 Tap - 이용자순 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByUsingCount(Long userId, Long pageNum, Long Num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+
+        return list;
+    }
+
+    // 산책로 Tap, Main Tap - 거리순 산책로 조회용
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListByLocation(Long userId, Long pageNum, Long Num, Double latitude, Double longitude) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.ASC, "radius"));
+        Page<CourseMapping> pages =  enrollmentCourseRepository.findListByLocation(courseUtil.getLatLng2Point(latitude, longitude), paging);
+
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
+        for (CourseMapping courseMapping : pages.getContent()) {
             EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseMapping.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
-            // 삭제된 산책로라면 건너뜀
-            if (!enrollmentCourse.getStatus()) {
-                continue;
-            }
-
-            courseListDtoList.add(CourseListDto.builder()
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .createdDateTime(enrollmentCourse.getCreatedDate())
@@ -219,7 +292,7 @@ public class CourseService {
                     .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 
     public Map<String, Object> likeCourse(Long userId, Long courseId) {

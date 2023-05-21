@@ -4,7 +4,7 @@ import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
-import com.dongguk.cse.naemansan.dto.response.CourseListDto;
+import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
@@ -98,15 +98,15 @@ public class UserService {
         return commentDtoList;
     }
 
-    public List<CourseListDto> readLikeCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readLikeCourseList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<Like> likeList = user.getLikes();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (Like like : likeList) {
             EnrollmentCourse enrollmentCourse = like.getEnrollmentCourse();
-            courseListDtoList.add(CourseListDto.builder()
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .createdDateTime(enrollmentCourse.getCreatedDate())
@@ -118,17 +118,17 @@ public class UserService {
                     .isLike(true).build());
             }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 
-    public List<CourseListDto> readEnrollmentCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readEnrollmentCourseList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<EnrollmentCourse> enrollmentCourseList = user.getEnrollmentCourses();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (EnrollmentCourse enrollmentCourse : enrollmentCourseList) {
-            courseListDtoList.add(CourseListDto.builder()
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .createdDateTime(enrollmentCourse.getCreatedDate())
@@ -140,22 +140,22 @@ public class UserService {
                     .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 
-    public List<CourseListDto> readFinishCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readFinishCourseList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<UsingCourse> usingCourseList = user.getUsingCourses();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (UsingCourse usingCourse : usingCourseList) {
             if (!usingCourse.getFinishStatus()) {
                 continue;
             }
             EnrollmentCourse enrollmentCourse = usingCourse.getEnrollmentCourse();
 
-            courseListDtoList.add(CourseListDto.builder()
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .createdDateTime(enrollmentCourse.getCreatedDate())
@@ -167,6 +167,6 @@ public class UserService {
                     .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 }
