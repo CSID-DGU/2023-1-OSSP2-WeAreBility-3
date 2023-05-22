@@ -42,9 +42,11 @@ public class CourseService {
     public IndividualCourseDetailDto createIndividualCourse(Long userId, IndividualCourseRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         individualCourseRepository.findByUserAndTitle(user, requestDto.getTitle()).ifPresent(str -> { throw new RestApiException(ErrorCode.DUPLICATION_COURSE_TITLE); });
+
         Map<String, Object> pointInformation = courseUtil.getPointDto2Point(requestDto.getLocations());
         MultiPoint multiPoint = (MultiPoint) pointInformation.get("locations");
         double distance = (double) pointInformation.get("distance");
+
         IndividualCourse course = individualCourseRepository.save(IndividualCourse.builder()
                 .user(user)
                 .title(requestDto.getTitle())
@@ -62,7 +64,7 @@ public class CourseService {
     // Individual Course Read
     public IndividualCourseDetailDto readIndividualCourse(Long userId, Long courseId) {
         // 해당 유저가 만든 Course 존재 유무 확인
-        IndividualCourse course = individualCourseRepository.findByIdAndUserId(userId, courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        IndividualCourse course = individualCourseRepository.findByIdAndUserId(courseId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
         return IndividualCourseDetailDto.builder()
                 .id(course.getId())
@@ -77,7 +79,7 @@ public class CourseService {
         // 해당 유저가 만든 Course 존재 유무 확인
         IndividualCourse course = individualCourseRepository.findByIdAndUserId(courseId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
-        individualCourseRepository.delete(course);
+//        individualCourseRepository.delete(course);
         return Boolean.TRUE;
     }
 

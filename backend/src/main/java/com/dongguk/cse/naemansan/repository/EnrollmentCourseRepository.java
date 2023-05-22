@@ -21,12 +21,12 @@ public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCour
     Optional<EnrollmentCourse> findByTitleAndStatus(String title, Boolean status);
 
     @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.user = :user AND c.status = true")
-    Page<EnrollmentCourse> findListByUser(User user, Pageable pageable);
-    @Query(value = "SELECT c FROM EnrollmentCourse c INNER JOIN Like l WHERE l.user = :user AND c.status = true")
-    Page<EnrollmentCourse> findListByLikeAndUser(User user, Pageable pageable);
-    @Query(value = "SELECT c FROM EnrollmentCourse c INNER JOIN UsingCourse uc WHERE uc.user = :user AND c.status = true")
-    Page<EnrollmentCourse> findListByUsingAndUser(User user, Pageable pageable);
-    @Query(value = "SELECT c FROM EnrollmentCourse c INNER JOIN CourseTag t ON c = t.enrollmentCourse WHERE t.courseTagType = :tag AND c.status = true")
+    Page<EnrollmentCourse> findListByUser(@Param("user") User user, Pageable pageable);
+    @Query(value = "SELECT c FROM EnrollmentCourse c LEFT JOIN Like l ON c = l.enrollmentCourse WHERE l.user = :user AND c.status = true")
+    Page<EnrollmentCourse> findListByLikeAndUser(@Param("user") User user, Pageable pageable);
+    @Query(value = "SELECT c FROM EnrollmentCourse c LEFT JOIN UsingCourse uc ON uc.enrollmentCourse = c WHERE uc.user = :user AND c.status = true")
+    Page<EnrollmentCourse> findListByUsingAndUser(@Param("user") User user, Pageable pageable);
+    @Query(value = "SELECT c FROM EnrollmentCourse c LEFT JOIN CourseTag t ON t.enrollmentCourse = c WHERE t.courseTagType = :tag AND c.status = true")
     Page<EnrollmentCourse> findListByTag(@Param("tag") CourseTagType courseTagType, Pageable paging);
 
     @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.status = true")
