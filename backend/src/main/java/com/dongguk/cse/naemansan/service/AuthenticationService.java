@@ -103,6 +103,7 @@ public class AuthenticationService {
         // JwtToken 생성, 기존 Refresh Token 탐색
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
         loginUser.setRefreshToken(jwtToken.getRefresh_token());
+        loginUser.setIsLogin(true);
 
         // Jwt 반환
         return JwtResponseDto.builder()

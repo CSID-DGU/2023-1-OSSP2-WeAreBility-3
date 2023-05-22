@@ -44,12 +44,6 @@ public class CourseController {
         return new ResponseDto<Boolean>(courseService.deleteIndividualCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
-    // Using Course Create
-    @PostMapping("/using")
-    public ResponseDto<Boolean> createUsingCourse(Authentication authentication, @RequestBody UsingCourseRequestDto requestDto){
-        return new ResponseDto<Boolean>(courseService.createUsingCourse(Long.valueOf(authentication.getName()), requestDto));
-    }
-
     // Course Create
     @PostMapping("/enrollment")
     public ResponseDto<EnrollmentCourseDetailDto> createCourse(Authentication authentication, @RequestBody EnrollmentCourseRequestDto enrollmentCourseRequestDto){
@@ -72,6 +66,12 @@ public class CourseController {
     @DeleteMapping("/enrollment/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Boolean>(courseService.deleteEnrollmentCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
+    }
+
+    // Using Course Create
+    @PostMapping("/using")
+    public ResponseDto<Boolean> createUsingCourse(Authentication authentication, @RequestBody UsingCourseRequestDto requestDto){
+        return new ResponseDto<Boolean>(courseService.createUsingCourse(Long.valueOf(authentication.getName()), requestDto));
     }
 
     @GetMapping("/list/main/tag")

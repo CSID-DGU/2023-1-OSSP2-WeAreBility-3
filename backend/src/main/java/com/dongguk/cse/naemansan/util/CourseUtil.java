@@ -5,7 +5,7 @@ import com.dongguk.cse.naemansan.domain.CourseTag;
 import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.TagStatusType;
-import com.dongguk.cse.naemansan.dto.CourseTagDto;
+import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.google.gson.JsonArray;
@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -198,6 +196,11 @@ public class CourseUtil {
         return map;
     }
 
+    public PointDto getPoint2PointDto(Point point) {
+        return new PointDto(point.getCoordinate().getY(),
+                point.getCoordinate().getX());
+    }
+
     public List<PointDto> getPoint2PointDto(MultiPoint multiPoint) {
         List<PointDto> locations = new ArrayList<>();
 
@@ -213,24 +216,24 @@ public class CourseUtil {
         return geometryFactory.createPoint(before);
     }
 
-    public List<CourseTag> getTagDto2Tag(EnrollmentCourse enrollmentCourse, List<CourseTagDto> dtoList) {
+    public List<CourseTag> getTagDto2Tag(EnrollmentCourse enrollmentCourse, List<EnrollmentCourseTagDto> dtoList) {
         List<CourseTag> tagList = new ArrayList<>();
 
-        for (CourseTagDto courseTagDto : dtoList) {
+        for (EnrollmentCourseTagDto enrollmentCourseTagDto : dtoList) {
             tagList.add(CourseTag.builder()
-                    .enrollmentCourse(enrollmentCourse).courseTagType(courseTagDto.getCourseTagType()).build());
+                    .enrollmentCourse(enrollmentCourse).courseTagType(enrollmentCourseTagDto.getName()).build());
         }
 
         return tagList;
     }
 
-    public List<CourseTagDto> getTag2TagDto(List<CourseTag> tagList) {
-        List<CourseTagDto> dtoList = new ArrayList<>();
+    public List<EnrollmentCourseTagDto> getTag2TagDto(List<CourseTag> tagList) {
+        List<EnrollmentCourseTagDto> dtoList = new ArrayList<>();
 
         for (CourseTag courseTag : tagList) {
-            dtoList.add(CourseTagDto.builder()
-                    .courseTagType(courseTag.getCourseTagType())
-                    .tagStatusType(TagStatusType.DEFAULT).build());
+            dtoList.add(EnrollmentCourseTagDto.builder()
+                    .name(courseTag.getCourseTagType())
+                    .status(TagStatusType.DEFAULT).build());
         }
 
         return dtoList;
@@ -246,19 +249,19 @@ public class CourseUtil {
         return false;
     }
 
-    public List<EnrollmentCourseListDto> getEnrollmentCourseListDtos(User user, Page<EnrollmentCourse> page) {
+    public List<EnrollmentCourseListDto> getEnrollmentCourseList(User user, Page<EnrollmentCourse> page) {
         List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (EnrollmentCourse enrollmentCourse : page.getContent()) {
             enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
-                    .createdDateTime(enrollmentCourse.getCreatedDate())
-                    .courseTags(getTag2TagDto(enrollmentCourse.getCourseTags()))
-                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
-                    .likeCnt((long) enrollmentCourse.getLikes().size())
-                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
-                    .isLike(existLike(user, enrollmentCourse)).build());
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(existLike(user, enrollmentCourse)).build());
         }
         return enrollmentCourseListDtoList;
     }

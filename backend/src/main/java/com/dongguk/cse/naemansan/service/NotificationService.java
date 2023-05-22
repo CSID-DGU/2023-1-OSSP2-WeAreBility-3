@@ -2,6 +2,7 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
+import com.dongguk.cse.naemansan.domain.Comment;
 import com.dongguk.cse.naemansan.domain.Notification;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
@@ -11,6 +12,10 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +51,11 @@ public class NotificationService {
         return ResponseEntity.ok().build();
     }
 
-    public List<NotificationDto> readNotification(Long userId) {
+    public List<NotificationDto> readNotification(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        List<Notification> notifications = notificationRepository.findByUser(user);
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createDate"));
+        Page<Notification> notifications = notificationRepository.findByUser(user, paging);
 
         List<NotificationDto> notificationDtoList = new ArrayList<>();
         for(Notification notification : notifications){
@@ -56,8 +63,8 @@ public class NotificationService {
                     .id(notification.getId())
                     .title(notification.getTitle())
                     .content(notification.getContent())
-                    .createDate(notification.getCreateDate())
-                    .isReadStatus(notification.getIsReadStatus()).build());
+                    .create_date(notification.getCreateDate())
+                    .is_read_status(notification.getIsReadStatus()).build());
         }
         return notificationDtoList;
     }

@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.dto.response;
 
-import com.dongguk.cse.naemansan.dto.CourseTagDto;
+import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,26 +10,26 @@ import java.util.List;
 public class EnrollmentCourseListDto {
     private Long id;
     private String title;
-    private Timestamp createdDateTime;
-    private List<CourseTagDto> courseTags;
-    private String startLocationName;
+    private Timestamp created_date;
+    private List<EnrollmentCourseTagDto> tags;
+    private String start_location_name;
     private Double distance;
-    private Long likeCnt;
-    private Long usingCnt;
-    private Boolean isLike;
+    private Long like_cnt;
+    private Long using_unt;
+    private Boolean is_like;
 
     @Builder
-    public EnrollmentCourseListDto(Long id, String title, Timestamp createdDateTime,
-                                   List<CourseTagDto> courseTags, String startLocationName,
-                                   Double distance, Long likeCnt, Long usingCnt, Boolean isLike) {
+    public EnrollmentCourseListDto(Long id, String title, Timestamp created_date,
+                                   List<EnrollmentCourseTagDto> tags, String start_location_name,
+                                   Double distance, Long like_cnt, Long using_unt, Boolean is_like) {
         this.id = id;
         this.title = title;
-        this.createdDateTime = createdDateTime;
-        this.courseTags = courseTags;
-        this.startLocationName = startLocationName;
+        this.created_date = created_date;
+        this.tags = tags;
+        this.start_location_name = start_location_name;
         this.distance = distance;
-        this.likeCnt = likeCnt;
-        this.usingCnt = usingCnt;
-        this.isLike = isLike;
+        this.like_cnt = like_cnt;
+        this.using_unt = using_unt;
+        this.is_like = is_like;
     }
 }

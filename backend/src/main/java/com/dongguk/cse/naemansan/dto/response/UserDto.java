@@ -8,25 +8,25 @@ import lombok.Getter;
 @Getter
 public class UserDto {
     private String name;
-    private String imagePath;
+    private String image_path;
     private String introduction;
-    private boolean isPremium;
-    private Long likeCnt;
-    private Long commentCnt;
-    private Long badgeCnt;
-    private Long followingCnt;
-    private Long followerCnt;
+    private Boolean is_premium;
+    private Long like_cnt;
+    private Long comment_cnt;
+    private Long badge_cnt;
+    private Long following_cnt;
+    private Long follower_cnt;
 
     @Builder
-    public UserDto(User user, Image image, Long likeCnt, boolean isPremium, Long commentCnt, Long badgeCnt, Long followingCnt, Long followerCnt) {
+    public UserDto(User user, Image image, Boolean is_premium, Long like_cnt, Long comment_cnt, Long badge_cnt, Long following_cnt, Long follower_cnt) {
         this.name = user.getName();
-        this.imagePath = image.getUuidName();
+        this.image_path = image.getUuidName();
         this.introduction = user.getIntroduction();
-        this.isPremium = isPremium;
-        this.likeCnt = likeCnt;
-        this.commentCnt = commentCnt;
-        this.badgeCnt = badgeCnt;
-        this.followingCnt = followingCnt;
-        this.followerCnt = followerCnt;
+        this.is_premium = is_premium;
+        this.like_cnt = like_cnt;
+        this.comment_cnt = comment_cnt;
+        this.badge_cnt = badge_cnt;
+        this.following_cnt = following_cnt;
+        this.follower_cnt = follower_cnt;
     }
 }

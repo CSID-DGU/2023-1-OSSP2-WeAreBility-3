@@ -23,8 +23,8 @@ public class CommentController {
 
     // Comment Read
     @GetMapping("/{courseId}/comment")
-    public ResponseDto<List<CommentDto>> readComment(@PathVariable Long courseId) {
-        return new ResponseDto<List<CommentDto>>(commentService.readComment(courseId));
+    public ResponseDto<List<CommentDto>> readComment(@PathVariable Long courseId , @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<CommentDto>>(commentService.readComment(courseId, page, num));
     }
 
     // Comment Update

@@ -18,8 +18,6 @@ public class FollowController {
         return new ResponseDto<Boolean>(followService.createFollow(Long.valueOf(authentication.getName()), followingId));
     }
 
-
-
     // UserOne이 UserTwo를 팔로우를 취소함 - Follow Delete
     @DeleteMapping("/{followingId}")
     public ResponseDto<Boolean> deleteFollow(Authentication authentication, @PathVariable Long followingId) {

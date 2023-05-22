@@ -12,6 +12,10 @@ import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,27 +45,25 @@ public class CommentService {
         return Boolean.TRUE;
     }
 
-    public List<CommentDto> readComment(Long courseId) {
+    public List<CommentDto> readComment(Long courseId, Long pageNum, Long num) {
         // Course 존재유무 확인
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
+        Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Comment> comments = commentRepository.findByEnrollmentCourseAndStatus(enrollmentCourse, true, paging);
+
         // Dto 변환
         List<CommentDto> commentDtoList = new ArrayList<>();
-        for (Comment comment: enrollmentCourse.getComments()) {
-            // 삭제된 댓글 제외
-            if (!comment.getStatus()) {
-                continue;
-            }
-            
+        for (Comment comment: comments.getContent()) {
             commentDtoList.add(CommentDto.builder()
                     .id(comment.getId())
-                    .userId(comment.getUser().getId())
-                    .courseId(comment.getEnrollmentCourse().getId())
-                    .userName(comment.getUser().getName())
+                    .user_id(comment.getUser().getId())
+                    .course_id(comment.getEnrollmentCourse().getId())
+                    .user_name(comment.getUser().getName())
                     .content(comment.getContent())
-                    .createdDateTime(comment.getCreatedDate())
-                    .isEdit(comment.getIsEdit()).build());
+                    .created_date(comment.getCreatedDate())
+                    .is_edit(comment.getIsEdit()).build());
         }
 
         // Dto 반환
@@ -77,6 +79,8 @@ public class CommentService {
 
         // Comment 수정
         comment.setContent(commentRequestDto.getContent());
+        comment.setIsEdit(true);
+
         return Boolean.TRUE;
     }
 
@@ -87,8 +91,8 @@ public class CommentService {
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
         Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-        // 삭제 - 추후 status 로 수정할 예정
-        commentRepository.delete(comment);
+        // 삭제 - status 변경
+        comment.setStatus(false);
         return Boolean.TRUE;
     }
 }

@@ -31,7 +31,10 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeHttpRequests()
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/auth/kakao", "/auth/kakao/callback",
+                            "/auth/google", "/auth/google/callback",
+                            "/auth/apple", "/auth/apple/callback",
+                            "/auth/refresh").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling()

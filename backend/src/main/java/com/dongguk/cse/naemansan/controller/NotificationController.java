@@ -21,8 +21,8 @@ public class NotificationController {
 
     //Notification Read
     @GetMapping("")
-    public ResponseDto<List<NotificationDto>> readNotification(Authentication authentication) {
-        return new ResponseDto<List<NotificationDto>>(notificationService.readNotification(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<NotificationDto>> readNotification(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<NotificationDto>>(notificationService.readNotification(Long.valueOf(authentication.getName()), page, num));
     }
 
     //Notification Update

@@ -44,19 +44,19 @@ public class UserController {
     }
 
     @GetMapping("/comment")
-    public ResponseDto<List<CommentDto>> readCommentList(Authentication authentication) {
-        return new ResponseDto<List<CommentDto>>(userService.readCommentList(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<CommentDto>> readCommentList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<CommentDto>>(userService.readCommentList(Long.valueOf(authentication.getName()), page, num));
     }
 
     // User가 팔로우한 사람들의 List를 얻음 - Follow Read#1
     @GetMapping("/following")
-    public ResponseDto<List<FollowDto>> readFollowing(Authentication authentication) {
-        return new ResponseDto<List<FollowDto>>(followService.readFollowing(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<FollowDto>> readFollowing(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<FollowDto>>(followService.readFollowing(Long.valueOf(authentication.getName()), page, num));
     }
 
     // User를 팔로우한 사람들의 List를 얻음 - Follow Read#2
     @GetMapping("/follower")
-    public ResponseDto<List<FollowDto>> readFollower(Authentication authentication) {
-        return new ResponseDto<List<FollowDto>>(followService.readFollower(Long.valueOf(authentication.getName())));
+    public ResponseDto<List<FollowDto>> readFollower(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<FollowDto>>(followService.readFollower(Long.valueOf(authentication.getName()), page, num));
     }
 }

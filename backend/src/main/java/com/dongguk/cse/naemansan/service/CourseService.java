@@ -7,7 +7,7 @@ import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import com.dongguk.cse.naemansan.dto.request.IndividualCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
-import com.dongguk.cse.naemansan.dto.CourseTagDto;
+import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
@@ -126,7 +126,7 @@ public class CourseService {
                 .user(user)
                 .title(requestDto.getTitle())
                 .introduction(requestDto.getIntroduction())
-                .startLocationName(courseUtil.getLocationName(requestDto.getLocations().get(0)) == null ? "임시시작" : courseUtil.getLocationName(requestDto.getLocations().get(0)))
+                .startLocationName(courseUtil.getLocationName(courseUtil.getPoint2PointDto(point)) == null ? "임시시작" : courseUtil.getLocationName(courseUtil.getPoint2PointDto(point)))
                 .startLocation(point)
                 .locations(multiPoint)
                 .distance(distance).build());
@@ -136,18 +136,19 @@ public class CourseService {
         courseTagRepository.saveAll(courseTags);
 
         // ResponseDto 를 위한 TagDto 생성
-        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(courseTags);
+        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDto(courseTags);
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
-                .userId(enrollmentCourse.getUser().getId())
-                .userName(enrollmentCourse.getUser().getName())
+                .user_id(enrollmentCourse.getUser().getId())
+                .user_name(enrollmentCourse.getUser().getName())
                 .title(enrollmentCourse.getTitle())
-                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(courseTagDtoList)
-                .startLocationName(enrollmentCourse.getStartLocationName())
-                .locations(requestDto.getLocations()).build();
+                .tags(enrollmentCourseTagDtoList)
+                .start_location_name(enrollmentCourse.getStartLocationName())
+                .locations(courseUtil.getPoint2PointDto(enrollmentCourse.getLocations()))
+                .distance(enrollmentCourse.getDistance()).build();
     }
 
     // Course Read
@@ -158,18 +159,19 @@ public class CourseService {
 
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
-        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags());
+        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags());
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
-                .userId(enrollmentCourse.getUser().getId())
-                .userName(enrollmentCourse.getUser().getName())
+                .user_id(enrollmentCourse.getUser().getId())
+                .user_name(enrollmentCourse.getUser().getName())
                 .title(enrollmentCourse.getTitle())
-                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(courseTagDtoList)
-                .startLocationName(enrollmentCourse.getStartLocationName())
-                .locations(locations).build();
+                .tags(enrollmentCourseTagDtoList)
+                .start_location_name(enrollmentCourse.getStartLocationName())
+                .locations(locations)
+                .distance(enrollmentCourse.getDistance()).build();
     }
 
     public EnrollmentCourseDetailDto updateEnrollmentCourse(Long userId, Long courseId, EnrollmentCourseRequestDto enrollmentCourseRequestDto) {
@@ -190,17 +192,17 @@ public class CourseService {
 
         // Course Tag Data Update, 최적화 필요
         List<CourseTag> courseTagList = new ArrayList<>();
-        for (CourseTagDto courseTagDto : enrollmentCourseRequestDto.getTags()) {
-            switch (courseTagDto.getTagStatusType()) {
+        for (EnrollmentCourseTagDto enrollmentCourseTagDto : enrollmentCourseRequestDto.getTags()) {
+            switch (enrollmentCourseTagDto.getStatus()) {
                 case NEW -> {
                     courseTagList.add(courseTagRepository.save(CourseTag.builder()
                             .enrollmentCourse(enrollmentCourse)
-                            .courseTagType(courseTagDto.getCourseTagType()).build()));
+                            .courseTagType(enrollmentCourseTagDto.getName()).build()));
                 }
-                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, courseTagDto.getCourseTagType()); }
+                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, enrollmentCourseTagDto.getName()); }
                 case DEFAULT -> { courseTagList.add(CourseTag.builder()
                         .enrollmentCourse(enrollmentCourse)
-                        .courseTagType(courseTagDto.getCourseTagType()).build()); }
+                        .courseTagType(enrollmentCourseTagDto.getName()).build()); }
             }
         }
 
@@ -209,14 +211,15 @@ public class CourseService {
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
-                .userId(enrollmentCourse.getUser().getId())
-                .userName(enrollmentCourse.getUser().getName())
+                .user_id(enrollmentCourse.getUser().getId())
+                .user_name(enrollmentCourse.getUser().getName())
                 .title(enrollmentCourse.getTitle())
-                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
                 .tags(courseUtil.getTag2TagDto(courseTagList))
-                .startLocationName(enrollmentCourse.getStartLocationName())
-                .locations(locations).build();
+                .start_location_name(enrollmentCourse.getStartLocationName())
+                .locations(locations)
+                .distance(enrollmentCourse.getDistance()).build();
     }
 
     public Boolean deleteEnrollmentCourse(Long userId, Long courseId) {
@@ -247,7 +250,7 @@ public class CourseService {
             individualCourseListDtoList.add(IndividualCourseListDto.builder()
                     .id(course.getId())
                     .title(course.getTitle())
-                    .createdDate(course.getCreatedDate())
+                    .created_date(course.getCreatedDate())
                     .distance(course.getDistance()).build());
         }
 
@@ -261,7 +264,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByUser(user, paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
 
         return list;
     }
@@ -273,7 +276,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByLikeAndUser(user, paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
         return list;
     }
 
@@ -284,7 +287,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByUsingAndUser(user, paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
         return list;
     }
 
@@ -300,7 +303,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByTag(courseTagType, paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
 
         return list;
     }
@@ -318,7 +321,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue());
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListByRecommend(recommends, paging);
         log.info("{} - {}", user.getId(), recommends);
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
 
         return list;
     }
@@ -329,7 +332,7 @@ public class CourseService {
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListAll(paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseList(user, page);
 
         return list;
     }
@@ -349,13 +352,13 @@ public class CourseService {
             list.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
-                    .createdDateTime(enrollmentCourse.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
-                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
-                    .likeCnt((long) enrollmentCourse.getLikes().size())
-                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
-                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
         return list;
@@ -376,13 +379,13 @@ public class CourseService {
             list.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
-                    .createdDateTime(enrollmentCourse.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
-                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
-                    .likeCnt((long) enrollmentCourse.getLikes().size())
-                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
-                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
         return list;
@@ -403,13 +406,13 @@ public class CourseService {
             enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
-                    .createdDateTime(enrollmentCourse.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
-                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
-                    .likeCnt((long) enrollmentCourse.getLikes().size())
-                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
-                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
         return enrollmentCourseListDtoList;
@@ -428,8 +431,8 @@ public class CourseService {
                 .enrollmentCourse(enrollmentCourse).build());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", enrollmentCourse.getLikes().size());
-        map.put("isLike", Boolean.TRUE);
+        map.put("like_cnt", enrollmentCourse.getLikes().size());
+        map.put("is_like", Boolean.TRUE);
 
         return map;
     }
@@ -445,8 +448,8 @@ public class CourseService {
         likeRepository.delete(like);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", enrollmentCourse.getLikes().size());
-        map.put("isLike", Boolean.FALSE);
+        map.put("like_cnt", enrollmentCourse.getLikes().size());
+        map.put("is_like", Boolean.FALSE);
 
         return map;
     }

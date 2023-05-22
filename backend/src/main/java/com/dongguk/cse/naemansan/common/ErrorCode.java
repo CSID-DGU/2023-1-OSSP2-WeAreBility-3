@@ -15,11 +15,10 @@ public enum ErrorCode {
     NOT_FOUND_COMMENT("404", HttpStatus.NOT_FOUND, "Not Exist Comment"),
     NOT_FOUND_NOTIFICATION("404", HttpStatus.NOT_FOUND, "Not Exist Notification"),
 
-    DUPLICATION_LOCATIONS("400", HttpStatus.BAD_REQUEST, "Duplication Course Locations"),
-    DUPLICATION_TITLE("400", HttpStatus.BAD_REQUEST, "Duplication Enrollment Course Title"),
+    DUPLICATION_LOCATIONS("400", HttpStatus.BAD_REQUEST, "Duplication Enrollment Course Locations"),
+    DUPLICATION_TITLE("400", HttpStatus.BAD_REQUEST, "Duplication Course Title"),
     EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
     NOT_EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
-
 
     FILE_UPLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),
     FILE_DOWNLOAD("500", HttpStatus.INTERNAL_SERVER_ERROR, "File Upload Fail"),

@@ -1,6 +1,5 @@
 package com.dongguk.cse.naemansan.dto.response;
 
-import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
