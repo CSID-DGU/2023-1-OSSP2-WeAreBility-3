@@ -13,15 +13,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -37,6 +39,13 @@ public class CourseUtil {
     private String GOOGLE_MAP_URL;
     @Value("${client.geocoding.api-key: aaa.bbb.ccc}")
     private String GOOGLE_MAP_API_KEY;
+
+    @Value("${client.ml.checker-url: aaa.bbb.ccc}")
+    private String ML_CHECKER_URL;
+    @Value("${client.ml.finisher-url: aaa.bbb.ccc}")
+    private String ML_FINISHER_URL;
+    @Value("${client.ml.recommender-url: aaa.bbb.ccc}")
+    private String ML_RECOMMENDER_URL;
 
     private static final RestTemplate restTemplate = new RestTemplate();
     private static final GeometryFactory geometryFactory = new GeometryFactory();
@@ -73,6 +82,66 @@ public class CourseUtil {
         }
 
         return locationName;
+    }
+
+    public Boolean checkCourse(List<PointDto> locations) {
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject body = new JSONObject();;
+        body.put("pointDtos", locations);
+
+        HttpEntity<?> request = new HttpEntity<String>(body.toJSONString(), headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                ML_CHECKER_URL,
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        return JsonParser.parseString(response.getBody()).getAsJsonObject().get("success").getAsBoolean();
+    }
+
+    public Boolean checkFinishState(Long courseId, List<PointDto> locations) {
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject body = new JSONObject();;
+        body.put("courseid", courseId);
+        body.put("pointDtos", locations);
+
+        HttpEntity<?> request = new HttpEntity<String>(body.toJSONString(), headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                ML_FINISHER_URL,
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        return JsonParser.parseString(response.getBody()).getAsJsonObject().get("success").getAsBoolean();
+    }
+
+    public List<Long> getRecommend(Long userId) {
+        HttpHeaders headers=new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        JSONObject body = new JSONObject();;
+        body.put("userid", userId);
+
+        HttpEntity<?> request = new HttpEntity<String>(body.toJSONString(), headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                ML_RECOMMENDER_URL,
+                HttpMethod.POST,
+                request,
+                String.class
+        );
+
+        JsonArray courseIds = (JsonArray) JsonParser.parseString(response.getBody()).getAsJsonObject().get("courseid");
+
+        List<Long> list = new ArrayList<>();
+        for (int i = 0; i < courseIds.size(); i++) {
+            list.add(courseIds.get(i).getAsJsonObject().get("id").getAsLong());
+        }
+
+        return list;
     }
 
     public double getPointDistance(PointDto pointDtoOne, PointDto pointDtoTwo) {
@@ -138,6 +207,10 @@ public class CourseUtil {
         }
 
         return locations;
+    }
+
+    public Point getStartLocation(Coordinate before) {
+        return geometryFactory.createPoint(before);
     }
 
     public List<CourseTag> getTagDto2Tag(EnrollmentCourse enrollmentCourse, List<CourseTagDto> dtoList) {

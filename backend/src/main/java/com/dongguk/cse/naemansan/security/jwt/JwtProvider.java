@@ -1,6 +1,7 @@
 package com.dongguk.cse.naemansan.security.jwt;
 
 import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.UserRoleType;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -69,8 +70,8 @@ public class JwtProvider implements InitializingBean {
         String refreshToken = createToken(id, userRoleType, false);
 
         return JwtToken.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .access_token(accessToken)
+                .refresh_token(refreshToken)
                 .build();
     }
 
@@ -79,27 +80,16 @@ public class JwtProvider implements InitializingBean {
      * 정상 - access 토큰 생성후 반환
      * 비정상 - null
      */
-    public String validRefreshToken(String token) {
+    public String validRefreshToken(HttpServletRequest request) throws JwtException {
 
-        String refreshToken = token;
+        String refreshToken = refineToken(request);
 
-//        try {
-//            if(!validateToken(refreshToken)) {
-//                throw new NullPointerException();
-//            }
-//        } catch (Exception e) {
-//            log.info("test");
-//        }
+        Claims claims = validateToken(refreshToken);
 
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        UserRepository.UserLoginForm user = userRepository.findByIdAndIsLoginAndRefreshToken(Long.valueOf(claims.get("id").toString()), refreshToken)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
-        Optional<User> user = userRepository.findById(Long.valueOf(claims.get("id").toString()));
-
-        if (user.isEmpty()) {
-            throw new NullPointerException();
-        }
-
-        return createToken(user.get().getId(), user.get().getUserRoleType(), true);
+        return createToken(user.getId(), user.getUserRoleType(), true);
     }
 
     public String getUserId(String token) {

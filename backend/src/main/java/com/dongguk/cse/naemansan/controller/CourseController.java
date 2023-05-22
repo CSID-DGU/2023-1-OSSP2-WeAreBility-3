@@ -1,12 +1,9 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.request.IndividualCourseRequestDto;
-import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseDetailDto;
+import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
 import com.dongguk.cse.naemansan.common.ResponseDto;
-import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
-import com.dongguk.cse.naemansan.dto.response.IndividualCourseDetailDto;
-import com.dongguk.cse.naemansan.dto.response.IndividualCourseListDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,28 +44,34 @@ public class CourseController {
         return new ResponseDto<Boolean>(courseService.deleteIndividualCourse(Long.valueOf(authentication.getName()), courseId));
     }
 
+    // Using Course Create
+    @PostMapping("/using")
+    public ResponseDto<Boolean> createUsingCourse(Authentication authentication, @RequestBody UsingCourseRequestDto requestDto){
+        return new ResponseDto<Boolean>(courseService.createUsingCourse(Long.valueOf(authentication.getName()), requestDto));
+    }
+
     // Course Create
     @PostMapping("/enrollment")
     public ResponseDto<EnrollmentCourseDetailDto> createCourse(Authentication authentication, @RequestBody EnrollmentCourseRequestDto enrollmentCourseRequestDto){
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.createCourse(Long.valueOf(authentication.getName()), enrollmentCourseRequestDto));
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.createEnrollmentCourse(Long.valueOf(authentication.getName()), enrollmentCourseRequestDto));
     }
 
     // Course Read
-    @GetMapping("/{courseId}")
+    @GetMapping("/enrollment/{courseId}")
     public ResponseDto<EnrollmentCourseDetailDto> readCourse(@PathVariable Long courseId) {
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.readCourse(Long.valueOf(courseId)));
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.readEnrollmentCourse(Long.valueOf(courseId)));
     }
 
     // Course Update
-    @PutMapping("/{courseId}")
+    @PutMapping("/enrollment/{courseId}")
     public ResponseDto<EnrollmentCourseDetailDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody EnrollmentCourseRequestDto enrollmentCourseRequestDto) {
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, enrollmentCourseRequestDto));
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.updateEnrollmentCourse(Long.valueOf(authentication.getName()), courseId, enrollmentCourseRequestDto));
     }
 
     // Course Delete
-    @DeleteMapping("/{courseId}")
+    @DeleteMapping("/enrollment/{courseId}")
     public ResponseDto<Boolean> deleteCourse(Authentication authentication, @PathVariable Long courseId) {
-        return new ResponseDto<Boolean>(courseService.deleteCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
+        return new ResponseDto<Boolean>(courseService.deleteEnrollmentCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
 
     @GetMapping("/list/main/tag")
@@ -108,10 +111,10 @@ public class CourseController {
     }
 
     // 서버 연동 시 사용가능
-//    @GetMapping("/list/recommend")
-//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
-//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByRecommend(Long.valueOf(authentication.getName()), page, num));
-//    }
+    @GetMapping("/list/recommend")
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByRecommend(Long.valueOf(authentication.getName()), page, num));
+    }
 
     @GetMapping("/list/all")
     public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByRecommend(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {

@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Optional;
 
 @Repository
@@ -29,6 +30,8 @@ public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCour
     @Query(value = "SELECT c FROM EnrollmentCourse c LEFT JOIN CourseTag t ON t.enrollmentCourse = c WHERE t.courseTagType = :tag AND c.status = true")
     Page<EnrollmentCourse> findListByTag(@Param("tag") CourseTagType courseTagType, Pageable paging);
 
+    @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.status = true AND c.id IN :list")
+    Page<EnrollmentCourse> findListByRecommend(@Param("list") Collection<Long> courseIds, Pageable pageable);
     @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.status = true")
     Page<EnrollmentCourse> findListAll(Pageable pageable);
     @Query(value = "SELECT c.id, c.created_date, (SELECT COUNT(*) from likes l WHERE l.course_id = c.id) AS cnt "
@@ -50,9 +53,6 @@ public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCour
                     + "WHERE ST_Distance_Sphere(:start, c.start_location) <= 10000 AND c.status = 1",
             nativeQuery = true)
     Page<CourseLocationForm> findListByLocation(@Param("start") Point point, Pageable pageable);
-
-//    @Query(value = "SELECT c.title FROM EnrollmentCourse c WHERE c.title = :title AND c.status = :status")
-//    Optional<EnrollmentCourse> findByTitleAndStatus(@Param("title") String title, @Param("status") Boolean status);
 
     public interface CourseLocationForm {
         Long getId();

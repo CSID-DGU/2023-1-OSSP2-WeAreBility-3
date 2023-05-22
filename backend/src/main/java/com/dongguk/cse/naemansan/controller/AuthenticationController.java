@@ -6,11 +6,11 @@ import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.response.TokenDto;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.service.AuthenticationService;
+import com.dongguk.cse.naemansan.util.CourseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import java.util.Map;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final JwtProvider jwtProvider;
+    private final CourseUtil courseUtil;
 
     @GetMapping("/kakao")
     public ResponseDto<Map<String, String>> getKakaoRedirectUrl() {
@@ -53,31 +54,18 @@ public class AuthenticationController {
 //        return appleService.getRedirectUrlDto("APPLE");
 //    }
 
-//    @PostMapping("/kakao")
+//    @PostMapping("/apple")
 //    public ResponseEntity<LoginResponse> getAppleAccessToken(@RequestBody LoginRequest request) {
 //        return ResponseEntity.ok((LoginResponse) appleService.login(request));
 //    }
 
     @GetMapping("/logout")
-    public void logoutCommon(Authentication authentication) {
-        authenticationService.logout(Long.valueOf(authentication.getName()));
+    public ResponseDto<Boolean> logoutCommon(Authentication authentication) {
+        return new ResponseDto<Boolean>(authenticationService.logout(Long.valueOf(authentication.getName())));
     }
 
-    @GetMapping("/withdrawal")
-    public void withdrawalCommon(Authentication authentication) {
-        authenticationService.withdrawal(Long.valueOf(authentication.getName()));
-    }
-
-    // test용
     @PostMapping("/refresh")
     public ResponseDto<TokenDto> UpdateAccessToken(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            headerAuth =  headerAuth.substring(7, headerAuth.length());
-        }
-
-        return new ResponseDto(TokenDto.builder()
-                .token(jwtProvider.validRefreshToken(headerAuth)).build());
+        return new ResponseDto(authenticationService.getAccessTokenByRefreshToken(request));
     }
 }

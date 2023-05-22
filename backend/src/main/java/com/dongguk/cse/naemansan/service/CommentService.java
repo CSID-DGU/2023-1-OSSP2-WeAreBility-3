@@ -29,7 +29,8 @@ public class CommentService {
     public Boolean createComment(Long userId, Long courseId, CommentRequestDto commentRequestDto) {
         // User, Course 존재유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
         // 댓글 추가
         commentRepository.save(Comment.builder()
@@ -42,7 +43,8 @@ public class CommentService {
 
     public List<CommentDto> readComment(Long courseId) {
         // Course 존재유무 확인
-        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
         // Dto 변환
         List<CommentDto> commentDtoList = new ArrayList<>();
@@ -69,7 +71,8 @@ public class CommentService {
     public Boolean updateComment(Long userId, Long courseId, Long commentId, CommentRequestDto commentRequestDto) {
         // User, Course, Comment 존재유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
         Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
         // Comment 수정
@@ -80,7 +83,8 @@ public class CommentService {
     public Boolean deleteComment(Long userId, Long courseId, Long commentId) {
         // User, Course, Comment 존재유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
         Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
         // 삭제 - 추후 status 로 수정할 예정
