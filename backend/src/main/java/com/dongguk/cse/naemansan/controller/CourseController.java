@@ -1,29 +1,56 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.domain.IndividualCourse;
+import com.dongguk.cse.naemansan.dto.request.IndividualCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseDetailDto;
-import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
+import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
 import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
+import com.dongguk.cse.naemansan.dto.response.IndividualCourseDetailDto;
 import com.dongguk.cse.naemansan.dto.response.IndividualCourseListDto;
 import com.dongguk.cse.naemansan.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/course")
 public class CourseController {
     private final CourseService courseService;
 
+    // Individual Course Create
+    @PostMapping("/individual")
+    public ResponseDto<IndividualCourseDetailDto> createIndividualCourse(Authentication authentication, @RequestBody IndividualCourseRequestDto requestDto){
+        return new ResponseDto<IndividualCourseDetailDto>(courseService.createIndividualCourse(Long.valueOf(authentication.getName()), requestDto));
+    }
+
+    // Individual Course Read
+    @GetMapping("/individual/{courseId}")
+    public ResponseDto<IndividualCourseDetailDto> readIndividualCourse(Authentication authentication, @PathVariable Long courseId){
+        return new ResponseDto<IndividualCourseDetailDto>(courseService.readIndividualCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
+    // Individual Course Update
+    @PutMapping("/individual/{courseId}")
+    public ResponseDto<Boolean> updateIndividualCourse(Authentication authentication, @PathVariable Long courseId){
+        return new ResponseDto<Boolean>(courseService.updateIndividualCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
+    // Individual Course Delete
+    @DeleteMapping("/individual/{courseId}")
+    public ResponseDto<Boolean> deleteIndividualCourse(Authentication authentication, @PathVariable Long courseId){
+        return new ResponseDto<Boolean>(courseService.deleteIndividualCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
     // Course Create
-    @PostMapping("")
-    public ResponseDto<EnrollmentCourseDetailDto> createCourse(Authentication authentication, @RequestBody CourseRequestDto courseRequestDto){
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.createCourse(Long.valueOf(authentication.getName()), courseRequestDto));
+    @PostMapping("/enrollment")
+    public ResponseDto<EnrollmentCourseDetailDto> createCourse(Authentication authentication, @RequestBody EnrollmentCourseRequestDto enrollmentCourseRequestDto){
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.createCourse(Long.valueOf(authentication.getName()), enrollmentCourseRequestDto));
     }
 
     // Course Read
@@ -34,8 +61,8 @@ public class CourseController {
 
     // Course Update
     @PutMapping("/{courseId}")
-    public ResponseDto<EnrollmentCourseDetailDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody CourseRequestDto courseRequestDto) {
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, courseRequestDto));
+    public ResponseDto<EnrollmentCourseDetailDto> updateCourse(Authentication authentication, @PathVariable Long courseId, @RequestBody EnrollmentCourseRequestDto enrollmentCourseRequestDto) {
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.updateCourse(Long.valueOf(authentication.getName()), courseId, enrollmentCourseRequestDto));
     }
 
     // Course Delete
