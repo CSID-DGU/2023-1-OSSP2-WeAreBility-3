@@ -240,7 +240,7 @@ public class CourseService {
     public List<EnrollmentCourseListDto> getEnrollmentCourseList(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findListAll(paging);
 
         List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
 
@@ -250,12 +250,13 @@ public class CourseService {
     // 산책로 Tap - 좋아요순 산책로 조회용
     public List<EnrollmentCourseListDto> getEnrollmentCourseListByLikeCount(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "like_cnt"));
-        Page<Object[]> page =  enrollmentCourseRepository.findListByLike(paging);
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue());
+        Page<EnrollmentCourseRepository.CourseCntForm> page =  enrollmentCourseRepository.findListByLike(paging);
 
         List<EnrollmentCourseListDto> list = new ArrayList<>();
-        for (Object[] likeEntity : page.getContent()) {
-            EnrollmentCourse enrollmentCourse = (EnrollmentCourse) likeEntity[0];
+        for (EnrollmentCourseRepository.CourseCntForm form : page.getContent()) {
+            EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(form.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
             list.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
@@ -275,12 +276,13 @@ public class CourseService {
     // 산책로 Tap - 이용자순 산책로 조회용
     public List<EnrollmentCourseListDto> getEnrollmentCourseListByUsingCount(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "using_cnt"));
-        Page<Object[]> page =  enrollmentCourseRepository.findListByUsing(paging);
+
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue());
+        Page<EnrollmentCourseRepository.CourseCntForm> page =  enrollmentCourseRepository.findListByUsing(paging);
 
         List<EnrollmentCourseListDto> list = new ArrayList<>();
-        for (Object[] likeEntity : page.getContent()) {
-            EnrollmentCourse enrollmentCourse = (EnrollmentCourse) likeEntity[0];
+        for (EnrollmentCourseRepository.CourseCntForm form : page.getContent()) {
+            EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(form.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
             list.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())
@@ -302,11 +304,11 @@ public class CourseService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.ASC, "radius"));
-        Page<CourseMapping> pages =  enrollmentCourseRepository.findListByLocation(courseUtil.getLatLng2Point(latitude, longitude), paging);
+        Page<EnrollmentCourseRepository.CourseLocationForm> pages =  enrollmentCourseRepository.findListByLocation(courseUtil.getLatLng2Point(latitude, longitude), paging);
 
         List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
-        for (CourseMapping courseMapping : pages.getContent()) {
-            EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseMapping.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        for (EnrollmentCourseRepository.CourseLocationForm form : pages.getContent()) {
+            EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(form.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
             enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
                     .id(enrollmentCourse.getId())

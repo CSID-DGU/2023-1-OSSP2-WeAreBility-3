@@ -80,6 +80,12 @@ public class CourseController {
         return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByTag(Long.valueOf(authentication.getName()), page, num, tag));
     }
 
+    // 서버 연동 시 사용가능
+//    @GetMapping("/list/recommend")
+//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByRecommend(Long.valueOf(authentication.getName()), page, num));
+//    }
+
     @GetMapping("/list/all")
     public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByRecommend(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
         return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseList(Long.valueOf(authentication.getName()), page, num));
@@ -93,12 +99,6 @@ public class CourseController {
     @GetMapping("/list/using")
     public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByLikeCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
         return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByUsingCount(Long.valueOf(authentication.getName()), page, num));
-    }
-
-    @GetMapping("/list/location")
-    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
-                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
     }
 
     @GetMapping("/list/location")
