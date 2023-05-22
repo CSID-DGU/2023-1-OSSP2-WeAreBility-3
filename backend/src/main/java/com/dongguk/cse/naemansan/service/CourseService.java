@@ -250,10 +250,24 @@ public class CourseService {
     // 산책로 Tap - 좋아요순 산책로 조회용
     public List<EnrollmentCourseListDto> getEnrollmentCourseListByLikeCount(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "like_cnt"));
+        Page<Object[]> page =  enrollmentCourseRepository.findListByLike(paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = new ArrayList<>();
+        for (Object[] likeEntity : page.getContent()) {
+            EnrollmentCourse enrollmentCourse = (EnrollmentCourse) likeEntity[0];
+
+            list.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .createdDateTime(enrollmentCourse.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .likeCnt((long) enrollmentCourse.getLikes().size())
+                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
+        }
 
         return list;
     }
@@ -261,10 +275,24 @@ public class CourseService {
     // 산책로 Tap - 이용자순 산책로 조회용
     public List<EnrollmentCourseListDto> getEnrollmentCourseListByUsingCount(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<EnrollmentCourse> page =  enrollmentCourseRepository.findAll(paging);
+        Pageable paging = PageRequest.of(pageNum.intValue(), Num.intValue(), Sort.by(Sort.Direction.DESC, "using_cnt"));
+        Page<Object[]> page =  enrollmentCourseRepository.findListByUsing(paging);
 
-        List<EnrollmentCourseListDto> list = courseUtil.getEnrollmentCourseListDtos(user, page);
+        List<EnrollmentCourseListDto> list = new ArrayList<>();
+        for (Object[] likeEntity : page.getContent()) {
+            EnrollmentCourse enrollmentCourse = (EnrollmentCourse) likeEntity[0];
+
+            list.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .createdDateTime(enrollmentCourse.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .likeCnt((long) enrollmentCourse.getLikes().size())
+                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
+        }
 
         return list;
     }

@@ -80,35 +80,32 @@ public class CourseController {
         return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByTag(Long.valueOf(authentication.getName()), page, num, tag));
     }
 
+    @GetMapping("/list/all")
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByRecommend(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseList(Long.valueOf(authentication.getName()), page, num));
+    }
+
+    @GetMapping("/list/like")
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLikeCount(Long.valueOf(authentication.getName()), page, num));
+    }
+
+    @GetMapping("/list/using")
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByLikeCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByUsingCount(Long.valueOf(authentication.getName()), page, num));
+    }
+
     @GetMapping("/list/location")
-    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByRecommend(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
                                                                                @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
         return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
     }
 
-//    @GetMapping("/list/location")
-//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
-//                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
-//    }
-//
-//    @GetMapping("/list/location")
-//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByLikeCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
-//                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
-//    }
-//
-//    @GetMapping("/list/location")
-//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByUsingCount(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
-//                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
-//    }
-//
-//    @GetMapping("/list/location")
-//    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByLocation(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
-//                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
-//        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
-//    }
+    @GetMapping("/list/location")
+    public ResponseDto<List<EnrollmentCourseListDto>> getEnrollmentCourseListByLocation(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num,
+                                                                               @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) {
+        return new ResponseDto<List<EnrollmentCourseListDto>>(courseService.getEnrollmentCourseListByLocation(Long.valueOf(authentication.getName()), page, num, latitude, longitude));
+    }
 
     @PostMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> likeCourse(Authentication authentication, @PathVariable Long courseId) {

@@ -32,10 +32,11 @@ public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCour
 
 //    @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.status = true")
 //    Page<EnrollmentCourse> findListAll(Pageable pageable);
-//    @Query(value = "SELECT c FROM EnrollmentCourse c LEFT OUTER JOIN Like l ON c = l.enrollmentCourse GROUP BY c ORDER BY ")
-//    Page<EnrollmentCourse> findListByLike();
-//    @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.user = :user AND c.status = true")
-//    Page<EnrollmentCourse> findListByUsing();
+    @Query(value = "SELECT c, (SELECT COUNT(l) from Like l WHERE l.enrollmentCourse = c) AS like_cnt FROM EnrollmentCourse c WHERE c.status = true")
+    Page<Object[]> findListByLike(Pageable pageable);
+    @Query(value = "SELECT c, (SELECT COUNT(u) from UsingCourse u WHERE u.enrollmentCourse = c) AS using_cnt FROM EnrollmentCourse c WHERE c.status = true")
+    Page<Object[]> findListByUsing(Pageable pageable);
+
     @Query(value = "SELECT c.id AS id, c.title AS title, c.created_date AS created_date, c.start_location_name AS start_location_name,"
             + "c.distance AS distance, ST_Distance_Sphere(:start, c.start_location) AS radius "
             + "FROM enrollment_courses c "
