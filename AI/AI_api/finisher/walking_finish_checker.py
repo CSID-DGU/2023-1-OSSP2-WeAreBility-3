@@ -100,10 +100,10 @@ class  finish_Checker():
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
 
             # threshold -> 0.8 (나중에 바뀔수도..??)
-            threshold = 0.9985
+            threshold = 0.8
 
             # 유사도가 높으면 true 반환
-            if similarity_score > threshold or similarity_score < -threshold :
+            if (similarity_score > threshold or similarity_score < -threshold) or np.all(np.isclose(np.diag(similarity_vector), 1.0)):
                 return token_true
                 token = 1
                 break
