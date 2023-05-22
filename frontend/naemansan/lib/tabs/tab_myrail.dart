@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:naemansan/service/api_service.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
+import 'package:naemansan/services/api_service.dart';
 
 class Myrail extends StatefulWidget {
   const Myrail({Key? key}) : super(key: key);
@@ -34,13 +34,14 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
         return Trail(
-            title: trail.title,
-            startpoint: trail.startpoint,
-            distance: trail.distance,
-            CourseKeyWord: trail.CourseKeyWord,
-            likeCnt: trail.likeCnt,
-            userCnt: trail.userCnt,
-            isLiked: trail.isLiked);
+          title: trail.title,
+          startpoint: trail.startLocationName,
+          distance: trail.distance,
+          //CourseKeyWord: trail.courseTags,
+          //likeCnt: trail.likeCnt,
+          //userCnt: trail.userCnt,
+          //isLiked: trail.isLiked
+        );
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 10),
@@ -49,8 +50,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<TrailModel>> TestTrail = ApiService.getTrail();
-    // final Future<List<TrailModel>> CreatedTrail = ApiService.getCreatedTrail();
+    final Future<List<TrailModel>> CreatedTrail = ApiService.getCreatedTrail();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -121,7 +121,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         children: [
           // 첫 번째 탭에 데이터가 적용된 trail 위젯
           FutureBuilder(
-            future: TestTrail,
+            future: CreatedTrail,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Row(
