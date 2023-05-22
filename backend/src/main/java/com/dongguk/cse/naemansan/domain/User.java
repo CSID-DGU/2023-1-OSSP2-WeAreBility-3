@@ -48,35 +48,38 @@ public class User {
 
     // ------------------------------------------------------------
 
-    @OneToMany(mappedBy = "notificationUser")
+    @OneToMany(mappedBy = "notificationUser", fetch = FetchType.LAZY)
     private List<Notification> notifications = new ArrayList<>();
 
-    @OneToOne(mappedBy = "subscribeUser")
+    @OneToOne(mappedBy = "subscribeUser", fetch = FetchType.LAZY)
     private Subscribe subscribe;
 
-    @OneToMany(mappedBy = "followingUser")
+    @OneToMany(mappedBy = "followingUser", fetch = FetchType.LAZY)
     private List<Follow> followings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "followerUser")
+    @OneToMany(mappedBy = "followerUser", fetch = FetchType.LAZY)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToOne(mappedBy = "tokenUser")
+    @OneToOne(mappedBy = "tokenUser", fetch = FetchType.LAZY)
     private Token token;
 
-    @OneToOne(mappedBy = "imageUser")
+    @OneToOne(mappedBy = "imageUser", fetch = FetchType.LAZY)
     private Image image;
 
-    @OneToMany(mappedBy = "courseUser")
+    @OneToMany(mappedBy = "courseUser", fetch = FetchType.LAZY)
     private List<Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "likeUser")
+    @OneToMany(mappedBy = "likeUser", fetch = FetchType.LAZY)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "commentUser")
+    @OneToMany(mappedBy = "commentUser", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "badgeUser")
+    @OneToMany(mappedBy = "badgeUser", fetch = FetchType.LAZY)
     private List<Badge> badges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UsingCourse> usingCourses = new ArrayList<>();
 
     @Builder
     public User(String socialLoginId, LoginProviderType loginProviderType, String name) {

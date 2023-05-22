@@ -3,7 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.domain.Comment;
 import com.dongguk.cse.naemansan.domain.Course;
 import com.dongguk.cse.naemansan.domain.User;
-import com.dongguk.cse.naemansan.dto.CommentDto;
+import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
 import com.dongguk.cse.naemansan.repository.CommentRepository;
 import com.dongguk.cse.naemansan.repository.CourseRepository;
@@ -58,6 +58,8 @@ public class CommentService {
             commentDtos.add(CommentDto.builder()
                     .id(comment.getId())
                     .userId(comment.getCommentUser().getId())
+                    .courseId(comment.getCommentCourse().getId())
+                    .userName(comment.getCommentUser().getName())
                     .content(comment.getContent())
                     .createdDateTime(comment.getCreatedDate())
                     .isEdit(comment.getIsEdit()).build());

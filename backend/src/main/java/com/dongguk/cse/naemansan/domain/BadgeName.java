@@ -23,7 +23,7 @@ public class BadgeName {
 
     // ------------------------------------------------------------
 
-    @OneToMany(mappedBy = "badgeName")
+    @OneToMany(mappedBy = "badgeName", fetch = FetchType.LAZY)
     private List<Badge> badges = new ArrayList<>();
 
     @Builder

@@ -9,6 +9,7 @@ import com.dongguk.cse.naemansan.repository.ShopRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,8 @@ public class ImageService {
     private final AdvertisementRepository advertisementRepository;
     private final ImageRepository imageRepository;
 
-    private final String FOLDER_PATH="C:/Users/HyungJoon/Documents/0_OSSP/resources/images/";
+    @Value("${spring.image.path}")
+    private String FOLDER_PATH;
 
     public String uploadImage(Long useId, ImageUseType imageUseType, MultipartFile file) throws IOException {
         log.info("이미지 저장 시작 유저: {} , 파일이름: {}", useId, file.getOriginalFilename());
@@ -61,7 +63,7 @@ public class ImageService {
                     .type(file.getContentType())
                     .path(filePath).build());
         } else {
-            if (!findImage.get().getOriginName().equals("default_image.png")) {
+            if (!findImage.get().getOriginName().equals("0_default_image.png")) {
                 File currentFile = new File(findImage.get().getPath());
                 boolean result = currentFile.delete();
             }
@@ -69,22 +71,23 @@ public class ImageService {
             findImage.get().updateImage(file.getOriginalFilename(), uuidImageName, filePath, file.getContentType());
         }
 
-        return "file uploaded successfully : " + filePath;
+        return uuidImageName;
     }
 
-    public byte[] downloadImage(String fileName) throws IOException {
+    public byte[] downloadImage(String UuidName) throws IOException {
         String filePath = null;
+        Optional<Image> image = null;
 
-        if (fileName.equals("0_default_image.png")) {
-            filePath = "C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png";
+        if (UuidName.equals("0_default_image.png")) {
+            log.info("0_default_image.png loading");
+            filePath = FOLDER_PATH + "0_default_image.png";
         } else {
-            Optional<Image> image = imageRepository.findByUuidName(fileName);
-
+            image = imageRepository.findByUuidName(UuidName);
             if (image.isEmpty()) {
-                log.error("존재하지 않는 파일입니다 - UUID: {}", fileName);
+                log.error("존재하지 않는 파일입니다 - UUID: {}", UuidName);
                 return null;
             }
-            fileName = image.get().getPath();
+            filePath = image.get().getPath();
         }
 
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
