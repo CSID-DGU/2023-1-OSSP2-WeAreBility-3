@@ -7,6 +7,7 @@ import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.TagStatusType;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
+import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,6 +18,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -169,5 +171,22 @@ public class CourseUtil {
             return true;
         }
         return false;
+    }
+
+    public List<EnrollmentCourseListDto> getEnrollmentCourseListDtos(User user, Page<EnrollmentCourse> page) {
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
+        for (EnrollmentCourse enrollmentCourse : page.getContent()) {
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .createdDateTime(enrollmentCourse.getCreatedDate())
+                    .courseTags(getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .likeCnt((long) enrollmentCourse.getLikes().size())
+                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
+                    .isLike(existLike(user, enrollmentCourse)).build());
+        }
+        return enrollmentCourseListDtoList;
     }
 }

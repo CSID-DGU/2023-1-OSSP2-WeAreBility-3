@@ -14,9 +14,9 @@ public class GlobalExceptionHandler {
         return ResponseDto.toResponseEntity(e);
     }
 
-    @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<? extends Object> handleException(Exception e) {
-        log.error("HandleException throw Exception : {}", e.getMessage());
-        return ResponseDto.toResponseEntity(e);
-    }
+//    @ExceptionHandler(value = {Exception.class})
+//    public ResponseEntity<? extends Object> handleException(Exception e) {
+//        log.error("HandleException throw Exception : {}", e.getMessage());
+//        return ResponseDto.toResponseEntity(e);
+//    }
 }
