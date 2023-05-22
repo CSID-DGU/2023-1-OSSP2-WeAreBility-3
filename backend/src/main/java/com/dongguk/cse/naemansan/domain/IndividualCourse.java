@@ -6,18 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
-@Table(name = "notifications")
 @DynamicUpdate
-public class Notification {
+@Table(name="individual_courses")
+public class IndividualCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -27,24 +29,20 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "title")
+    @Column(name="title",unique = true)
     private String title;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name="created_date")
+    private Timestamp createdDate;
 
-    @Column(name = "create_date")
-    private Timestamp createDate;
-
-    @Column(name = "is_read_status", columnDefinition = "TINYINT(1)")
-    private Boolean isReadStatus;
+    @Column(name="locations", columnDefinition = "MULTIPOINT")
+    private MultiPoint locations;
 
     @Builder
-    public Notification(User user, String title, String content) {
+    public IndividualCourse(User user, String title, MultiPoint locations) {
         this.user = user;
         this.title = title;
-        this.content = content;
-        this.createDate = Timestamp.valueOf(LocalDateTime.now());
-        this.isReadStatus = false;
+        this.createdDate = Timestamp.valueOf(LocalDateTime.now());
+        this.locations = locations;
     }
 }

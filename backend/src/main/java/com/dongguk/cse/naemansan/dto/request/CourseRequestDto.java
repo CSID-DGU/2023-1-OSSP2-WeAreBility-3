@@ -15,6 +15,6 @@ import java.util.List;
 public class CourseRequestDto {
     private String title;
     private String introduction;
-    private List<CourseTagDto> courseTags;
-    private List<PointDto> pointDtos;
+    private List<CourseTagDto> tags;
+    private List<PointDto> locations;
 }

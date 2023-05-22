@@ -11,12 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    // User가 팔로우한 사람들을 가져오는 함수
+    // User 가 팔로우한 사람들을 가져오는 Method
     List<Follow> findByFollowingUser(User user);
-    // User를 팔로우한 사람들을 가져오는 함수
+    // User 를 팔로우한 사람들을 가져오는 Method
     List<Follow> findByFollowerUser(User user);
-
+    // User One 이 User Two 를 Follow 했는지 확인하는 Method
     Optional<Follow> findByFollowingUserAndFollowerUser(User followingUser, User followerUser);
-
+    //User One 이 User Two 를 Follow 를 삭제하는 Method
     void deleteByFollowingUserAndFollowerUser(User followingUser, User followerUser);
 }

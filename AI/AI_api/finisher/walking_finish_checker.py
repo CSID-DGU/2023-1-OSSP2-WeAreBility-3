@@ -48,21 +48,9 @@ class  finish_Checker():
 
         cursor = conn.cursor()
 
-        # 좌표 정보를 db에 저장
-        """coordinates = [(37.5622,126.9985)]
-        location = wkt.dumps(MultiPoint(coordinates))
-        print(type(location))
-        query = "INSERT INTO courses (title, start_location, locations) VALUES (%s, %s, ST_GeomFromText(%s, 4326))"
-        data = ("Hoin", "서울", location)
-        cursor.execute(query, data)
-        conn.commit()"""
-
-        # 좌표 정보에서 courseid에 해당하는 좌표를 리스트에 저장
-        # 예를 들어 [[37.0, 127.0, 37.1, 127.1]]
-
         query = """
         SELECT ST_AsText(locations) 
-        FROM courses
+        FROM enrollment_courses
         WHERE id = %d""" %(self.courseid)
         cursor.execute(query)
         results = cursor.fetchall()
@@ -109,10 +97,10 @@ class  finish_Checker():
             # 유사도 벡터와 점수
             walking_std = temp_frame.values
             similarity_vector = cosine_similarity(walking_std, user_std)
-            similarity_score = similarity_vector.mean()
+            similarity_score = np.mean(np.max(similarity_vector, axis=0))
 
             # threshold -> 0.8 (나중에 바뀔수도..??)
-            threshold = 0.985
+            threshold = 0.9985
 
             # 유사도가 높으면 true 반환
             if similarity_score > threshold or similarity_score < -threshold :
