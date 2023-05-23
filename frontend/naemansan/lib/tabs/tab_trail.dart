@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/services/api_service.dart';
 
 class Trail extends StatefulWidget {
@@ -34,7 +35,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
 
-        return Trail(
+        return TrailWidget(
             title: trail.title,
             startpoint: trail.startLocationName,
             distance: trail.distance,
@@ -138,20 +139,81 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          Center(
-            child: Text('거리순 정렬 리스트 추가'),
+        children: [
+          FutureBuilder(
+            future: NearestTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          Center(
-            child: Text('좋아요순 정렬 리스트 추가'),
+          FutureBuilder(
+            future: MostLikedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          Center(
-            child: Text('이용자순 정렬 리스트 추가'),
+          FutureBuilder(
+            future: MostUsedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          Center(
-            child: Text('최신순 정렬 리스트 추가'),
+          FutureBuilder(
+            future: NewTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          Center(
+          const Center(
+            //키워드별 정렬
             child: Text('키워드별 보기 기능 추가'),
           ),
         ],

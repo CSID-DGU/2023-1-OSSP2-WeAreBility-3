@@ -2,6 +2,25 @@ import 'package:naemansan/models/trailmodel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// 토큰 얻어 오기
+Future<String> getTokenFromServer(String code) async {
+  // Make an HTTP request to your server to exchange the authorization code for an access token
+  var response = await http.post(
+    Uri.parse('YOUR_SERVER_TOKEN_ENDPOINT'),
+    body: {
+      'code': code,
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // Parse the response to extract the access token
+    var token = 'PARSE_ACCESS_TOKEN_FROM_RESPONSE';
+    return token;
+  } else {
+    throw Exception('Failed to get token from server');
+  }
+}
+
 class ApiService {
   //---------------------------------------산책로 페이지----------------------------------------------------------------------------------------
 //---------------------------------------거리순 리스트 불러오기--------------------------------------------------------------------------------
@@ -10,7 +29,7 @@ class ApiService {
     final url = Uri.parse(
         "https://ossp.dcs-hyungjoon.com/course/list/location?page={}&num={}&latitude={}&longitude={}"); //위치기반 산책로 조회 Api
     final response = await http.get(url);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final trails = jsonDecode(response.body);
       for (var trail in trails) {
         final instance = TrailModel.fromJson(trail);
@@ -27,7 +46,7 @@ class ApiService {
     final url = Uri.parse(
         "https://ossp.dcs-hyungjoon.com/course/list/like?page={}&num={}"); //좋아요순
     final response = await http.get(url);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final trails = jsonDecode(response.body);
       for (var trail in trails) {
         final instance = TrailModel.fromJson(trail);
@@ -44,7 +63,7 @@ class ApiService {
     final url = Uri.parse(
         "https://ossp.dcs-hyungjoon.com/course/list/using?page={}&num={}"); //이용자순 Api
     final response = await http.get(url);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final trails = jsonDecode(response.body);
       for (var trail in trails) {
         final instance = TrailModel.fromJson(trail);
@@ -61,7 +80,7 @@ class ApiService {
     final url = Uri.parse(
         "https://ossp.dcs-hyungjoon.com/api/course/list?fliter={enum}"); //**전체 산책로 목록 조회
     final response = await http.get(url);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final trails = jsonDecode(response.body);
       for (var trail in trails) {
         final instance = TrailModel.fromJson(trail);

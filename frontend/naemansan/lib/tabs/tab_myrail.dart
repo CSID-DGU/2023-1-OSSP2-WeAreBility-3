@@ -34,7 +34,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
 
-        return Trail(
+        return TrailWidget(
             title: trail.title,
             startpoint: trail.startLocationName,
             distance: trail.distance,
@@ -185,6 +185,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           ),
           // 다섯 번째 탭 (키워드)
           const Center(
+            //팔로우한 키워드 보기
             child: Text('키워드'),
           ),
         ],

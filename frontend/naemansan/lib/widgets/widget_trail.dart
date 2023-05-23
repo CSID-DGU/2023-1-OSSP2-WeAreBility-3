@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Trail extends StatelessWidget {
+class TrailWidget extends StatelessWidget {
   final String title;
   final String startpoint;
   final double distance;
@@ -8,7 +8,7 @@ class Trail extends StatelessWidget {
   final int likeCnt, userCnt;
   final bool isLiked;
 
-  const Trail({
+  const TrailWidget({
     Key? key,
     required this.title,
     required this.startpoint,
@@ -88,7 +88,6 @@ class Trail extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
-
                 Row(
                   children: [
                     Icon(
@@ -114,7 +113,6 @@ class Trail extends StatelessWidget {
                     ),
                   ],
                 ),
-                
               ],
             ),
             const SizedBox(width: 4.0),
