@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = {RestApiException.class})
-    public ResponseEntity<Object> handleApiException(RestApiException e) {
+    public ResponseEntity<? extends Object> handleApiException(RestApiException e) {
         log.error("HandleApiException throw RestApiException : {}", e.getErrorCode());
         return ResponseDto.toResponseEntity(e);
     }
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<Object> handleException(Exception e) {
+    public ResponseEntity<? extends Object> handleException(Exception e) {
         log.error("HandleException throw Exception : {}", e.getMessage());
         return ResponseDto.toResponseEntity(e);
     }

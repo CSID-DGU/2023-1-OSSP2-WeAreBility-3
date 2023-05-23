@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Mypage extends StatelessWidget {
   const Mypage({super.key});
 
-  signOut(BuildContext context) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLogged', false);
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-      await UserApi.instance.unlink();
-      await UserApi.instance.logout();
-    } catch (error) {
-      print('카카오계정으로 로그인 아웃 실패 $error');
-    }
+// 로그아웃
+
+  Future<void> deleteTokens() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logout() async {
+      await deleteTokens();
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -74,8 +74,7 @@ class Mypage extends StatelessWidget {
                 width: 363,
               ),
               IconButton(
-                padding: const EdgeInsets.only(
-                    top: 10, right: 2.5), // 위에 톱니바퀴랑 위치 통일하기
+                padding: const EdgeInsets.only(top: 10, right: 2.5),
                 icon: const Icon(Icons.edit, color: Colors.black),
                 onPressed: () {
                   // 프로필 수정 페이지로 이동
@@ -162,18 +161,16 @@ class Mypage extends StatelessWidget {
                       height: 10,
                     ),
                     TextButton(
-                      onPressed: () {
-                        // 팔로워수 버튼 클릭 시 동작
-                      },
+                      onPressed: () {},
                       child: const Text(
-                        '팔로워수',
+                        '팔로워 수',
                         style: TextStyle(
                           fontSize: 30,
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -196,9 +193,7 @@ class Mypage extends StatelessWidget {
                       height: 10,
                     ),
                     TextButton(
-                      onPressed: () {
-                        // 팔로잉 수 버튼 클릭 시 동작
-                      },
+                      onPressed: () {},
                       child: const Text(
                         '팔로잉 수',
                         style: TextStyle(
@@ -207,7 +202,7 @@ class Mypage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -250,7 +245,7 @@ class Mypage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -282,7 +277,7 @@ class Mypage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -314,7 +309,7 @@ class Mypage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -345,7 +340,7 @@ class Mypage extends StatelessWidget {
           //목표 달성률 이미지 구현
 
           TextButton(
-            onPressed: () => signOut(context),
+            onPressed: () => logout(),
             child: const Text(
               '로그아웃',
               style: TextStyle(color: Colors.grey),

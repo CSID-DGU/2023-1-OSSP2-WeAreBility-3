@@ -22,15 +22,15 @@ public class Image {
 
     @JoinColumn(name = "use_user", nullable = true)
     @OneToOne(fetch = FetchType.LAZY)
-    private User imageUser;
+    private User user;
 
     @JoinColumn(name = "use_shop", nullable = true)
     @OneToOne(fetch = FetchType.LAZY)
-    private Shop imageShop;
+    private Shop shop;
 
     @JoinColumn(name = "use_advertisement", nullable = true)
     @OneToOne(fetch = FetchType.LAZY)
-    private Advertisement imageAdvertisement;
+    private Advertisement advertisement;
 
     @Column(name = "origin_name", nullable = false)
     private String originName;
@@ -45,22 +45,22 @@ public class Image {
     private String path;
 
     @Builder
-    public Image(Object userObject, ImageUseType imageUseType, String originName, String uuidName, String type, String path) {
+    public Image(Object useObject, ImageUseType imageUseType, String originName, String uuidName, String type, String path) {
         switch (imageUseType) {
             case USER -> {
-                this.imageUser = (User) userObject;
-                this.imageShop = null;
-                this.imageAdvertisement = null;
+                this.user = (User) useObject;
+                this.shop = null;
+                this.advertisement = null;
             }
             case SHOP -> {
-                this.imageShop = (Shop) userObject;
-                this.imageUser = null;
-                this.imageAdvertisement = null;
+                this.shop = (Shop) useObject;
+                this.user = null;
+                this.advertisement = null;
             }
             case ADVERTISEMENT -> {
-                this.imageAdvertisement = (Advertisement) userObject;
-                this.imageShop = null;
-                this.imageUser = null;
+                this.advertisement = (Advertisement) useObject;
+                this.shop = null;
+                this.user = null;
             }
         }
         this.originName = originName;

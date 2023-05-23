@@ -1,8 +1,10 @@
 package com.dongguk.cse.naemansan.util;
 
-import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.CourseTag;
-import com.dongguk.cse.naemansan.domain.type.StatusType;
+import com.dongguk.cse.naemansan.domain.Like;
+import com.dongguk.cse.naemansan.domain.User;
+import com.dongguk.cse.naemansan.domain.type.TagStatusType;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.google.gson.JsonArray;
@@ -136,12 +138,12 @@ public class CourseUtil {
         return locations;
     }
 
-    public List<CourseTag> getTagDto2Tag(Course course, List<CourseTagDto> dtoList) {
+    public List<CourseTag> getTagDto2Tag(EnrollmentCourse enrollmentCourse, List<CourseTagDto> dtoList) {
         List<CourseTag> tagList = new ArrayList<>();
 
         for (CourseTagDto courseTagDto : dtoList) {
             tagList.add(CourseTag.builder()
-                    .course(course).courseTagType(courseTagDto.getCourseTagType()).build());
+                    .enrollmentCourse(enrollmentCourse).courseTagType(courseTagDto.getCourseTagType()).build());
         }
 
         return tagList;
@@ -153,9 +155,19 @@ public class CourseUtil {
         for (CourseTag courseTag : tagList) {
             dtoList.add(CourseTagDto.builder()
                     .courseTagType(courseTag.getCourseTagType())
-                    .statusType(StatusType.DEFAULT).build());
+                    .tagStatusType(TagStatusType.DEFAULT).build());
         }
 
         return dtoList;
+    }
+
+    public boolean existLike(User user, EnrollmentCourse enrollmentCourse) {
+        for (Like like : user.getLikes()) {
+            if (!like.getEnrollmentCourse().equals(enrollmentCourse)) {
+                continue;
+            }
+            return true;
+        }
+        return false;
     }
 }

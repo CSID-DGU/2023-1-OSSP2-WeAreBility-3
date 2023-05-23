@@ -1,10 +1,10 @@
 //홈 페이지 Home()
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
+import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/main_slider.dart';
@@ -13,20 +13,21 @@ import 'package:permission_handler/permission_handler.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
-
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  late Future<Map<String, dynamic>?> user;
   String _city = "";
   String _district = "";
   String _street = "";
   bool nowLocation = false;
-
   @override
   void initState() {
     super.initState();
+    ApiService apiService = ApiService();
+    user = apiService.getUserInfo();
   }
 
   // 위도, 경도로 주소 가져오기
@@ -49,7 +50,6 @@ class _HomeState extends State<Home> {
   Future<void> requestLocationPermission() async {
     final PermissionStatus permissionStatus =
         await Permission.locationWhenInUse.request();
-
     // 위치 권한 요청
     if (permissionStatus == PermissionStatus.granted) {
       // 권한 허용 시 처리할 코드
@@ -81,9 +81,11 @@ class _HomeState extends State<Home> {
         }
         if (types.contains("sublocality_level_4")) {
           print(_street);
+          // print(_street);
           _street = results[i]["long_name"];
         }
         print(results[i]);
+        // print(results[i]);
       }
       setState(() {});
     }
@@ -95,7 +97,6 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
-
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
@@ -165,6 +166,30 @@ class _HomeState extends State<Home> {
                           });
                         },
                         icon: const Icon(Icons.refresh_rounded),
+                      ),
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: user,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.hasData) {
+                              // Access user data
+                              Map<String, dynamic>? userData = snapshot.data;
+                              print(userData);
+                              String? name = userData?['name'];
+
+                              // Use the name in your widget tree
+                              return Text('User Name: $name');
+                            } else {
+                              return const Text('No user data available.');
+                            }
+                          }
+                        },
                       ),
                     ],
                   ),

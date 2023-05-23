@@ -1,0 +1,76 @@
+{
+    "title": "한강 러닝으로 마지막은 커피",
+    "introduction": "한강 러닝 코스이며, 스타벅스가 마지막입니다.",
+    "courseTags": [
+        {
+            "courseTagType": "한강",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "러닝",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "스타벅스",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "자연",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "도심",
+            "statusType": "NEW"
+        },
+        {
+            "courseTagType": "카페",
+            "statusType": "NEW"
+        }
+    ],
+    "pointDtos": [
+        {
+            "latitude": 37.51098213203797,
+            "longitude": 126.99847872176444
+        },
+        {
+            "latitude": 37.51159482441647,
+            "longitude": 126.99968895543908
+        },
+        {
+            "latitude": 37.512040818584005,
+            "longitude": 127.00089355151007
+        },
+        {
+            "latitude": 37.513013887063174,
+            "longitude": 127.00214342037306
+        },
+        {
+            "latitude": 37.51385630728522,
+            "longitude": 127.00299742893485
+        },
+        {
+            "latitude": 37.514392373265146,
+            "longitude": 127.0040493857881
+        },
+        {
+            "latitude": 37.5151536841752,
+            "longitude": 127.00502219428319
+        },
+        {
+            "latitude": 37.51600509471324,
+            "longitude": 127.00584798185123
+        },
+        {
+            "latitude": 37.51688806331975,
+            "longitude": 127.0061421500172
+        },
+        {
+            "latitude": 37.51750969530337,
+            "longitude": 127.00721114754323
+        },
+        {
+            "latitude": 37.518248473935344,
+            "longitude": 127.00790123328021
+        }
+    ]
+}

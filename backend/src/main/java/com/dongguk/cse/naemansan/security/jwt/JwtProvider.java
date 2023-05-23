@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.security.jwt;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.UserRoleType;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -7,11 +8,13 @@ import io.jsonwebtoken.*;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -21,7 +24,6 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class JwtProvider implements InitializingBean {
-
     private final UserRepository userRepository;
     @Value("${jwt.secret: abc}")
     private String secretKey;
@@ -81,12 +83,14 @@ public class JwtProvider implements InitializingBean {
 
         String refreshToken = token;
 
-        if(!validateToken(refreshToken)) {
-            throw new NullPointerException();
-        }
+//        try {
+//            if(!validateToken(refreshToken)) {
+//                throw new NullPointerException();
+//            }
+//        } catch (Exception e) {
+//            log.info("test");
+//        }
 
-        // test용
-//        refreshToken = refreshToken.substring(7);
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 
         Optional<User> user = userRepository.findById(Long.valueOf(claims.get("id").toString()));
@@ -103,19 +107,24 @@ public class JwtProvider implements InitializingBean {
     }
 
     // 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+    public Claims validateToken(String token) throws JwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public static String refineToken(HttpServletRequest request) throws JwtException {
+        String beforeToken = request.getHeader("Authorization");
+
+        String afterToken = null;
+        if (StringUtils.hasText(beforeToken) && beforeToken.startsWith("Bearer ")) {
+            afterToken =  beforeToken.substring(7);
+        } else {
+            throw new SecurityException();
         }
-        return false;
+
+        return afterToken;
     }
 }

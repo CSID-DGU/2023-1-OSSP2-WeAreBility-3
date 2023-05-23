@@ -1,24 +1,22 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.domain.Course;
-import com.dongguk.cse.naemansan.domain.CourseTag;
-import com.dongguk.cse.naemansan.domain.Like;
-import com.dongguk.cse.naemansan.domain.User;
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
+import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.domain.type.CourseMapping;
 import com.dongguk.cse.naemansan.domain.type.CourseTagType;
-import com.dongguk.cse.naemansan.domain.type.StatusType;
-import com.dongguk.cse.naemansan.dto.response.CourseDto;
+import com.dongguk.cse.naemansan.dto.response.CourseDetailDto;
 import com.dongguk.cse.naemansan.dto.request.CourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.dto.response.CourseListDto;
-import com.dongguk.cse.naemansan.repository.CourseRepository;
+import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.CourseTagRepository;
 import com.dongguk.cse.naemansan.repository.LikeRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.el.parser.BooleanNode;
 import org.locationtech.jts.geom.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,9 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -38,272 +33,226 @@ import java.util.*;
 @Transactional
 public class CourseService {
     private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+    private final EnrollmentCourseRepository enrollmentCourseRepository;
     private final CourseTagRepository courseTagRepository;
     private final LikeRepository likeRepository;
     private final CourseUtil courseUtil;
 
 
     // Course Create
-    public CourseDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
-        log.info("Create Course - UserID = {}", userId);
-        Optional<User> user = userRepository.findById(userId);
+    public CourseDetailDto createCourse(Long userId, CourseRequestDto courseRequestDto) {
+        // User 존재, Course Title 중복유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        enrollmentCourseRepository.findByTitleAndStatus(courseRequestDto.getTitle(), true).ifPresent(s -> new RestApiException(ErrorCode.DUPLICATION_COURSE_TITLE));
 
-        // Title 중복검사, 좌표는 프론트에서 시간으로 Ckeck
-        if (!isExistTitle(courseRequestDto.getTitle())) {
-            return null;
-        }
-
-        // Course 등록하는 과정
-        Map<String, Object> pointInformation = courseUtil.getPointDto2Point(courseRequestDto.getPointDtos());
+        // Course 등록하는 과정(PointDto2Point 변환)
+        Map<String, Object> pointInformation = courseUtil.getPointDto2Point(courseRequestDto.getLocations());
         Point point = (Point) pointInformation.get("startLocation");
         MultiPoint multiPoint = (MultiPoint) pointInformation.get("locations");
         double distance = (double) pointInformation.get("distance");
 
-        Course course = courseRepository.save(Course.builder()
-                .courseUser(user.get())
+        // Course DB 등록
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.save(EnrollmentCourse.builder()
+                .user(user)
                 .title(courseRequestDto.getTitle())
                 .introduction(courseRequestDto.getIntroduction())
-                .startLocationName(courseUtil.getLocationName(courseRequestDto.getPointDtos().get(0)))
+                .startLocationName(courseUtil.getLocationName(courseRequestDto.getLocations().get(0)))
                 .startLocation(point)
                 .locations(multiPoint)
-                .distance(distance)
-                .status(true).build());
+                .distance(distance).build());
 
-        // CourseTag 등록하는 과정
-        List<CourseTag> courseTags = courseUtil.getTagDto2Tag(course, courseRequestDto.getCourseTags());
+        // CourseTag 등록하는 과정(TagDto2Tag and saveAll)
+        List<CourseTag> courseTags = courseUtil.getTagDto2Tag(enrollmentCourse, courseRequestDto.getTags());
         courseTagRepository.saveAll(courseTags);
 
+        // ResponseDto 를 위한 TagDto 생성
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(courseTags);
-        return CourseDto.builder()
-                .id(course.getId())
-                .userId(course.getCourseUser().getId())
-                .userName(course.getCourseUser().getName())
-                .title(course.getTitle())
-                .createdDateTime(course.getCreatedDate())
-                .introduction(course.getIntroduction())
-                .courseTags(courseTagDtoList)
-                .startLocationName(course.getStartLocationName())
-                .locations(courseRequestDto.getPointDtos()).build();
+
+        return CourseDetailDto.builder()
+                .id(enrollmentCourse.getId())
+                .userId(enrollmentCourse.getUser().getId())
+                .userName(enrollmentCourse.getUser().getName())
+                .title(enrollmentCourse.getTitle())
+                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .introduction(enrollmentCourse.getIntroduction())
+                .tags(courseTagDtoList)
+                .startLocationName(enrollmentCourse.getStartLocationName())
+                .locations(courseRequestDto.getLocations()).build();
     }
 
     // Course Read
-    public CourseDto readCourse(Long courseId) {
-        log.info("Read Course - CourseID = {}", courseId);
-        Course course = isExistCourse(courseId);
+    public CourseDetailDto readCourse(Long courseId) {
+        // Course 존재유무 확인
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
-        if (course == null) {
-            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
-            return null;
-        }
+        // Point to PointDto, Tag to TagDto 변환
+        List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
+        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags());
 
-        List<PointDto> locations = courseUtil.getPoint2PointDto(course.getLocations());
-        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDto(course.getCourseTags());
-
-        return CourseDto.builder()
-                .id(course.getId())
-                .userId(course.getCourseUser().getId())
-                .userName(course.getCourseUser().getName())
-                .title(course.getTitle())
-                .createdDateTime(course.getCreatedDate())
-                .introduction(course.getIntroduction())
-                .courseTags(courseTagDtoList)
-                .startLocationName(course.getStartLocationName())
+        return CourseDetailDto.builder()
+                .id(enrollmentCourse.getId())
+                .userId(enrollmentCourse.getUser().getId())
+                .userName(enrollmentCourse.getUser().getName())
+                .title(enrollmentCourse.getTitle())
+                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .introduction(enrollmentCourse.getIntroduction())
+                .tags(courseTagDtoList)
+                .startLocationName(enrollmentCourse.getStartLocationName())
                 .locations(locations).build();
     }
 
-    public CourseDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
-        log.info("Update Course - CourseID: {}", courseId);
-        // 수정할 Course 탐색
-        Optional<Course> findCourse = courseRepository.findById(courseId);
-        
-        // 수정할 Title 중복검사용 Course 탐색
-        Optional<Course> findTitle = courseRepository.findByTitle(courseRequestDto.getTitle());
+    public CourseDetailDto updateCourse(Long userId, Long courseId, CourseRequestDto courseRequestDto) {
+        // User, Course 존재유무, Course Title 중복유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        enrollmentCourseRepository.findByIdNotAndTitleAndStatus(courseId, courseRequestDto.getTitle(), true).ifPresent(c -> { throw new RestApiException(ErrorCode.DUPLICATION_COURSE_TITLE);});
 
-        if (findCourse.isEmpty()) {
-            log.error("Course ID로 검색한 Course가 존재하지 않습니다. - CourseID : {}", courseId);
-            return null;
-        } else if (findCourse.get().getCourseUser().getId() != userId) {
-            log.error("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
-            return null;
-        } else if (!findTitle.isEmpty() && !findCourse.get().equals(findTitle.get())) {
-            log.error("course Name Duplication - user : {}, {}", userId, courseRequestDto);
-            return null;
+        // Course User 와 Request User 동등유무 확인
+        if (enrollmentCourse.getUser().getId() != user.getId()) {
+            throw new RestApiException(ErrorCode.NOT_EQUAL);
         }
 
-        Course course = findCourse.get();
-        course.updateCourse(courseRequestDto.getTitle(), courseRequestDto.getIntroduction());
+        // Course Data Update
+        enrollmentCourse.updateCourse(courseRequestDto.getTitle(), courseRequestDto.getIntroduction());
 
-        List<PointDto> locations = courseUtil.getPoint2PointDto(course.getLocations());
+        // Course Tag Data Update, 최적화 필요
         List<CourseTag> courseTagList = new ArrayList<>();
-        for (CourseTagDto courseTagDto : courseRequestDto.getCourseTags()) {
-            switch (courseTagDto.getStatusType()) {
+        for (CourseTagDto courseTagDto : courseRequestDto.getTags()) {
+            switch (courseTagDto.getTagStatusType()) {
                 case NEW -> {
                     courseTagList.add(courseTagRepository.save(CourseTag.builder()
-                            .course(course)
+                            .enrollmentCourse(enrollmentCourse)
                             .courseTagType(courseTagDto.getCourseTagType()).build()));
                 }
-                case DELETE -> { courseTagRepository.deleteByCourseAndCourseTagType(course, courseTagDto.getCourseTagType()); }
-                case DEFAULT -> { courseTagList.add(CourseTag.builder().course(course).courseTagType(courseTagDto.getCourseTagType()).build()); }
+                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, courseTagDto.getCourseTagType()); }
+                case DEFAULT -> { courseTagList.add(CourseTag.builder()
+                        .enrollmentCourse(enrollmentCourse)
+                        .courseTagType(courseTagDto.getCourseTagType()).build()); }
             }
         }
 
-        return CourseDto.builder()
-                .id(course.getId())
-                .userId(course.getCourseUser().getId())
-                .userName(course.getCourseUser().getName())
-                .title(course.getTitle())
-                .createdDateTime(course.getCreatedDate())
-                .introduction(course.getIntroduction())
-                .courseTags(courseUtil.getTag2TagDto(courseTagList))
-                .startLocationName(course.getStartLocationName())
+        // ResponseDto 를 위한 PointDto 생성
+        List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
+
+        return CourseDetailDto.builder()
+                .id(enrollmentCourse.getId())
+                .userId(enrollmentCourse.getUser().getId())
+                .userName(enrollmentCourse.getUser().getName())
+                .title(enrollmentCourse.getTitle())
+                .createdDateTime(enrollmentCourse.getCreatedDate())
+                .introduction(enrollmentCourse.getIntroduction())
+                .tags(courseUtil.getTag2TagDto(courseTagList))
+                .startLocationName(enrollmentCourse.getStartLocationName())
                 .locations(locations).build();
     }
 
     public Boolean deleteCourse(Long userId, Long courseId) {
-        log.info("Delete Course - UserID : {}, CourseID : {}", userId, courseId);
-        Optional<Course> course = courseRepository.findById(courseId);
+        // User 존재, Course 존재 유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
 
-        if (course.isEmpty()) {
-            log.info("Course ID로 검색한 Course가 존재하지 않습니다. - {}", courseId);
-            return null;
-        } else if (course.get().getCourseUser().getId() != userId) {
-            log.info("해당 유저가 만든 산책로가 아닙니다. - UserID : {}", userId);
-            return Boolean.FALSE;
+        if (enrollmentCourse.getUser().getId() != user.getId()) {
+            throw new RestApiException(ErrorCode.NOT_EQUAL);
         }
 
-        courseRepository.deleteById(courseId);
+        enrollmentCourse.setStatus(false);
+        likeRepository.deleteAll(enrollmentCourse.getLikes());
+
         return Boolean.TRUE;
     }
 
-    public List<CourseListDto> getCourseListByTag(String tag) {
+    public List<CourseListDto> getCourseListByTag(Long userId, String tag) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        // Tag 존재유무 확인
         CourseTagType courseTagType = CourseTagType.existType(tag);
         if (courseTagType == null) {
-            log.error("존재하지 않는 Tag 입니다. - Tag : {}", tag);
-            return null;
+            throw new RestApiException(ErrorCode.NOT_FOUND_COURSE_TAG);
         }
 
-        List<CourseTag> courseTagList = courseTagRepository.findByCourseTagType(courseTagType);
+        Pageable paging = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<EnrollmentCourse> pages =  enrollmentCourseRepository.findCourseListByTag(courseTagType, paging);
+
 
         List<CourseListDto> courseListDtoList = new ArrayList<>();
-        for (CourseTag courseTag : courseTagList) {
-            Course course = courseTag.getCourse();
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
+        for (EnrollmentCourse enrollmentCourse : pages.getContent()) {
+            if (!enrollmentCourse.getStatus()) {
+                continue;
+            }
+
             courseListDtoList.add(CourseListDto.builder()
-                    .id(course.getId())
-                    .title(course.getTitle())
-                    .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseTags)
-                    .startLocationName(course.getStartLocationName())
-                    .distance(course.getDistance()).build());
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .createdDateTime(enrollmentCourse.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .likeCnt((long) enrollmentCourse.getLikes().size())
+                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
         return courseListDtoList;
     }
 
-    public List<CourseListDto> getCourseListByLocation(Double latitude, Double longitude) {
-        Pageable paging = PageRequest.of(0, 5, Sort.by("distance"));
-        Page<Course> pages =  courseRepository.findCourseList(courseUtil.getLatLng2Point(latitude, longitude), paging);
-
-        List<Course> courseIds =  pages.getContent();
+    public List<CourseListDto> getCourseListByLocation(Long userId, Double latitude, Double longitude) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        List<CourseMapping> courseMappingList =  enrollmentCourseRepository.findCourseListByLocation(courseUtil.getLatLng2Point(latitude, longitude), 5L);
 
         List<CourseListDto> courseListDtoList = new ArrayList<>();
-        for (Course course : courseIds) {
-            List<CourseTagDto> courseTags = courseUtil.getTag2TagDto(course.getCourseTags());
+        for (CourseMapping courseMapping : courseMappingList) {
+            EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseMapping.getId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+
+            // 삭제된 산책로라면 건너뜀
+            if (!enrollmentCourse.getStatus()) {
+                continue;
+            }
+
             courseListDtoList.add(CourseListDto.builder()
-                            .id(course.getId())
-                            .title(course.getTitle())
-                            .createdDateTime(course.getCreatedDate())
-                            .courseTags(courseTags)
-                            .startLocationName(course.getStartLocationName())
-                            .distance(course.getDistance()).build());
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .createdDateTime(enrollmentCourse.getCreatedDate())
+                    .courseTags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .startLocationName(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .likeCnt((long) enrollmentCourse.getLikes().size())
+                    .usingCnt((long) enrollmentCourse.getUsingCourses().size())
+                    .isLike(courseUtil.existLike(user, enrollmentCourse)).build());
         }
 
         return courseListDtoList;
     }
 
     public Map<String, Object> likeCourse(Long userId, Long courseId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Course> course = courseRepository.findById(courseId);
+        // User, Course 존재, 이미 Like 했는지 여부 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        likeRepository.findByUserAndEnrollmentCourse(user, enrollmentCourse).ifPresent(i -> { throw new RestApiException(ErrorCode.EXIST_ENTITY_REQUEST); });
 
-        if (user.isEmpty()) {
-            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return null;
-        }
-
-        if (course.isEmpty()) {
-            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return null;
-        }
-
-        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
-
-        if (!like.isEmpty()) {
-            log.error("해당 유저는 좋아요 중입니다. - UserID: {}, CourseID: {}", userId, courseId);
-            return null;
-        }
-
+        // Like 저장
         likeRepository.save(Like.builder()
-                .likeUser(user.get())
-                .likeCourse(course.get()).build());
+                .user(user)
+                .enrollmentCourse(enrollmentCourse).build());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", course.get().getLikes().size());
+        map.put("likeCnt", enrollmentCourse.getLikes().size());
         map.put("isLike", Boolean.TRUE);
 
         return map;
     }
 
     public Map<String, Object> dislikeCourse(Long userId, Long courseId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Course> course = courseRepository.findById(courseId);
+        // User, Course 존재, Like 하지 않았는지 여부 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COURSE));
+        Like like = likeRepository.findByUserAndEnrollmentCourse(user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_ENTITY_REQUEST));
 
-        if (user.isEmpty()) {
-            log.error("잘못된 UserID 입니다. - CourseId {}", userId);
-            return null;
-        }
-
-        if (course.isEmpty()) {
-            log.error("잘못된 CourseId 입니다. - CourseId {}", courseId);
-            return null;
-        }
-
-        Optional<Like> like = likeRepository.findByLikeUserAndLikeCourse(user.get(),course.get());
-
-        if (like.isEmpty()) {
-            log.error("해당 유저는 좋아요하지 않았습니다. - UserID: {}, CourseID: {}", userId, courseId);
-            return null;
-        }
-
-        likeRepository.deleteByLikeUserAndLikeCourse(user.get(), course.get());
+        // Like 삭제
+        likeRepository.delete(like);
 
         Map<String, Object> map = new HashMap<>();
-        map.put("likeCnt", course.get().getLikes().size());
+        map.put("likeCnt", enrollmentCourse.getLikes().size());
         map.put("isLike", Boolean.FALSE);
 
         return map;
-    }
-
-
-    private Boolean isExistTitle(String title) {
-        Optional<String> findTitle = courseRepository.findTitle(title);
-
-        if (!findTitle.isEmpty()) {
-            log.error("course Name Duplication - Title : {}", title);
-            return Boolean.FALSE;
-        }
-
-        return Boolean.TRUE;
-    }
-
-    private Course isExistCourse(Long courseId) {
-        Optional<Course> findCourse = courseRepository.findById(courseId);
-
-        if (findCourse.isEmpty()) {
-            log.error("Not Exist Course - CourseID : {}", courseId);
-            return null;
-        }
-
-        return findCourse.get();
     }
 }

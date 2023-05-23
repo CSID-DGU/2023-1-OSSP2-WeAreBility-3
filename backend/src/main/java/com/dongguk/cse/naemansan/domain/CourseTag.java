@@ -20,15 +20,15 @@ public class CourseTag {
 
     @JoinColumn(name = "course_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Course course;
+    private EnrollmentCourse enrollmentCourse;
 
     @Column(name = "tag")
     @Enumerated(EnumType.STRING)
     private CourseTagType courseTagType;
 
     @Builder
-    public CourseTag(Course course, CourseTagType courseTagType) {
-        this.course = course;
+    public CourseTag(EnrollmentCourse enrollmentCourse, CourseTagType courseTagType) {
+        this.enrollmentCourse = enrollmentCourse;
         this.courseTagType = courseTagType;
     }
 }

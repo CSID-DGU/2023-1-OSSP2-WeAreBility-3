@@ -21,7 +21,7 @@ public class Subscribe {
 
     @JoinColumn(name = "user_id", nullable = false)
     @OneToOne(fetch = FetchType.LAZY)
-    private User subscribeUser;
+    private User user;
 
     @Column(name = "pay_type")
     @Enumerated(EnumType.STRING)
@@ -46,8 +46,8 @@ public class Subscribe {
     private Boolean nextRefresh;
 
     @Builder
-    public Subscribe(User subscribeUser, PayType payType, Time createdDate, Time successedDate, Time expirationDate, Time nextOrderDate, Time biliingKey, Boolean nextRefresh) {
-        this.subscribeUser = subscribeUser;
+    public Subscribe(User user, PayType payType, Time createdDate, Time successedDate, Time expirationDate, Time nextOrderDate, Time biliingKey, Boolean nextRefresh) {
+        this.user = user;
         this.payType = payType;
         this.createdDate = createdDate;
         this.successedDate = successedDate;

@@ -1,8 +1,9 @@
+//나만의 산책로 페이지 Myrail()
 import 'package:flutter/material.dart';
-import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/services/api_service.dart';
+import 'package:naemansan/models/trailmodel.dart';
 
 class Myrail extends StatefulWidget {
   const Myrail({Key? key}) : super(key: key);
@@ -58,15 +59,19 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
+
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back_ios_outlined,
+            Icons.arrow_back_ios_outlined, //홈 화면으로 이동 아이콘
             color: Colors.black,
           ),
           onPressed: () {
+            //arrow 아이콘 클릭 시 홈 화면으로 이동 (홈 화면에 화살표 생김)
+            false;
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (BuildContext context) => const IndexScreen(),
@@ -81,39 +86,38 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
-        titleSpacing: 0,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.black,
+          indicatorColor: Colors.black, //선택된 항목 나타내기
           tabs: const [
             Tab(
               child: Text(
                 '등록한',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '이용',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '댓글',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ],

@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface BadgeRepository extends JpaRepository<Badge, Long> {
     // 만약 Data가 없다면 Empty List가 나온다.
-    List<Badge> findByBadgeUser(User user);
+    List<Badge> findByUser(User user);
 
     // 연관관계가 없는 엔티티 조인 처리 (ON 사용)
-    @Query("SELECT b.id, n.name, b.getDate FROM Badge b INNER JOIN  b.badgeName n WHERE b.badgeUser.id = :userId")
+    @Query("SELECT b.id, n.name, b.getDate FROM Badge b INNER JOIN  b.badgeName n WHERE b.user.id = :userId")
     List<Object[]> findUserBadgeList(@Param("userId") Long userId);
 }

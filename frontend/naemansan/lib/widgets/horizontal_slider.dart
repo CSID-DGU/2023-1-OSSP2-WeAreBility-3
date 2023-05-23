@@ -125,3 +125,5 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
     );
   }
 }
+
+//https://github.com/seochan99/2023-1-OSSP2-WeAreBility-3/commit/0f819d5afc86810b4c12e83945386ceb9bb15e9a#diff-2e1d24658bba85d2dc2557c5c153b3220e7c38f875272a2452f881d1636e50a0
