@@ -33,14 +33,16 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
+  
         return Trail(
+          
           title: trail.title,
           startpoint: trail.startLocationName,
           distance: trail.distance,
-          //CourseKeyWord: trail.courseTags,
-          //likeCnt: trail.likeCnt,
-          //userCnt: trail.userCnt,
-          //isLiked: trail.isLiked
+          CourseKeyWord: trail.tags,
+          likeCnt: trail.likeCount,
+          userCnt: trail.userCount,
+          isLiked: trail.isLiked
         );
       },
       separatorBuilder: (BuildContext context, int index) =>
@@ -51,6 +53,8 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Future<List<TrailModel>> CreatedTrail = ApiService.getCreatedTrail();
+    final Future<List<TrailModel>> LikedTrail = ApiService.getLikedTrail();
+    final Future<List<TrailModel>> UsedTrail = ApiService.getUsedTrail();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -118,8 +122,8 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          // 첫 번째 탭에 데이터가 적용된 trail 위젯
+        children: [ 
+          // 첫 번째 탭 (등록)
           FutureBuilder(
             future: CreatedTrail,
             builder: (context, snapshot) {
@@ -138,19 +142,49 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               );
             },
           ),
-          // 두 번째 탭
-          const Center(
-            child: Text('계정 사용자가 좋아요한 산책로 리스트'),
+          // 두 번째 탭 (좋아요)
+          FutureBuilder(
+            future: LikedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          // 세 번째 탭
-          const Center(
-            child: Text('계정 사용자가 이용한 산책로 리스트'),
+          // 세 번째 탭 (이용)
+          FutureBuilder(
+            future: UsedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
-          // 네 번째 탭
+          // 네 번째 탭 (댓글)
           const Center(
             child: Text('계정 사용자가 작성한 댓글 모음'),
           ),
-          // 다섯 번째 탭
+          // 다섯 번째 탭 (키워드) 
           const Center(
             child: Text('키워드'),
           ),

@@ -3,41 +3,125 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiService {
-  /*테스트용 
-  static Future<List<TrailModel>> getTrail() async {
-    List<TrailModel> trailInstances = [];
+//--------------------------------------나만의 산책로 페이지-----------------------------------------
+//------------------------------------등록한 산책로 리스트 불러오기-----------------------------------------------
+  static Future<List<TrailModel>> getCreatedTrail() async {
+    List<TrailModel> createdTrailInstances = [];
+    final url = Uri.parse(
+        "https://ossp.dcs-hyungjoon.com/course/list/individual/enrollment?page={}&num={}");
+    final response = await http.get(url);
 
-    // 테스트 데이터로 주어진 JSON 문자열을 파싱하여 TrailModel 인스턴스를 생성하여 리스트에 추가합니다.
-    String jsonData = '''
-    [
-      {
-        "userimage": "image",
-        "title": "중구 산책길",
-        "startpoint": "서울특별시 중구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
-        "isLiked": true 
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final dynamic trails = data['trails'];
+
+      if (trails != null && trails is List<dynamic>) {
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          createdTrailInstances.add(instance);
+        }
+      } else {
+        print("No trail information available.");
       }
-    ]
-    ''';
-    List<dynamic> jsonList = jsonDecode(jsonData);
-    List<TrailModel> instances =
-        jsonList.map((json) => TrailModel.fromJson(json)).toList();
-    trailInstances.addAll(instances);
-
-    return trailInstances;
+    } /*else {
+      throw Exception('Invalid status code: ${response.statusCode}');
+    }*/
+    //등록된 산책로가 없습니다 표기 추가
+    return createdTrailInstances;
   }
-  */
-//
-//
+
+  //-----------------------------------좋아요한 산책로 리스트 불러오기-----------------------------------------------------------------------
+  static Future<List<TrailModel>> getLikedTrail() async {
+    List<TrailModel> LikedTrailInstances = [];
+    final url = Uri.parse(
+        "https://ossp.dcs-hyungjoon.com/course/list/individual/like?page={}&num={}");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final dynamic trails = data['trails'];
+
+      if (trails != null && trails is List<dynamic>) {
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          LikedTrailInstances.add(instance);
+        }
+      } else {
+        print("No trail information available.");
+      }
+    } /* else {
+      throw Exception('Invalid status code: ${response.statusCode}');
+    }*/
+
+    //좋아요한 산책로가 없습니다 표기 추가
+    return LikedTrailInstances;
+  }
+
+  //----------------------------------이용한 산책로 리스트 불러오기---------------------------------------------------------------------
+  static Future<List<TrailModel>> getUsedTrail() async {
+    List<TrailModel> UsedTrailInstances = [];
+    final url = Uri.parse(
+        "https://ossp.dcs-hyungjoon.com/course/list/individual/using?page={}&num={}"); //사용한 산책로 조회
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final dynamic trails = data['trails'];
+
+      if (trails != null && trails is List<dynamic>) {
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          UsedTrailInstances.add(instance);
+        }
+      } else {
+        print("No trail information available.");
+      }
+    } /* else {
+      throw Exception('Invalid status code: ${response.statusCode}');
+    }*/
+    //이용한 산책로가 없습니다 표기 추가
+    return UsedTrailInstances;
+  }
+
+  //----------------------------------댓글단 산책로 리스트 불러오기---------------------------------------------------------------------
+  static Future<List<TrailModel>> getCommentedTrail() async {
+    List<TrailModel> CommentedTrailInstances = [];
+    final url = Uri.parse(
+        "https://ossp.dcs-hyungjoon.com/user/comment"); // 산책로 댓글 조회 api
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final trails = jsonDecode(response.body);
+      for (var trail in trails) {
+        final instance = TrailModel.fromJson(trail);
+        CommentedTrailInstances.add(instance);
+      }
+      return CommentedTrailInstances; //스크롤을 내리면서 목록이 더 생김
+    }
+    throw Error();
+  }
+
+//-----------------------------------키워드별 리스트 불러오기---------------------------------------------------------------------------------
+  static Future<List<TrailModel>> GetfollowedKeyTrail() async {
+    List<TrailModel> followedKeyTrailInstances = [];
+    final url = Uri.parse(
+        "https://ossp.dcs-hyungjoon.com/course/list/individual/tag?page={}&num={}&name={}"); // 산책로 댓글 조회 api
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final trails = jsonDecode(response.body);
+      for (var trail in trails) {
+        final instance = TrailModel.fromJson(trail);
+        followedKeyTrailInstances.add(instance);
+      }
+      return followedKeyTrailInstances; //스크롤을 내리면서 목록이 더 생김
+    }
+    throw Error();
+  }
+
   //---------------------------------------산책로 페이지----------------------------------------------------------------------------------------
 //---------------------------------------거리순 리스트 불러오기--------------------------------------------------------------------------------
   static Future<List<TrailModel>> getNearestTrail() async {
     List<TrailModel> NearestTrailInstances = [];
     final url = Uri.parse(
-        "/course/location?latitude={}&longitude={}"); //위치기반 산책로 조회 Api
+        "https://ossp.dcs-hyungjoon.com/course/list/location?page={}&num={}&latitude={}&longitude={}"); //위치기반 산책로 조회 Api
     final response = await http.get(url);
     if (response.statusCode == 201) {
       final trails = jsonDecode(response.body);
@@ -53,7 +137,7 @@ class ApiService {
 //---------------------------------------좋아요순 리스트 불러오기------------------------------------------------------------------------------
   static Future<List<TrailModel>> getMostLikedTrail() async {
     List<TrailModel> MostLikedTrailInstances = [];
-    final url = Uri.parse("/api/course/total/top5"); //위치기반 산책로 top5 Api
+    final url = Uri.parse("https://ossp.dcs-hyungjoon.com/course/list/like?page={}&num={}"); //좋아요순 
     final response = await http.get(url);
     if (response.statusCode == 201) {
       final trails = jsonDecode(response.body);
@@ -69,7 +153,7 @@ class ApiService {
 //---------------------------------------이용자순 리스트 불러오기---------------------------------------------------------------------------
   static Future<List<TrailModel>> getMostUsedTrail() async {
     List<TrailModel> MostUsedTrailInstances = [];
-    final url = Uri.parse("/api/course/total/top5"); //이용자순 Api
+    final url = Uri.parse("https://ossp.dcs-hyungjoon.com/course/list/using?page={}&num={}"); //이용자순 Api
     final response = await http.get(url);
     if (response.statusCode == 201) {
       final trails = jsonDecode(response.body);
@@ -85,7 +169,7 @@ class ApiService {
 //---------------------------------------최신(등록)순 리스트 불러오기-----------------------------------------------------------------------
   static Future<List<TrailModel>> getNewTrail() async {
     List<TrailModel> NewTrailInstances = [];
-    final url = Uri.parse("/api/course/list?fliter={enum}"); //**전체 산책로 목록 조회
+    final url = Uri.parse("https://ossp.dcs-hyungjoon.com/api/course/list?fliter={enum}"); //**전체 산책로 목록 조회
     final response = await http.get(url);
     if (response.statusCode == 201) {
       final trails = jsonDecode(response.body);
@@ -103,76 +187,4 @@ class ApiService {
 //
 //
 
-//--------------------------------------나만의 산책로 페이지-----------------------------------------
-//------------------------------------등록한 산책로 리스트 불러오기-----------------------------------------------
-  static Future<List<TrailModel>> getCreatedTrail() async {
-    List<TrailModel> CreatedTrailInstances = [];
-    final url = Uri.parse(
-        "https://ossp.dcs-hyungjoon.com/user/enrollmentCourse"); //좋아요한 산책로 api
-    final response = await http.get(url);
-    if (response.statusCode == 401) {
-      final trails = jsonDecode(response.body);
-      for (var trail in trails.values) {
-        final instance = TrailModel.fromJson(trail);
-        CreatedTrailInstances.add(instance);
-      }
-      return CreatedTrailInstances;
-    } else {
-      throw Exception('Invalid status code: ${response.statusCode}');
-    }
-  }
-
-  //-----------------------------------좋아요한 산책로 리스트 불러오기-----------------------------------------------------------------------
-  static Future<List<TrailModel>> getLikedTrail() async {
-    List<TrailModel> LikedTrailInstances = [];
-    final url = Uri.parse("/api/my_course/liked"); //좋아요한 산책로 api
-    final response = await http.get(url);
-    if (response.statusCode == 201) {
-      final trails = jsonDecode(response.body);
-      for (var trail in trails) {
-        final instance = TrailModel.fromJson(trail);
-        LikedTrailInstances.add(instance);
-      }
-      return LikedTrailInstances; //스크롤을 내리면서 목록이 더 생김
-    }
-    throw Error();
-  }
-
-  //----------------------------------이용한 산책로 리스트 불러오기---------------------------------------------------------------------
-  static Future<List<TrailModel>> getUsedTrail() async {
-    List<TrailModel> UsedTrailInstances = [];
-    final url = Uri.parse("/user/finishCourse"); //완주한 산책로 조회
-    final response = await http.get(url);
-    if (response.statusCode == 201) {
-      final trails = jsonDecode(response.body);
-      for (var trail in trails) {
-        final instance = TrailModel.fromJson(trail);
-        UsedTrailInstances.add(instance);
-      }
-      return UsedTrailInstances; //스크롤을 내리면서 목록이 더 생김
-    }
-    throw Error();
-  }
-
-  //----------------------------------댓글단 산책로 리스트 불러오기---------------------------------------------------------------------
-  static Future<List<TrailModel>> getCommentedTrail() async {
-    List<TrailModel> CommentedTrailInstances = [];
-    final url = Uri.parse("/course/{courseId}/comment"); // 산책로 댓글 조회 api
-    final response = await http.get(url);
-    if (response.statusCode == 201) {
-      final trails = jsonDecode(response.body);
-      for (var trail in trails) {
-        final instance = TrailModel.fromJson(trail);
-        CommentedTrailInstances.add(instance);
-      }
-      return CommentedTrailInstances; //스크롤을 내리면서 목록이 더 생김
-    }
-    throw Error();
-  }
-
-//-----------------------------------키워드별 리스트 불러오기---------------------------------------------------------------------------------
-//
-//
-//
-//
 }

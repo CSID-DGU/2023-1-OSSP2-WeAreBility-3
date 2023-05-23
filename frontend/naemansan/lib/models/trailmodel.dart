@@ -1,28 +1,38 @@
 class TrailModel {
   final int id;
   final String title;
-  final DateTime createdDateTime;
-  final List<Map<String, dynamic>> courseTags;
+  final DateTime createdDate;
+  final List<Map<String, String>> tags;
   final String startLocationName;
   final double distance;
+  final int likeCount;
+  final int userCount;
+  final bool isLiked;
 
   TrailModel({
     required this.id,
     required this.title,
-    required this.createdDateTime,
-    required this.courseTags,
+    required this.createdDate,
+    required this.tags,
     required this.startLocationName,
     required this.distance,
+    required this.likeCount,
+    required this.userCount,
+    required this.isLiked,
   });
 
   factory TrailModel.fromJson(Map<String, dynamic> json) {
     return TrailModel(
       id: json['id'],
       title: json['title'],
-      createdDateTime: DateTime.parse(json['createdDateTime']),
-      courseTags: List<Map<String, dynamic>>.from(json['courseTags']),
-      startLocationName: json['startLocationName'],
+      createdDate: DateTime.parse(json['created_date']),
+      tags: List<Map<String, String>>.from(json['tags']),
+      startLocationName: json['start_location_name'],
       distance: json['distance'].toDouble(),
+      likeCount: json['like_cnt'],
+      userCount: json['using_unt'],
+      isLiked: json['is_like'],
     );
   }
 }
+

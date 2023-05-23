@@ -4,9 +4,9 @@ class Trail extends StatelessWidget {
   final String title;
   final String startpoint;
   final double distance;
-  final List<String>? CourseKeyWord;
-  //final int likeCnt, userCnt;
-  //final bool isLiked;
+  final List<Map<String, String>>? CourseKeyWord;
+  final int likeCnt, userCnt;
+  final bool isLiked;
 
   const Trail({
     Key? key,
@@ -14,9 +14,9 @@ class Trail extends StatelessWidget {
     required this.startpoint,
     required this.distance,
     this.CourseKeyWord,
-    //required this.likeCnt,
-    //required this.userCnt,
-    //required this.isLiked,
+    required this.likeCnt,
+    required this.userCnt,
+    required this.isLiked,
   }) : super(key: key);
 
   @override
@@ -88,7 +88,7 @@ class Trail extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
-/*
+
                 Row(
                   children: [
                     Icon(
@@ -114,7 +114,7 @@ class Trail extends StatelessWidget {
                     ),
                   ],
                 ),
-                */
+                
               ],
             ),
             const SizedBox(width: 4.0),
