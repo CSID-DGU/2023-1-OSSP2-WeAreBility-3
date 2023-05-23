@@ -33,17 +33,15 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
-  
+
         return Trail(
-          
-          title: trail.title,
-          startpoint: trail.startLocationName,
-          distance: trail.distance,
-          CourseKeyWord: trail.tags,
-          likeCnt: trail.likeCount,
-          userCnt: trail.userCount,
-          isLiked: trail.isLiked
-        );
+            title: trail.title,
+            startpoint: trail.startLocationName,
+            distance: trail.distance,
+            CourseKeyWord: trail.tags,
+            likeCnt: trail.likeCount,
+            userCnt: trail.userCount,
+            isLiked: trail.isLiked);
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 10),
@@ -52,6 +50,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //나만의 산책로
     final Future<List<TrailModel>> CreatedTrail = ApiService.getCreatedTrail();
     final Future<List<TrailModel>> LikedTrail = ApiService.getLikedTrail();
     final Future<List<TrailModel>> UsedTrail = ApiService.getUsedTrail();
@@ -122,7 +121,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [ 
+        children: [
           // 첫 번째 탭 (등록)
           FutureBuilder(
             future: CreatedTrail,
@@ -184,7 +183,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           const Center(
             child: Text('계정 사용자가 작성한 댓글 모음'),
           ),
-          // 다섯 번째 탭 (키워드) 
+          // 다섯 번째 탭 (키워드)
           const Center(
             child: Text('키워드'),
           ),

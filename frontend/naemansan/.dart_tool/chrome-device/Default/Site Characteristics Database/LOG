@@ -1,36 +1,18 @@
-2023/05/23-02:34:32.098 2908 Reusing MANIFEST C:\Users\wjdgu\AppData\Local\Temp\flutter_tools.543911e8\flutter_tools_chrome_device.34a6849d\Default\Site Characteristics Database/MANIFEST-000001
-2023/05/23-02:34:32.099 2908 Recovering log #3
-2023/05/23-02:34:32.099 2908 Level-0 table #3: started
-2023/05/23-02:34:32.106 2908 Level-0 table #3: 194 bytes OK
-2023/05/23-02:34:32.106 2908 Recovering log #6
-2023/05/23-02:34:32.106 2908 Level-0 table #4: started
-2023/05/23-02:34:32.109 2908 Level-0 table #4: 196 bytes OK
-2023/05/23-02:34:32.110 2908 Recovering log #10
-2023/05/23-02:34:32.110 2908 Level-0 table #7: started
-2023/05/23-02:34:32.113 2908 Level-0 table #7: 764 bytes OK
-2023/05/23-02:34:32.114 2908 Recovering log #19
-2023/05/23-02:34:32.114 2908 Level-0 table #11: started
-2023/05/23-02:34:32.119 2908 Level-0 table #11: 548 bytes OK
-2023/05/23-02:34:32.122 2908 Recovering log #30
-2023/05/23-02:34:32.125 2908 Reusing old log C:\Users\wjdgu\AppData\Local\Temp\flutter_tools.543911e8\flutter_tools_chrome_device.34a6849d\Default\Site Characteristics Database/000030.log 
-2023/05/23-02:34:32.127 2908 Delete type=0 #3
-2023/05/23-02:34:32.127 2908 Delete type=2 #6
-2023/05/23-02:34:32.127 2908 Delete type=0 #6
-2023/05/23-02:34:32.127 2908 Delete type=0 #10
-2023/05/23-02:34:32.127 2908 Delete type=2 #13
-2023/05/23-02:34:32.127 2908 Delete type=2 #14
-2023/05/23-02:34:32.127 2908 Delete type=0 #19
-2023/05/23-02:34:32.127 2908 Delete type=2 #20
-2023/05/23-02:34:32.127 2908 Delete type=2 #22
-2023/05/23-02:34:32.127 2908 Delete type=2 #23
-2023/05/23-02:34:32.127 2908 Delete type=2 #24
-2023/05/23-02:34:32.127 2908 Delete type=2 #31
-2023/05/23-02:34:32.127 2908 Delete type=2 #37
-2023/05/23-02:34:32.133 2908 Compacting 4@0 + 0@1 files
-2023/05/23-02:34:32.138 2908 Generated table #31@0: 6 keys, 441 bytes
-2023/05/23-02:34:32.138 2908 Compacted 4@0 + 0@1 files => 441 bytes
-2023/05/23-02:34:32.140 2908 compacted to: files[ 0 1 0 0 0 0 0 ]
-2023/05/23-02:34:32.141 2908 Delete type=2 #3
-2023/05/23-02:34:32.142 2908 Delete type=2 #4
-2023/05/23-02:34:32.142 2908 Delete type=2 #7
-2023/05/23-02:34:32.142 2908 Delete type=2 #11
+2023/05/23-17:49:54.544 35b8 Reusing MANIFEST C:\Users\wjdgu\AppData\Local\Temp\flutter_tools.d4368771\flutter_tools_chrome_device.81dfb746\Default\Site Characteristics Database/MANIFEST-000001
+2023/05/23-17:49:54.546 35b8 Recovering log #30
+2023/05/23-17:49:54.547 35b8 Reusing old log C:\Users\wjdgu\AppData\Local\Temp\flutter_tools.d4368771\flutter_tools_chrome_device.81dfb746\Default\Site Characteristics Database/000030.log 
+2023/05/23-17:49:54.548 35b8 Delete type=2 #3
+2023/05/23-17:49:54.548 35b8 Delete type=0 #3
+2023/05/23-17:49:54.548 35b8 Delete type=2 #4
+2023/05/23-17:49:54.548 35b8 Delete type=2 #6
+2023/05/23-17:49:54.548 35b8 Delete type=0 #6
+2023/05/23-17:49:54.548 35b8 Delete type=0 #10
+2023/05/23-17:49:54.548 35b8 Delete type=2 #11
+2023/05/23-17:49:54.548 35b8 Delete type=2 #13
+2023/05/23-17:49:54.548 35b8 Delete type=2 #14
+2023/05/23-17:49:54.548 35b8 Delete type=0 #19
+2023/05/23-17:49:54.548 35b8 Delete type=2 #20
+2023/05/23-17:49:54.548 35b8 Delete type=2 #22
+2023/05/23-17:49:54.548 35b8 Delete type=2 #23
+2023/05/23-17:49:54.548 35b8 Delete type=2 #24
+2023/05/23-17:49:54.548 35b8 Delete type=2 #37

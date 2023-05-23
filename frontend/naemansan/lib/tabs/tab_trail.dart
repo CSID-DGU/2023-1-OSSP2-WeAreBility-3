@@ -1,6 +1,8 @@
 //산책로 페이지 Trail()
 import 'package:flutter/material.dart';
+import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/services/api_service.dart';
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
@@ -24,8 +26,39 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  ListView makeList(AsyncSnapshot<List<TrailModel>> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var trail = snapshot.data![index];
+
+        return Trail(
+            title: trail.title,
+            startpoint: trail.startLocationName,
+            distance: trail.distance,
+            CourseKeyWord: trail.tags,
+            likeCnt: trail.likeCount,
+            userCnt: trail.userCount,
+            isLiked: trail.isLiked);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 10),
+    );
+  }
+
   @override
+  //산책로
+
   Widget build(BuildContext context) {
+    final Future<List<TrailModel>> NearestTrail = ApiService.getNearestTrail();
+    final Future<List<TrailModel>> MostLikedTrail =
+        ApiService.getMostLikedTrail();
+    final Future<List<TrailModel>> MostUsedTrail =
+        ApiService.getMostUsedTrail();
+    final Future<List<TrailModel>> NewTrail = ApiService.getNewTrail();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
