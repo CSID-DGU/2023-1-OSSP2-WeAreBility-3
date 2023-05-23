@@ -1,7 +1,5 @@
 package com.dongguk.cse.naemansan.domain.type;
 
-import java.util.Arrays;
-
 public enum CourseTagType {
     힐링, 스타벅스, 자연, 오솔길, 도심, 출근길, 퇴근길, 점심시간, 스트레스해소,
     한강, 공원, 성수, 강아지, 바다, 해안가, 러닝, 맛집, 카페, 영화, 문화, 사색,

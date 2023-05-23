@@ -14,6 +14,6 @@ import java.sql.Timestamp;
 public class IndividualCourseListDto {
     private Long id;
     private String title;
-    private Timestamp createdDate;
+    private Timestamp created_date;
     private Double distance;
 }

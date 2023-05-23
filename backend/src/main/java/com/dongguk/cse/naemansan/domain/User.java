@@ -111,4 +111,10 @@ public class User {
         setName(name);
         setIntroduction(introduction);
     }
+
+    public void logoutUser() {
+        setIsLogin(false);
+        setRefreshToken(null);
+        setDeviceToken(null);
+    }
 }
