@@ -98,9 +98,10 @@ class  finish_Checker():
             walking_std = temp_frame.values
             similarity_vector = cosine_similarity(walking_std, user_std)
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
+            print(similarity_score)
 
             # threshold -> 0.8 (나중에 바뀔수도..??)
-            threshold = 0.8
+            threshold = 0.95
 
             # 유사도가 높으면 true 반환
             if (similarity_score > threshold or similarity_score < -threshold) or np.all(np.isclose(np.diag(similarity_vector), 1.0)):
