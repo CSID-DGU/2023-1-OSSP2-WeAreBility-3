@@ -4,7 +4,9 @@ from shapely.geometry import MultiPoint
 from shapely.wkb import loads
 import pandas as pd
 import numpy as np
+import sys
 from sklearn.metrics.pairwise import cosine_similarity
+
 
 
 class  similarity_Checker():
@@ -65,16 +67,14 @@ class  similarity_Checker():
             row = row.replace(",", " ")
             temp = row.split()
             float_coord = []
-            for i in temp:
+            for i in temp[::-1]:
                 float_coord.append(float(i))
             coordinates_list.append(float_coord)
-
         #print("현재 리스트 : ", coordinates_list)
 
         # 좌표를 데이터프레임으로 변환
         walking_Path = pd.DataFrame(coordinates_list)
-        #print("현재 프레임 : ", walking_Path)
-
+        
         # 산책로 마다 데이터프레임으로 변환
         X, Y = walking_Path.shape
         for i in range(X):
@@ -82,23 +82,20 @@ class  similarity_Checker():
             walking = walking.dropna()
             walking_list = walking.values
             walking_list = walking_list.reshape(-1, 2)
-
             temp_frame = pd.DataFrame(walking_list)
             temp_frame = temp_frame.dropna(axis=1)
 
             # 정규화
             temp_frame.iloc[:, 0] = (temp_frame.iloc[:, 0] - X_mean) / X_std
             temp_frame.iloc[:, 1] = (temp_frame.iloc[:, 1] - Y_mean) / Y_std
-            #print(temp_frame)
 
             # 유사도 벡터와 점수
             walking_std = temp_frame.values
             similarity_vector = cosine_similarity(walking_std, user_std)
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
-
+            
             # threshold -> 0.975 (나중에 바뀔수도..??)
             threshold = 0.9985
-
             # 유사도가 높으면 반복문 멈추고 등록 불가
             if (np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
@@ -112,7 +109,4 @@ class  similarity_Checker():
 
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
         # userid 추가 필요..(5.14) 참조 테이블?? 
-        if token == 0 :
-            return token_true
-
-
+        return token_true
