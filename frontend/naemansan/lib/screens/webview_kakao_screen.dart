@@ -39,8 +39,8 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
 
         if (response.statusCode == 200) {
           // API response value
-          String accessToken = parsedResponse['data']['jwt']['accessToken'];
-          String refreshToken = parsedResponse['data']['jwt']['refreshToken'];
+          String accessToken = parsedResponse['data']['jwt']['access_token'];
+          String refreshToken = parsedResponse['data']['jwt']['refresh_token'];
           await saveTokens(accessToken, refreshToken);
           // Login successful, perfo rm next action
           Navigator.pushNamedAndRemoveUntil(

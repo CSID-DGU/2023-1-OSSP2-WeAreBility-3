@@ -687,9 +687,9 @@
     },
     {
       "name": "url_launcher_web",
-      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/url_launcher_web-2.0.16",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/url_launcher_web-2.0.17",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "2.18"
     },
     {
       "name": "url_launcher_windows",
@@ -764,7 +764,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-05-20T09:56:48.118824Z",
+  "generated": "2023-05-24T07:18:48.889745Z",
   "generator": "pub",
   "generatorVersion": "2.19.5"
 }
