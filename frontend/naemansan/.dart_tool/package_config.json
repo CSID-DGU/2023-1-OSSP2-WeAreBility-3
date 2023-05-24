@@ -657,7 +657,7 @@
     },
     {
       "name": "url_launcher_android",
-      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.33",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.34",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -764,7 +764,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-05-18T09:47:24.974667Z",
+  "generated": "2023-05-20T09:56:48.118824Z",
   "generator": "pub",
   "generatorVersion": "2.19.5"
 }
