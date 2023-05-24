@@ -23,7 +23,7 @@ public class CustomUserDetailService implements UserDetailsService {
         Collection<SimpleGrantedAuthority> roles = new ArrayList<SimpleGrantedAuthority>();
         roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        User user = userRepository.findById(Long.valueOf(username)).orElseThrow(() -> new UsernameNotFoundException("Not Found User"));
+        User user = userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(Long.valueOf(username), true).orElseThrow(() -> new UsernameNotFoundException("ACCESS_DENIED_ERROR"));
 
         return CustomUserDetail.create(user);
     }

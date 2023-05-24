@@ -38,11 +38,15 @@ public class IndividualCourse {
     @Column(name="locations", columnDefinition = "MULTIPOINT")
     private MultiPoint locations;
 
+    @Column(name="distance")
+    private Double distance;
+
     @Builder
-    public IndividualCourse(User user, String title, MultiPoint locations) {
+    public IndividualCourse(User user, String title, MultiPoint locations, Double distance) {
         this.user = user;
         this.title = title;
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.locations = locations;
+        this.distance = distance;
     }
 }

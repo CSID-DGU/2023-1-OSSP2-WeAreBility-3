@@ -8,21 +8,21 @@ import java.sql.Timestamp;
 @Getter
 public class CommentDto {
     private Long id;
-    private Long userId;
-    private Long courseId;
-    private String userName;
+    private Long user_id;
+    private Long course_id;
+    private String user_name;
     private String content;
-    private Timestamp createdDateTime;
-    private Boolean isEdit;
+    private Timestamp created_date;
+    private Boolean is_edit;
 
     @Builder
-    public CommentDto(Long id, Long userId, Long courseId, String userName, String content, Timestamp createdDateTime, Boolean isEdit) {
+    public CommentDto(Long id, Long user_id, Long course_id, String user_name, String content, Timestamp created_date, Boolean is_edit) {
         this.id = id;
-        this.userId = userId;
-        this.courseId =courseId;
-        this.userName = userName;
+        this.user_id = user_id;
+        this.course_id = course_id;
+        this.user_name = user_name;
         this.content = content;
-        this.createdDateTime = createdDateTime;
-        this.isEdit = isEdit;
+        this.created_date = created_date;
+        this.is_edit = is_edit;
     }
 }

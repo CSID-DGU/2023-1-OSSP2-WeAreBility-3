@@ -25,9 +25,9 @@ public class BadgeService {
         List<BadgeDto> badgeDtoList = new ArrayList<>();
         for (Object[] objects : badges) {
             badgeDtoList.add(BadgeDto.builder()
-                    .badgeId((Long) objects[0])
-                    .badgeName(objects[1].toString())
-                    .getDate((Timestamp) objects[2]).build());
+                    .badge_id((Long) objects[0])
+                    .badge_name(objects[1].toString())
+                    .get_date((Timestamp) objects[2]).build());
         }
 
         // Dto 반환

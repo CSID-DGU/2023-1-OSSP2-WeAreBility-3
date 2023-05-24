@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class FollowDto {
-    private Long userId;
-    private String userName;
+    private Long user_id;
+    private String user_name;
 
     @Builder
-    public FollowDto(Long userId, String userName) {
-        this.userId = userId;
-        this.userName = userName;
+    public FollowDto(Long user_id, String user_name) {
+        this.user_id = user_id;
+        this.user_name = user_name;
     }
 }

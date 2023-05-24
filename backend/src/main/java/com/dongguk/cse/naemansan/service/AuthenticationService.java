@@ -12,12 +12,15 @@ import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.dongguk.cse.naemansan.util.Oauth2Util;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -99,7 +102,8 @@ public class AuthenticationService {
 
         // JwtToken 생성, 기존 Refresh Token 탐색
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
-        loginUser.setRefreshToken(jwtToken.getRefreshToken());
+        loginUser.setRefreshToken(jwtToken.getRefresh_token());
+        loginUser.setIsLogin(true);
 
         // Jwt 반환
         return JwtResponseDto.builder()
@@ -107,14 +111,15 @@ public class AuthenticationService {
                 .build();
     }
 
-    public void logout(Long userId) {
-        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        user.setIsLogin(false);
-        user.setRefreshToken(null);
+    public Boolean logout(Long userId) {
+        User user =  userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(userId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        user.logoutUser();
+        return Boolean.TRUE;
     }
 
-    public void withdrawal(Long userId) {
-        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        userRepository.delete(user);
+    public Map<String, String> getAccessTokenByRefreshToken(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<>();
+        map.put("access_token", jwtProvider.validRefreshToken(request));
+        return map;
     }
 }
