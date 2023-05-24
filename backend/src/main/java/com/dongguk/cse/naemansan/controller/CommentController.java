@@ -1,7 +1,8 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.*;
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
+import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,8 +23,8 @@ public class CommentController {
 
     // Comment Read
     @GetMapping("/{courseId}/comment")
-    public ResponseDto<List<CommentDto>> readComment(@PathVariable Long courseId) {
-        return new ResponseDto<List<CommentDto>>(commentService.readComment(courseId));
+    public ResponseDto<List<CommentDto>> readComment(@PathVariable Long courseId , @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<CommentDto>>(commentService.readComment(courseId, page, num));
     }
 
     // Comment Update

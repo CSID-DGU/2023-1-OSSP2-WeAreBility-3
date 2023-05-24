@@ -1,21 +1,26 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.Comment;
-import com.dongguk.cse.naemansan.domain.Course;
+import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.User;
-import com.dongguk.cse.naemansan.dto.CommentDto;
+import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
 import com.dongguk.cse.naemansan.repository.CommentRepository;
-import com.dongguk.cse.naemansan.repository.CourseRepository;
+import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,85 +28,71 @@ import java.util.Optional;
 @Transactional
 public class CommentService {
     private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+    private final EnrollmentCourseRepository enrollmentCourseRepository;
     private final CommentRepository commentRepository;
     public Boolean createComment(Long userId, Long courseId, CommentRequestDto commentRequestDto) {
-        Optional<Course> course = courseRepository.findById(courseId);
-        Optional<User> user = userRepository.findById(userId);
+        // User, Course 존재유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
-        if (course.isEmpty()) {
-            log.error("Not Exist course - CourseID : {}", courseId);
-            return Boolean.FALSE;
-        }
-
-        // 댓글은 중복검사가 필요 없음
+        // 댓글 추가
         commentRepository.save(Comment.builder()
-                .commentUser(user.get())
-                .commentCourse(course.get())
+                .user(user)
+                .enrollmentCourse(enrollmentCourse)
                 .content(commentRequestDto.getContent()).build());
 
         return Boolean.TRUE;
     }
 
-    public List<CommentDto> readComment(Long courseId) {
-        Optional<Course> course = courseRepository.findById(courseId);
-        if (course.isEmpty()) {
-            log.error("Not Exist course - CourseID : {}", courseId);
-            return null;
-        }
+    public List<CommentDto> readComment(Long courseId, Long pageNum, Long num) {
+        // Course 존재유무 확인
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
-        List<Comment> comments = commentRepository.findByCommentCourse(course.get());
+        Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Comment> comments = commentRepository.findByEnrollmentCourseAndStatus(enrollmentCourse, true, paging);
 
-        List<CommentDto> commentDtos = new ArrayList<>();
-
-        for (Comment comment: comments) {
-            commentDtos.add(CommentDto.builder()
+        // Dto 변환
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment: comments.getContent()) {
+            commentDtoList.add(CommentDto.builder()
                     .id(comment.getId())
-                    .userId(comment.getCommentUser().getId())
+                    .user_id(comment.getUser().getId())
+                    .course_id(comment.getEnrollmentCourse().getId())
+                    .user_name(comment.getUser().getName())
                     .content(comment.getContent())
-                    .createdDateTime(comment.getCreatedDate())
-                    .isEdit(comment.getIsEdit()).build());
+                    .created_date(comment.getCreatedDate())
+                    .is_edit(comment.getIsEdit()).build());
         }
 
-        return commentDtos;
+        // Dto 반환
+        return commentDtoList;
     }
 
     public Boolean updateComment(Long userId, Long courseId, Long commentId, CommentRequestDto commentRequestDto) {
-        Optional<Course> course = courseRepository.findById(courseId);
-        Optional<User> user = userRepository.findById(userId);
-        if (course.isEmpty()) {
-            log.error("Not Exist course - CourseID : {}", courseId);
-            return Boolean.FALSE;
-        }
+        // User, Course, Comment 존재유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
+        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-        Optional<Comment> comment = commentRepository.findByIdAndCommentUserAndCommentCourse(commentId, user.get(), course.get());
+        // Comment 수정
+        comment.setContent(commentRequestDto.getContent());
+        comment.setIsEdit(true);
 
-        if (comment.isEmpty()) {
-            log.error("Not Exist Comment - UserID : {}, CourseId : {}, CommentId : {}", userId, courseId, commentId);
-            return Boolean.FALSE;
-        }
-
-        comment.get().setContent(commentRequestDto.getContent());
         return Boolean.TRUE;
     }
 
     public Boolean deleteComment(Long userId, Long courseId, Long commentId) {
-        Optional<Course> course = courseRepository.findById(courseId);
-        Optional<User> user = userRepository.findById(userId);
-        if (course.isEmpty()) {
-            log.error("Not Exist course - CourseID : {}", courseId);
-            return Boolean.FALSE;
-        }
+        // User, Course, Comment 존재유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
+        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-        Optional<Comment> comment = commentRepository.findByIdAndCommentUserAndCommentCourse(commentId, user.get(), course.get());
-
-        if (comment.isEmpty()) {
-            log.error("Not Exist Comment - UserID : {}, CourseId : {}, CommentId : {}", userId, courseId, commentId);
-            return Boolean.FALSE;
-        }
-
-        // status로 수정할 예정
-        commentRepository.deleteById(commentId);
+        // 삭제 - status 변경
+        comment.setStatus(false);
         return Boolean.TRUE;
     }
 }

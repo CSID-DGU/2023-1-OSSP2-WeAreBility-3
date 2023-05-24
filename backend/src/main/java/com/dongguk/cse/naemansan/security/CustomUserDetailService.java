@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.security;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +23,8 @@ public class CustomUserDetailService implements UserDetailsService {
         Collection<SimpleGrantedAuthority> roles = new ArrayList<SimpleGrantedAuthority>();
         roles.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        System.out.println("Search Name" + username);
+        User user = userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(Long.valueOf(username), true).orElseThrow(() -> new UsernameNotFoundException("ACCESS_DENIED_ERROR"));
 
-        Optional<User> user = userRepository.findById(Long.valueOf(username));
-
-        if (user.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
-        return CustomUserDetail.create(user.get());
+        return CustomUserDetail.create(user);
     }
 }

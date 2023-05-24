@@ -1,15 +1,25 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
+import com.dongguk.cse.naemansan.domain.Comment;
 import com.dongguk.cse.naemansan.domain.Notification;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
+import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.repository.NotificationRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,74 +29,67 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class NotificationService {
+    //title 처리 해야함
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    public Boolean createNotification(Long userId, NotificationDto notificationDto) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            log.error("Not Exist User - UserID: {}", userId);
-            return Boolean.FALSE;
-        }
+    //NotificationDto 삭제
+    public ResponseEntity createNotification(Long userId, NotificationRequestDto notificationRequestDto) throws IOException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
         notificationRepository.save(Notification.builder()
-                .notificationUser(user.get())
-                .content(notificationDto.getContent())
+                .user(user)
+                .title(notificationRequestDto.getTitle())
+                .content(notificationRequestDto.getContent())
                 .build());
-        return Boolean.TRUE;
+
+        firebaseCloudMessageService.sendMessageTo(
+                notificationRequestDto.getTargetToken(),
+                notificationRequestDto.getTitle(),
+                notificationRequestDto.getContent());
+        return ResponseEntity.ok().build();
     }
 
-    public List<NotificationDto> readNotification(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            log.error("Not Exist User - UserID: {}", userId);
-            return null;
-        }
+    public List<NotificationDto> readNotification(Long userId, Long pageNum, Long num) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
-        List<Notification> notifications = notificationRepository.findByNotificationUser(user.get());
-        List<NotificationDto> notificationDtos = new ArrayList<>();
+        Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createDate"));
+        Page<Notification> notifications = notificationRepository.findByUser(user, paging);
 
-        for (Notification notification : notifications) {
-            notificationDtos.add(NotificationDto.builder()
+        List<NotificationDto> notificationDtoList = new ArrayList<>();
+        for(Notification notification : notifications){
+            notificationDtoList.add(NotificationDto.builder()
                     .id(notification.getId())
+                    .title(notification.getTitle())
                     .content(notification.getContent())
-                    .createDate(notification.getCreateDate())
-                    .isReadStatus(notification.getIsReadStatus()).build());
+                    .create_date(notification.getCreateDate())
+                    .is_read_status(notification.getIsReadStatus()).build());
         }
-
-        return notificationDtos;
+        return notificationDtoList;
     }
 
     public Boolean updateNotification(Long userId, Long notificationId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            log.error("Not Exist User - UserID: {}", userId);
-            return Boolean.FALSE;
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Notification notification = notificationRepository.findByIdAndUserId(notificationId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTIFICATION));
+
+        if (user.getId() != notification.getUser().getId()) {
+            throw new RestApiException(ErrorCode.NOT_EQUAL);
         }
 
-        Optional<Notification> notification = notificationRepository.findByIdAndNotificationUser(notificationId, user.get());
-        if (notification.isEmpty()) {
-            log.error("Not Exist Notification - NotificationID: {}", notificationId);
-            return Boolean.FALSE;
-        }
-
-        notification.get().setIsReadStatus(Boolean.TRUE);
+        notification.setIsReadStatus(Boolean.TRUE);
         return Boolean.TRUE;
     }
 
     public Boolean deleteNotification(Long userId, Long notificationId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            log.error("Not Exist User - UserID: {}", userId);
-            return Boolean.FALSE;
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Notification notification = notificationRepository.findByIdAndUserId(notificationId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTIFICATION));
+
+        if (user.getId() != notification.getUser().getId()) {
+            throw new RestApiException(ErrorCode.NOT_EQUAL);
         }
 
-        Optional<Notification> notification = notificationRepository.findByIdAndNotificationUser(notificationId,  user.get());
-        if (notification.isEmpty()) {
-            log.error("Not Exist Notification - NotificationID: {}", notificationId);
-            return Boolean.FALSE;
-        }
-
-        notificationRepository.deleteById(notificationId);
+        notificationRepository.delete(notification);
         return Boolean.TRUE;
     }
 }

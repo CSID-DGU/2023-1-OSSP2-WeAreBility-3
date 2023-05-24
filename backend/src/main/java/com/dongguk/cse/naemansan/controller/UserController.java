@@ -1,10 +1,10 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.ResponseDto;
-import com.dongguk.cse.naemansan.dto.UserDto;
+import com.dongguk.cse.naemansan.dto.response.*;
+import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
-import com.dongguk.cse.naemansan.dto.response.BadgeDto;
 import com.dongguk.cse.naemansan.service.BadgeService;
+import com.dongguk.cse.naemansan.service.FollowService;
 import com.dongguk.cse.naemansan.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -18,6 +18,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final BadgeService badgeService;
+    private final FollowService followService;
     @GetMapping("")
     public ResponseDto<UserDto> readUser(Authentication authentication) {
         return new ResponseDto<UserDto>(userService.readUserProfile(Long.valueOf(authentication.getName())));
@@ -28,17 +29,34 @@ public class UserController {
     }
 
     @PutMapping("")
-    public ResponseDto<Boolean> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
-        return new ResponseDto<Boolean>(userService.updateUserProfile(Long.valueOf(authentication.getName()), userRequestDto));
+    public ResponseDto<UserDto> updateUser(Authentication authentication, @RequestBody UserRequestDto userRequestDto) {
+        return new ResponseDto<UserDto>(userService.updateUserProfile(Long.valueOf(authentication.getName()), userRequestDto));
     }
 
     @DeleteMapping("")
     public ResponseDto<Boolean> deleteUser(Authentication authentication) {
-        return new ResponseDto<Boolean>(userService.deleteUserInformation(Long.valueOf(authentication.getName())));
+        return new ResponseDto<Boolean>(userService.deleteUserProfile(Long.valueOf(authentication.getName())));
     }
 
     @GetMapping("/badge")
     public ResponseDto<List<BadgeDto>> readBadgeList(Authentication authentication) {
         return new ResponseDto<List<BadgeDto>>(badgeService.readBadgeList(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/comment")
+    public ResponseDto<List<CommentDto>> readCommentList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<CommentDto>>(userService.readCommentList(Long.valueOf(authentication.getName()), page, num));
+    }
+
+    // User가 팔로우한 사람들의 List를 얻음 - Follow Read#1
+    @GetMapping("/following")
+    public ResponseDto<List<FollowDto>> readFollowing(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<FollowDto>>(followService.readFollowing(Long.valueOf(authentication.getName()), page, num));
+    }
+
+    // User를 팔로우한 사람들의 List를 얻음 - Follow Read#2
+    @GetMapping("/follower")
+    public ResponseDto<List<FollowDto>> readFollower(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<FollowDto>>(followService.readFollower(Long.valueOf(authentication.getName()), page, num));
     }
 }

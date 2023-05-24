@@ -1,9 +1,9 @@
 package com.dongguk.cse.naemansan.config;
 
-import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.CustomUserDetailService;
 import com.dongguk.cse.naemansan.security.JwtEntryPoint;
 import com.dongguk.cse.naemansan.security.filter.JwtAuthenticationFilter;
+import com.dongguk.cse.naemansan.security.filter.JwtExceptionFilter;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtProvider tokenService;
+    private final JwtProvider jwtProvider;
     private final CustomUserDetailService customUserDetailService;
-    private final JwtEntryPoint jwtPoint;
+    private final JwtEntryPoint jwtEntryPoint;
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -31,14 +31,17 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .authorizeHttpRequests()
-                    .anyRequest().permitAll()               // 개발용이므로 지워야함!!!!!!!
-//                    .requestMatchers("/auth/**").permitAll()
-//                    .anyRequest().authenticated()
+                    .requestMatchers("/auth/kakao", "/auth/kakao/callback",
+                            "/auth/google", "/auth/google/callback",
+                            "/auth/apple", "/auth/apple/callback",
+                            "/auth/refresh").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtPoint)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtEntryPoint)
                 .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(tokenService, customUserDetailService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }

@@ -6,14 +6,14 @@ import lombok.Getter;
 import java.sql.Timestamp;
 @Getter
 public class BadgeDto {
-    private Long badgeId;
-    private String badgeName;
-    private Timestamp getDate;
+    private Long badge_id;
+    private String badge_name;
+    private Timestamp get_date;
 
     @Builder
-    public BadgeDto(Long badgeId, String badgeName, Timestamp getDate) {
-        this.badgeId = badgeId;
-        this.badgeName = badgeName;
-        this.getDate = getDate;
+    public BadgeDto(Long badge_id, String badge_name, Timestamp get_date) {
+        this.badge_id = badge_id;
+        this.badge_name = badge_name;
+        this.get_date = get_date;
     }
 }

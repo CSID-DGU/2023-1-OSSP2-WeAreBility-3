@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.service;
 
+import com.dongguk.cse.naemansan.common.ErrorCode;
+import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.Image;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
@@ -9,6 +11,7 @@ import com.dongguk.cse.naemansan.repository.ShopRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,20 +32,22 @@ public class ImageService {
     private final AdvertisementRepository advertisementRepository;
     private final ImageRepository imageRepository;
 
-    private final String FOLDER_PATH="C:/Users/HyungJoon/Documents/0_OSSP/resources/images/";
+    @Value("${spring.image.path}")
+    private String FOLDER_PATH;
 
     public String uploadImage(Long useId, ImageUseType imageUseType, MultipartFile file) throws IOException {
-        log.info("이미지 저장 시작 유저: {} , 파일이름: {}", useId, file.getOriginalFilename());
+        // File Path Fetch
         String uuidImageName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         String filePath = FOLDER_PATH + uuidImageName;
 
+        // File Upload
         try {
             file.transferTo(new File(filePath));
         } catch (Exception e) {
-            log.error("파일 저장 실패 - {}", file.getOriginalFilename());
-            return "file uploaded Fail : " + filePath;
+            throw new RestApiException(ErrorCode.FILE_UPLOAD);
         }
 
+        // Path DB Save
         Optional<? extends Object> useObject = null;
         switch (imageUseType) {
             case USER -> { useObject = userRepository.findById(useId); }
@@ -50,18 +55,18 @@ public class ImageService {
             case ADVERTISEMENT -> { useObject = advertisementRepository.findById(useId); }
         }
 
-        Optional<Image> findImage = imageRepository.findByImageUser((User) useObject.get());
-
+        // 기존 파일이 없다면 새롭게 추가, 아니라면 기존 파일 삭제 후 저장
+        Optional<Image> findImage = imageRepository.findByUser((User) useObject.get());
         if (findImage.isEmpty()) {
             imageRepository.save(Image.builder()
-                    .userObject(useObject)
+                    .useObject(useObject)
                     .imageUseType(imageUseType)
                     .originName(file.getOriginalFilename())
                     .uuidName(uuidImageName)
                     .type(file.getContentType())
                     .path(filePath).build());
         } else {
-            if (!findImage.get().getOriginName().equals("default_image.png")) {
+            if (!findImage.get().getOriginName().equals("0_default_image.png")) {
                 File currentFile = new File(findImage.get().getPath());
                 boolean result = currentFile.delete();
             }
@@ -69,24 +74,22 @@ public class ImageService {
             findImage.get().updateImage(file.getOriginalFilename(), uuidImageName, filePath, file.getContentType());
         }
 
-        return "file uploaded successfully : " + filePath;
+        return uuidImageName;
     }
 
-    public byte[] downloadImage(String fileName) throws IOException {
+    public byte[] downloadImage(String UuidName) throws IOException {
         String filePath = null;
+        Image image = null;
 
-        if (fileName.equals("0_default_image.png")) {
-            filePath = "C:/Users/HyungJoon/Documents/0_OSSP/resources/images/0_default_image.png";
+        if (UuidName.equals("0_default_image.png")) {
+            filePath = FOLDER_PATH + "0_default_image.png";
         } else {
-            Optional<Image> image = imageRepository.findByUuidName(fileName);
+            image = imageRepository.findByUuidName(UuidName).orElseThrow(() -> new RestApiException(ErrorCode.FILE_DOWNLOAD));
+            filePath = image.getPath();
 
-            if (image.isEmpty()) {
-                log.error("존재하지 않는 파일입니다 - UUID: {}", fileName);
-                return null;
-            }
-            fileName = image.get().getPath();
         }
 
+        log.info(filePath);
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;
     }

@@ -31,7 +31,7 @@ public class Shop {
 
     // ------------------------------------------------------------
 
-    @OneToOne(mappedBy = "imageShop")
+    @OneToOne(mappedBy = "shop", fetch = FetchType.LAZY)
     private Image image;
 
     @Builder

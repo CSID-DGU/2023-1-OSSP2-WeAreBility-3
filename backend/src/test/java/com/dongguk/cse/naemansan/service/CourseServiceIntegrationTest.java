@@ -1,16 +1,6 @@
 package com.dongguk.cse.naemansan.service;
 
-import com.dongguk.cse.naemansan.domain.Course;
-import com.dongguk.cse.naemansan.domain.CourseTag;
-import com.dongguk.cse.naemansan.repository.CourseRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.geo.Point;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

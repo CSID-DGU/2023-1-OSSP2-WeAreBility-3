@@ -17,20 +17,20 @@ import java.util.List;
 @Transactional
 public class BadgeService {
     private final BadgeRepository badgeRepository;
-
     public List<BadgeDto> readBadgeList(Long userid) {
-        log.info("Having Badge List Read - UserID = {}", userid);
+        // 해당 유저가 가진 Badge 조회
         List<Object[]> badges = badgeRepository.findUserBadgeList(userid);
 
-        List<BadgeDto> badgeDtos = new ArrayList<>();
-
+        // Dto 변환
+        List<BadgeDto> badgeDtoList = new ArrayList<>();
         for (Object[] objects : badges) {
-            badgeDtos.add(BadgeDto.builder()
-                    .badgeId((Long) objects[0])
-                    .badgeName(objects[1].toString())
-                    .getDate((Timestamp) objects[2]).build());
+            badgeDtoList.add(BadgeDto.builder()
+                    .badge_id((Long) objects[0])
+                    .badge_name(objects[1].toString())
+                    .get_date((Timestamp) objects[2]).build());
         }
 
-        return badgeDtos;
+        // Dto 반환
+        return badgeDtoList;
     }
 }
