@@ -7,7 +7,7 @@ from .walking_finish_checker import finish_Checker
 
 @csrf_exempt
 def finisher_list(request):
-    if request.method == 'GET': # GET방식일 때
+    if request.method == 'POST': # GET방식일 때
         data = JSONParser().parse(request) # 요청들어온 데이터를 JSON 타입으로 파싱
 
         locations_data = data["pointDtos"]

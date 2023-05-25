@@ -7,7 +7,7 @@ from .walking_course_recommender import course_recommender # 이부분 수정
 
 @csrf_exempt
 def user_list(request):
-    if request.method == 'GET': # GET방식일 때
+    if request.method == 'POST': # GET방식일 때
         data = JSONParser().parse(request) # 요청들어온 데이터를 JSON 타입으로 파싱
 
         userid_data = data["userid"]
