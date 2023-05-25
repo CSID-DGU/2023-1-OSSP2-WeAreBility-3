@@ -1,6 +1,7 @@
 //산책로 페이지 Trail()
 import 'package:flutter/material.dart';
 import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/screens/public_course_detail_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/service/api_service.dart';
 
@@ -65,7 +66,14 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
               Icons.add_box_outlined, //산책로 추가 시 버튼으로 사용
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const PublicCourseDetailScreen(courseName: "공소 코스")),
+              );
+            },
           ),
           const SizedBox(width: 10)
         ],
@@ -206,7 +214,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           //   ),
           // ),
           Center(
-            child: Text('좋아요순 정렬 리스트 추가'),
+            child: Text('거리순 정렬 리스트 추가'),
           ),
           Center(
             child: Text('좋아요순 정렬 리스트 추가'),
