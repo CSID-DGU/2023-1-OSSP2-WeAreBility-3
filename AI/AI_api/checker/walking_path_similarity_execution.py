@@ -68,12 +68,12 @@ class  similarity_Checker():
             for i in temp:
                 float_coord.append(float(i))
             coordinates_list.append(float_coord)
+            
+            
 
-        #print("현재 리스트 : ", coordinates_list)
 
         # 좌표를 데이터프레임으로 변환
         walking_Path = pd.DataFrame(coordinates_list)
-        #print("현재 프레임 : ", walking_Path)
 
         # 산책로 마다 데이터프레임으로 변환
         X, Y = walking_Path.shape
@@ -89,13 +89,11 @@ class  similarity_Checker():
             # 정규화
             temp_frame.iloc[:, 0] = (temp_frame.iloc[:, 0] - X_mean) / X_std
             temp_frame.iloc[:, 1] = (temp_frame.iloc[:, 1] - Y_mean) / Y_std
-            #print(temp_frame)
-
             # 유사도 벡터와 점수
+            
             walking_std = temp_frame.values
             similarity_vector = cosine_similarity(walking_std, user_std)
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
-
             # threshold -> 0.975 (나중에 바뀔수도..??)
             threshold = 0.9985
 
