@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:naemansan/screens/notification_screen.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/banner.dart';
-import 'package:naemansan/widgets/slide_item.dart';
-import 'package:naemansan/widgets/slider.dart';
+import 'package:naemansan/widgets/horizontal_slider.dart';
+import 'package:naemansan/widgets/main_slider.dart';
 import 'dart:convert';
-import 'package:permission_handler/permission_handler.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -24,8 +22,14 @@ class _HomeState extends State<Home> {
   late Future<Map<String, dynamic>?> user;
   String _city = "";
   String _district = "";
+  String _street = "";
   bool nowLocation = false;
 
+  String keyword = "한강"; // 기본 키워드 값
+
+// Set the latitude and longitude values
+  late double _latitude = 0.0;
+  late double _longitude = 0.0;
   @override
   void initState() {
     super.initState();
@@ -34,6 +38,8 @@ class _HomeState extends State<Home> {
   }
 
   // 위도, 경도로 주소 가져오기
+  // 주소 가져오기 (위도, 경도 -> 주소)
+  // 주소 가져오기 (위도, 경도 -> 주소)
   _getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -45,20 +51,25 @@ class _HomeState extends State<Home> {
     if (permission == LocationPermission.deniedForever) {
       return Future.error('위치 권한이 영구적으로 없습니다.');
     }
-    final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    _getAddressFromLatLng(position.latitude, position.longitude);
-  }
-
-  Future<void> requestLocationPermission() async {
-    final PermissionStatus permissionStatus =
-        await Permission.locationWhenInUse.request();
-
-    // 위치 권한 요청
-    if (permissionStatus == PermissionStatus.granted) {
-      // 권한 허용 시 처리할 코드
-    } else {
-      // 권한 거부 시 처리할 코드
+    setState(() {
+      nowLocation = false; // Reset the nowLocation flag
+    });
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      await _getAddressFromLatLng(_latitude, _longitude);
+      setState(() {
+        nowLocation =
+            true; // Update the nowLocation flag after successfully retrieving the address
+      });
+    } catch (error) {
+      setState(() {
+        nowLocation = false; // Update the nowLocation flag if an error occurs
+      });
+      print('Error fetching location: $error');
     }
   }
 
@@ -88,9 +99,11 @@ class _HomeState extends State<Home> {
           _street = results[i]["long_name"];
         }
         // print(results[i]);
-
       }
-      setState(() {});
+      setState(() {
+        _latitude = latitude;
+        _longitude = longitude;
+      });
     }
   }
 
@@ -126,115 +139,116 @@ class _HomeState extends State<Home> {
               ),
             ),
             const Spacer(),
+            const Expanded(child: SizedBox(width: 30)), // 여백 추가
             IconButton(
+              padding: const EdgeInsets.only(left: 25),
               icon: const Icon(
                 Icons.notifications_none_rounded,
                 color: Colors.black,
               ),
               onPressed: () {
-                // 버튼을 눌렀을 때 실행될 코드 작성
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationScreen()),
+                );
               },
             ),
           ],
         ),
       ),
       // body
-      body: Column(
-        children: [
-          BannerSwiper(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.location_on_rounded, size: 20),
-                    const SizedBox(width: 5),
-                    nowLocation
-                        ? Text("현재 위치:$_city $_district")
-                        : const Text("위치 정보 없음"),
-                    IconButton(
-                      onPressed: () {
-                        _getCurrentLocation();
-                        setState(() {
-                          nowLocation = true;
-                        });
-                      },
-                      icon: const Icon(Icons.refresh_rounded),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "위치별",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    )
-                      FutureBuilder<Map<String, dynamic>?>(
-                        future: user,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<Map<String, dynamic>?> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            if (snapshot.hasData) {
-                              // Access user data
-                              Map<String, dynamic>? userData = snapshot.data;
-                              print(userData);
-                              String? name = userData?['name'];
-
-                              // Use the name in your widget tree
-                              return Text('User Name: $name');
-                            } else {
-                              return const Text('No user data available.');
-                            }
-                          }
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            BannerSwiper(),
+            Padding(
+              padding: const EdgeInsets.only(left: 25, top: 10, bottom: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.location_on_rounded, size: 20),
+                      const SizedBox(width: 5),
+                      nowLocation
+                          ? Text("현재 위치:$_district, $_city $_street ")
+                          : const Text("위치 정보 없음"),
+                      IconButton(
+                        onPressed: () {
+                          _getCurrentLocation();
+                          setState(() {
+                            nowLocation = true;
+                          });
                         },
+                        icon: const Icon(Icons.refresh_rounded),
                       ),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      MainSlider(
-                        title: "🌿 위치별",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                      MainSlider(
-                        title: "🎋 키워드별",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                      MainSlider(
-                        title: "🍽️ 상권",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                    ],
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: nowLocation
+                            ? [
+                                MainSlider(
+                                  title: "🌿 위치별",
+                                  sliderWidget: HorizontalSlider(
+                                    latitude: _latitude,
+                                    longitude: _longitude,
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🎋 키워드별",
+                                  sliderWidget: HorizontalSlider(
+                                    keyword: "한강",
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🍽️ 상권",
+                                  sliderWidget: HorizontalSlider(),
+                                ),
+                              ]
+                            : [
+                                const SizedBox(height: 30),
+                                const Text('🌿 위치별',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87)),
+                                const SizedBox(height: 20),
+                                const Text('현재 위치를 동기화시켜 주세요!',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87)),
+                                const SizedBox(height: 50),
+                                const MainSlider(
+                                  title: "🎋 키워드별",
+                                  sliderWidget: HorizontalSlider(
+                                    keyword: "한강",
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🍽️ 상권",
+                                  sliderWidget: HorizontalSlider(),
+                                ),
+                              ]),
                   ),
                 ],
               ),
             ),
-          ),
-          const HorizontalSlider(
-            items: [
-              SlideItem(icon: Icons.forest, text: '산책로 1'),
-              SlideItem(icon: Icons.forest, text: '산책로 2'),
-              SlideItem(icon: Icons.forest, text: '산책로 3'),
-              SlideItem(icon: Icons.forest, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-              SlideItem(icon: Icons.bookmark, text: 'Item 3'),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
-    )
+    );
   }
 }

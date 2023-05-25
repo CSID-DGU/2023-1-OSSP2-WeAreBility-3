@@ -33,52 +33,12 @@ class ApiService {
     [
       {
         "userimage": "image",
-        "title": "중구 산책길",
-        "startpoint": "서울특별시 중구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
-        "isLiked": true 
-      },
-      {
-        "userimage": "image",
-        "title": "마포구 산책길",
-        "startpoint": "서울특별시 마포구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
-        "isLiked": false
-      },
-            {
-        "userimage": "image",
-        "title": "중구 산책길",
-        "startpoint": "서울특별시 중구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
-        "isLiked": true 
-      },
-      {
-        "userimage": "image",
-        "title": "마포구 산책길",
-        "startpoint": "서울특별시 마포구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
-        "isLiked": false
-      },
-                  {
-        "userimage": "image",
-        "title": "중구 산책길",
-        "startpoint": "서울특별시 중구",
-        "distance": 0.8,
-        "CourseKeyword": ["가벼운 산책", "산"],
-        "likeCnt": 10,
-        "userCnt": 32,
+        "title": "공소 코스",
+        "startpoint": "서울특별시 중구 동호로",
+        "distance": 0.1,
+        "CourseKeyword": ["힐링", "산"],
+        "likeCnt": 1,
+        "userCnt": 0,
         "isLiked": true 
       }
     ]

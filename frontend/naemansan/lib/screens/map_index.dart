@@ -40,10 +40,11 @@ class _IndexScreenState extends State<IndexScreen> {
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Icon(_currentIndex == 1
-                    ? CustomIcons.heart
-                    : CustomIcons.heart //하트 아이콘을 깨진 하트밖에 못 찾겠습니다 찾게 되면 수정해주세요!!
-                ),
+            icon: Icon(
+              _currentIndex == 0
+                  ? Icons.map
+                  : Icons.map_outlined, //하트 아이콘을 깨진 하트밖에 못 찾겠습니다 찾게 되면 수정해주세요!!
+            ),
             label: '나만의지도',
           ),
           BottomNavigationBarItem(
@@ -57,8 +58,4 @@ class _IndexScreenState extends State<IndexScreen> {
       body: _tabs[_currentIndex],
     );
   }
-}
-
-class CustomIcons {
-  static const IconData heart = IconData(0xe800, fontFamily: 'CustomIcons');
 }
