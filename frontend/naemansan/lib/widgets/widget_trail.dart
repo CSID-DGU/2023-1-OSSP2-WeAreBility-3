@@ -22,12 +22,16 @@ class Trail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
       child: Container(
         height: 130.0,
         decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.white,
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.5),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           children: [

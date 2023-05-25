@@ -8,6 +8,7 @@ class SlideItem {
   final double length;
   final int likes;
   final List<String> keywords;
+  final String created_date;
 
   SlideItem({
     required this.id,
@@ -16,6 +17,7 @@ class SlideItem {
     required this.length,
     required this.likes,
     required this.keywords,
+    required this.created_date,
   });
 }
 
@@ -26,6 +28,7 @@ class CardWidget extends StatelessWidget {
   final double length;
   final int likes;
   final List<String> keywords;
+  final String created_date;
 
   const CardWidget({
     Key? key,
@@ -35,6 +38,7 @@ class CardWidget extends StatelessWidget {
     required this.length,
     required this.likes,
     required this.keywords,
+    required this.created_date,
   }) : super(key: key);
 
   @override
@@ -58,6 +62,11 @@ class CardWidget extends StatelessWidget {
             builder: (context) => CourseDetail(
               id: id,
               title: title,
+              location: location,
+              length: length,
+              likes: likes,
+              keywords: keywords,
+              created_date: created_date,
             ),
           ),
         );

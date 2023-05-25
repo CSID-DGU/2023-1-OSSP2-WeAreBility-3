@@ -25,6 +25,8 @@ class _HomeState extends State<Home> {
   String _street = "";
   bool nowLocation = false;
 
+  String keyword = "한강"; // 기본 키워드 값
+
 // Set the latitude and longitude values
   late double _latitude;
   late double _longitude;

@@ -50,13 +50,17 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
                 likes: item['like_cnt'],
                 keywords:
                     List<String>.from(item['tags'].map((tag) => tag['name'])),
+                created_date: item['created_date'],
               ))
           .toList();
 
-      setState(() {
-        slideItems = items;
-      });
+      if (mounted) {
+        setState(() {
+          slideItems = items;
+        });
+      }
     } else {
+      print(Error());
       // Handle error when data is null
     }
   }
@@ -76,6 +80,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
           length: slideItems[index].length,
           likes: slideItems[index].likes,
           keywords: slideItems[index].keywords,
+          created_date: slideItems[index].created_date,
         );
       },
     );
