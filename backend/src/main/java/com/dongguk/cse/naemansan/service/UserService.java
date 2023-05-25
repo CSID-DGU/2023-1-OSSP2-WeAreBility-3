@@ -4,13 +4,17 @@ import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
-import com.dongguk.cse.naemansan.dto.response.CourseListDto;
+import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +23,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     private final CourseUtil courseUtil;
 
     public UserDto readUserProfile(Long userId) {
@@ -30,13 +36,12 @@ public class UserService {
         return UserDto.builder()
                 .user(user)
                 .image(user.getImage())
-                .isPremium(user.getSubscribe() != null)
-                .commentCnt((long) user.getComments().size())
-                .likeCnt((long) user.getLikes().size())
-                .badgeCnt((long) user.getBadges().size())
-                .followingCnt((long) user.getFollowings().size())
-                .followerCnt((long) user.getFollowers().size())
-                .build();
+                .is_premium(user.getSubscribe() != null)
+                .comment_cnt((long) user.getComments().size())
+                .like_cnt((long) user.getLikes().size())
+                .badge_cnt((long) user.getBadges().size())
+                .following_cnt((long) user.getFollowings().size())
+                .follower_cnt((long) user.getFollowers().size()).build();
     }
 
     @Transactional
@@ -48,114 +53,125 @@ public class UserService {
         return UserDto.builder()
                 .user(user)
                 .image(user.getImage())
-                .isPremium(user.getSubscribe() != null)
-                .commentCnt((long) user.getComments().size())
-                .likeCnt((long) user.getLikes().size())
-                .badgeCnt((long) user.getBadges().size())
-                .followingCnt((long) user.getFollowings().size())
-                .followerCnt((long) user.getFollowers().size())
-                .build();
+                .is_premium(user.getSubscribe() != null)
+                .comment_cnt((long) user.getComments().size())
+                .like_cnt((long) user.getLikes().size())
+                .badge_cnt((long) user.getBadges().size())
+                .following_cnt((long) user.getFollowings().size())
+                .follower_cnt((long) user.getFollowers().size()).build();
     }
 
     public Boolean deleteUserProfile(Long id) {
-        try {
-            userRepository.deleteById(id);
-            return Boolean.TRUE;
-        } catch (Exception e) {
-            log.info(e.getMessage());
+        // 삭제할 유저를 찾고, 해당 유저가 작성한 course, comment 를 Super_Admin(삭제된 게시물 용) 계정으로 Update
+        User user = userRepository.findById(id).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        User Admin = userRepository.findById(1l).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<EnrollmentCourse> enrollmentCourseList = user.getEnrollmentCourses();
+        List<Comment> comments =  user.getComments();
+        userRepository.delete(user);
+
+        for (EnrollmentCourse enrollmentCourse : enrollmentCourseList) {
+            enrollmentCourse.setUser(Admin);
         }
-        return Boolean.FALSE;
+
+        for (Comment comment : comments) {
+            comment.setUser(Admin);
+        }
+
+        return Boolean.TRUE;
     }
 
-    public List<CommentDto> readCommentList(Long userId) {
+    public List<CommentDto> readCommentList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
-        List<Comment> commentList = user.getComments();
+        Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Comment> comments = commentRepository.findListByUser(user, paging);
+
         List<CommentDto> commentDtoList = new ArrayList<>();
 
-        for (Comment comment: commentList) {
+        for (Comment comment: comments.getContent()) {
             commentDtoList.add(CommentDto.builder()
                     .id(comment.getId())
-                    .userId(comment.getCommentUser().getId())
-                    .courseId(comment.getCommentCourse().getId())
-                    .userName(comment.getCommentUser().getName())
+                    .user_id(comment.getUser().getId())
+                    .course_id(comment.getEnrollmentCourse().getId())
+                    .user_name(comment.getUser().getName())
                     .content(comment.getContent())
-                    .createdDateTime(comment.getCreatedDate())
-                    .isEdit(comment.getIsEdit()).build());
+                    .created_date(comment.getCreatedDate())
+                    .is_edit(comment.getIsEdit()).build());
         }
 
         return commentDtoList;
     }
 
-    public List<CourseListDto> readLikeCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readLikeCourseList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<Like> likeList = user.getLikes();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (Like like : likeList) {
-            Course course = like.getLikeCourse();
-            courseListDtoList.add(CourseListDto.builder()
-                    .id(course.getId())
-                    .title(course.getTitle())
-                    .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
-                    .startLocationName(course.getStartLocationName())
-                    .distance(course.getDistance())
-                    .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size())
-                    .isLike(true).build());
+            EnrollmentCourse enrollmentCourse = like.getEnrollmentCourse();
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(true).build());
             }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 
-    public List<CourseListDto> readEnrollmentCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readEnrollmentCourseList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
-        List<Course> courseList = user.getCourses();
+        List<EnrollmentCourse> enrollmentCourseList = user.getEnrollmentCourses();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
-        for (Course course : courseList) {
-            courseListDtoList.add(CourseListDto.builder()
-                    .id(course.getId())
-                    .title(course.getTitle())
-                    .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
-                    .startLocationName(course.getStartLocationName())
-                    .distance(course.getDistance())
-                    .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size())
-                    .isLike(true).build());
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
+        for (EnrollmentCourse enrollmentCourse : enrollmentCourseList) {
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(true).build());
         }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 
-    public List<CourseListDto> readFinishCourseList(Long userId) {
+    public List<EnrollmentCourseListDto> readFinishCourseList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<UsingCourse> usingCourseList = user.getUsingCourses();
 
-        List<CourseListDto> courseListDtoList = new ArrayList<>();
+        List<EnrollmentCourseListDto> enrollmentCourseListDtoList = new ArrayList<>();
         for (UsingCourse usingCourse : usingCourseList) {
             if (!usingCourse.getFinishStatus()) {
                 continue;
             }
-            Course course = usingCourse.getCourse();
+            EnrollmentCourse enrollmentCourse = usingCourse.getEnrollmentCourse();
 
-            courseListDtoList.add(CourseListDto.builder()
-                    .id(course.getId())
-                    .title(course.getTitle())
-                    .createdDateTime(course.getCreatedDate())
-                    .courseTags(courseUtil.getTag2TagDto(course.getCourseTags()))
-                    .startLocationName(course.getStartLocationName())
-                    .distance(course.getDistance())
-                    .likeCnt((long) course.getLikes().size())
-                    .usingCnt((long) course.getUsingCourses().size())
-                    .isLike(true).build());
+            enrollmentCourseListDtoList.add(EnrollmentCourseListDto.builder()
+                    .id(enrollmentCourse.getId())
+                    .title(enrollmentCourse.getTitle())
+                    .created_date(enrollmentCourse.getCreatedDate())
+                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .start_location_name(enrollmentCourse.getStartLocationName())
+                    .distance(enrollmentCourse.getDistance())
+                    .like_cnt((long) enrollmentCourse.getLikes().size())
+                    .using_unt((long) enrollmentCourse.getUsingCourses().size())
+                    .is_like(true).build());
         }
 
-        return courseListDtoList;
+        return enrollmentCourseListDtoList;
     }
 }

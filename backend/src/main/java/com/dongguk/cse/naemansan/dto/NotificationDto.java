@@ -14,8 +14,8 @@ public class NotificationDto {
     private Long id;
     private String title;
     private String content;
-    private Timestamp createDate;
-    private Boolean isReadStatus;
+    private Timestamp create_date;
+    private Boolean is_read_status;
 
 /*
     @Builder

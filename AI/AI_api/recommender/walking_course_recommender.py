@@ -26,12 +26,13 @@ import pandas as pd
 
 
 class course_recommender():
-
-    
-
     def __init__(self, user_id = int) :
         self.user_id = user_id
+<<<<<<< HEAD
         self.model = Word2Vec.load(".\\recommender\word2vec.model")
+=======
+        self.model = Word2Vec.load("./recommender/word2vec.model")
+>>>>>>> ec391c6532898dea45b844ba2fb9563296afefcc
         self.best = 3
 
     # 산책로 tag를 pasing 하는 함수
@@ -59,6 +60,7 @@ class course_recommender():
 
         # db읽기 -1 finish table 가져오기
         conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
+        
         cursor = conn.cursor()
         query = """
         SELECT course_id 
@@ -116,24 +118,12 @@ class course_recommender():
             temp = np.argsort(np.array(candidates_score))[::-1]
             best_courses = []
             for i in range(len(temp)) :
-                best_courses.append(candidates_id[temp[i]])
+                best_courses.append({"id": candidates_id[temp[i]]})
             
             return { "courseid" : best_courses[0:self.best]}
         
         else :
             return { "courseid" : []}
-
-
-            
-
-            
-            
-
-
-
-test = course_recommender(1)
-test.recommend()
-
 
 """
  이부분은 load를 하기 때문에 필요가 없음

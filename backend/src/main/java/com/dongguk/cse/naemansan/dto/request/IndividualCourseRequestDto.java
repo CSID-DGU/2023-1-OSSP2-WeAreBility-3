@@ -1,16 +1,16 @@
 package com.dongguk.cse.naemansan.dto.request;
 
+import com.dongguk.cse.naemansan.dto.PointDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-/*
-//삭제 예정
+
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestDto {
-    private String targetToken;
+public class IndividualCourseRequestDto {
     private String title;
-    private String body;
+    private List<PointDto> locations;
 }
-*/

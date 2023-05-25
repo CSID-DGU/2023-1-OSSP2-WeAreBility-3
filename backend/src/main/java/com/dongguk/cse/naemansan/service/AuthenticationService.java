@@ -5,19 +5,22 @@ import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
-import com.dongguk.cse.naemansan.dto.response.LoginResponse;
+import com.dongguk.cse.naemansan.domain.type.UserRoleType;
+import com.dongguk.cse.naemansan.dto.response.JwtResponseDto;
 import com.dongguk.cse.naemansan.repository.ImageRepository;
-import com.dongguk.cse.naemansan.repository.TokenRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import com.dongguk.cse.naemansan.security.jwt.JwtProvider;
 import com.dongguk.cse.naemansan.security.jwt.JwtToken;
 import com.dongguk.cse.naemansan.util.Oauth2Util;
-import com.google.api.client.util.Value;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -27,7 +30,6 @@ import java.util.Random;
 @Transactional
 public class AuthenticationService {
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
     private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
     private final Oauth2Util oauth2Util;
@@ -48,7 +50,7 @@ public class AuthenticationService {
         }
         return null;
     }
-    public LoginResponse login(String authorizationCode, LoginProviderType loginProviderType) {
+    public JwtResponseDto login(String authorizationCode, LoginProviderType loginProviderType) {
         // Load User Data in Oauth Server
         String accessToken = null;
         String socialId = null;
@@ -76,18 +78,19 @@ public class AuthenticationService {
         }
 
         // User 탐색
-        Optional<User> user = userRepository.findBySocialLoginIdAndLoginProviderType(socialId, loginProviderType);
-        User loginUser;
+        Optional<User> user = userRepository.findBySocialIdAndLoginProviderType(socialId, loginProviderType);
+        User loginUser = null;
 
         // 기존 유저가 아니라면 새로운 Data 저장, 기존 유저라면 Load
         if (user.isEmpty()) {
             loginUser = userRepository.save(User.builder()
-                    .socialLoginId(socialId)
+                    .socialId(socialId)
                     .name(userName)
                     .loginProviderType(loginProviderType)
+                    .userRoleType(UserRoleType.USER)
                     .build());
             imageRepository.save(Image.builder()
-                    .userObject(loginUser)
+                    .useObject(loginUser)
                     .imageUseType(ImageUseType.USER)
                     .originName("default_image.png")
                     .uuidName("0_default_image.png")
@@ -99,31 +102,24 @@ public class AuthenticationService {
 
         // JwtToken 생성, 기존 Refresh Token 탐색
         JwtToken jwtToken = jwtProvider.createTotalToken(loginUser.getId(), loginUser.getUserRoleType());
-        Optional<Token> refreshToken = tokenRepository.findByTokenUser(loginUser);
-
-        // 기존 유저가 아니라면 새로운 Token 저장, 아니라면 Token Update
-        if (refreshToken.isEmpty()) {
-            tokenRepository.save(Token.builder()
-                    .tokenUser(loginUser)
-                    .refreshToken(jwtToken.getRefreshToken())
-                    .build());
-        } else {
-            refreshToken.get().setRefreshToken(jwtToken.getRefreshToken());
-        }
+        loginUser.setRefreshToken(jwtToken.getRefresh_token());
+        loginUser.setIsLogin(true);
 
         // Jwt 반환
-        return LoginResponse.builder()
+        return JwtResponseDto.builder()
                 .jwt(jwtToken)
                 .build();
     }
 
-    public void logout(Long userId) {
-        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        user.getToken().setRefreshToken(null);
+    public Boolean logout(Long userId) {
+        User user =  userRepository.findByIdAndIsLoginAndRefreshTokenIsNotNull(userId, true).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        user.logoutUser();
+        return Boolean.TRUE;
     }
 
-    public void withdrawal(Long userId) {
-        User user =  userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        userRepository.delete(user);
+    public Map<String, String> getAccessTokenByRefreshToken(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<>();
+        map.put("access_token", jwtProvider.validRefreshToken(request));
+        return map;
     }
 }

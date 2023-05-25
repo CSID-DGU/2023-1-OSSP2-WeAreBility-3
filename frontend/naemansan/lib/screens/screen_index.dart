@@ -3,6 +3,7 @@ import 'package:naemansan/tabs/tab_home.dart';
 import 'package:naemansan/tabs/tab_trail.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IndexScreen extends StatefulWidget {
   const IndexScreen({super.key});
@@ -12,6 +13,23 @@ class IndexScreen extends StatefulWidget {
 }
 
 class _IndexScreenState extends State<IndexScreen> {
+  bool isLogged_local = false;
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isLogged_local = prefs.getBool('isLogged') ?? false;
+      _checkLoginStatus();
+      print("지금 screen_index.dart 가 파악하는 로그인 상태는$isLogged_local");
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     const Home(),

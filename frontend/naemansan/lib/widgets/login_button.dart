@@ -1,89 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
+import 'package:naemansan/screens/webview_kakao_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LoginBtn extends StatelessWidget {
   final String whatsLogin;
   final String logo;
   final BuildContext routeContext;
 
-  const LoginBtn({
-    super.key,
-    required this.whatsLogin,
-    required this.logo,
-    required this.routeContext,
-  });
+  const LoginBtn(
+      {super.key,
+      required this.whatsLogin,
+      required this.logo,
+      required this.routeContext});
 
-  login() async {
-    if (await isKakaoTalkInstalled()) {
-      try {
-        // flutter SDK를 사용하는 방식
-        await UserApi.instance.loginWithKakaoTalk();
+// 서버에 토큰 보내주고 user profile가져오기
 
-        // redirect 방식
-        // redirectUri로 인가코드 발송
-        // await AuthCodeClient.instance.authorizeWithTalk(
-        //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
-        // );
-        // print('카카오톡으로 로그인 성공');
-      } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
+// 로그인 유지
+  Future<void> persistLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', true);
+    // print(prefs.getBool('isLogged'));
+  }
 
-        // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-        // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
-        if (error is PlatformException && error.code == 'CANCELED') {
-          return;
-        }
-        // 카카오톡에 연결된 카카오계정이 없는 경우, web 카카오계정으로 로그인
-        try {
-          // // flutter SDK를 사용하는 방식
-          // flutter SDK가 accesstoken, Refrest Token 발급 해줌.
-          await UserApi.instance.loginWithKakaoAccount();
-
-          // await AuthCodeClient.instance.authorize(
-          //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
-          // );
-          // print('카카오계정으로 로그인 성공');
-        } catch (error) {
-          // print('카카오계정으로 로그인 실패 $error');
-        }
-      }
-    } else {
-      try {
-        isKakaoTalkInstalled();
-
-        // await AuthCodeClient.instance.authorize(
-        //   redirectUri: 'http://localhost:8080/login/oauth2/code/kakao',
-        // );
-
-        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-        print("ACCESS Token : ${token.accessToken}");
-        print("REFRESH Token : ${token.refreshToken}");
-
-        // 서비스 서버가 전달한 response 데이터에서 토큰 획득 후 Flutter SDK에서 사용하는 타입으로 변환
-        // var tokenResponse = AccessTokenResponse.fromJson(response);
-        // var token = OAuthToken.fromResponse(tokenResponse);
-
-        // // 토큰 저장
-        // TokenManagerProvider.instance.manager.setToken(token);
-
-        // 로그인 성공 시 isLogged 값을 true로 설정하여 SharedPreferences에 저장
-        final prefs = await SharedPreferences.getInstance();
-
-        prefs.setBool('isLogged', true);
-
-        final navigator = Navigator.of(routeContext);
-        navigator.pushNamed('/index');
-      } catch (error) {
-        // print('카카오계정으로 로그인 실패 $error');
-      }
-    }
+// Function to check if the user is logged in
+  Future<bool> isLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLogged') ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
+    void login() async {
+      var response = await http.get(
+        Uri.parse("http://ossp.dcs-hyungjoon.com/auth/kakao"),
+      );
+      var parsedResponse = jsonDecode(response.body);
+      String loginUrl = parsedResponse['data']['url'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              WebViewScreenKakao(loginUrl: loginUrl), // Pass the loginUrl value
+        ),
+      );
+    }
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFF5F5F5),

@@ -19,7 +19,7 @@ public class Badge {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User badgeUser;
+    private User user;
 
     @JoinColumn(name = "badge_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +29,8 @@ public class Badge {
     private Timestamp getDate;
 
     @Builder
-    public Badge(User badgeUser, BadgeName badgeName) {
-        this.badgeUser = badgeUser;
+    public Badge(User user, BadgeName badgeName) {
+        this.user = user;
         this.badgeName = badgeName;
         this.getDate = Timestamp.valueOf(LocalDateTime.now());
     }

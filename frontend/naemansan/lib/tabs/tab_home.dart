@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:naemansan/screens/notification_screen.dart';
+import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/slide_item.dart';
 import 'package:naemansan/widgets/slider.dart';
@@ -18,6 +21,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late Future<Map<String, dynamic>?> user;
   String _city = "";
   String _district = "";
   bool nowLocation = false;
@@ -25,6 +29,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    ApiService apiService = ApiService();
+    user = apiService.getUserInfo();
   }
 
   // 위도, 경도로 주소 가져오기
@@ -77,6 +83,12 @@ class _HomeState extends State<Home> {
         if (types.contains("administrative_area_level_1")) {
           _district = results[i]["long_name"];
         }
+        if (types.contains("sublocality_level_4")) {
+          // print(_street);
+          _street = results[i]["long_name"];
+        }
+        // print(results[i]);
+
       }
       setState(() {});
     }
@@ -163,10 +175,52 @@ class _HomeState extends State<Home> {
                         fontSize: 25,
                         fontWeight: FontWeight.w800,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    )
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: user,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            if (snapshot.hasData) {
+                              // Access user data
+                              Map<String, dynamic>? userData = snapshot.data;
+                              print(userData);
+                              String? name = userData?['name'];
+
+                              // Use the name in your widget tree
+                              return Text('User Name: $name');
+                            } else {
+                              return const Text('No user data available.');
+                            }
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      MainSlider(
+                        title: "🌿 위치별",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                      MainSlider(
+                        title: "🎋 키워드별",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                      MainSlider(
+                        title: "🍽️ 상권",
+                        sliderWidget: HorizontalSlider(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
           const HorizontalSlider(
@@ -181,6 +235,6 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-    );
+    )
   }
 }

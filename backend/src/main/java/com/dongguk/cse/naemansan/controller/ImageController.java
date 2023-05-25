@@ -27,9 +27,8 @@ public class ImageController {
 
     @PostMapping("/user")
     public ResponseDto<?> uploadImage(Authentication authentication, @RequestParam("image")MultipartFile file) throws IOException {
-        log.info("이미지 저장 요청 | User: {}", Long.valueOf(authentication.getName()));
         Map<String, String> map = new HashMap<>();
-        map.put("uuidname", imageService.uploadImage(Long.valueOf(authentication.getName()), ImageUseType.USER, file));
+        map.put("uuid_name", imageService.uploadImage(Long.valueOf(authentication.getName()), ImageUseType.USER, file));
         return new ResponseDto(map);
     }
 

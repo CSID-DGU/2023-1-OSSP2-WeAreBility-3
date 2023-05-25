@@ -25,10 +25,10 @@ public class Notification {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User notificationUser;
+    private User user;
 
     @Column(name = "title")
-    private String title; //추가
+    private String title;
 
     @Column(name = "content")
     private String content;
@@ -40,8 +40,8 @@ public class Notification {
     private Boolean isReadStatus;
 
     @Builder
-    public Notification(User notificationUser, String title, String content) {
-        this.notificationUser = notificationUser;
+    public Notification(User user, String title, String content) {
+        this.user = user;
         this.title = title;
         this.content = content;
         this.createDate = Timestamp.valueOf(LocalDateTime.now());
