@@ -1,4 +1,3 @@
-// Mypage()
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
@@ -24,19 +23,20 @@ class Mypage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
         title: Row(
           children: [
             IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 20),
               icon: const Icon(
                 Icons.arrow_back_ios_outlined,
                 color: Colors.black,
               ),
               onPressed: () {
-                //arrow 아이콘 클릭 시 홈 화면으로 이동 (홈 화면에 화살표 생김)
-                false;
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (BuildContext context) => const IndexScreen(),
@@ -44,23 +44,19 @@ class Mypage extends StatelessWidget {
                 );
               },
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
-              child: Row(
-                children: const [
-                  Text(
-                    '마이페이지',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                ],
+            const Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text(
+                '마이페이지',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-            const Spacer(),
+            const Expanded(child: SizedBox(width: 30)), // 여백 추가
             IconButton(
+              padding: const EdgeInsets.only(left: 25),
               icon: const Icon(
                 Icons.settings,
                 color: Colors.black,
