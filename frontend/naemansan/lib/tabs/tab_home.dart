@@ -10,7 +10,6 @@ import 'package:naemansan/widgets/banner.dart';
 import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/main_slider.dart';
 import 'dart:convert';
-import 'package:permission_handler/permission_handler.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -26,6 +25,9 @@ class _HomeState extends State<Home> {
   String _street = "";
   bool nowLocation = false;
 
+// Set the latitude and longitude values
+  late double _latitude;
+  late double _longitude;
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,8 @@ class _HomeState extends State<Home> {
   }
 
   // 위도, 경도로 주소 가져오기
+  // 주소 가져오기 (위도, 경도 -> 주소)
+  // 주소 가져오기 (위도, 경도 -> 주소)
   _getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -45,20 +49,25 @@ class _HomeState extends State<Home> {
     if (permission == LocationPermission.deniedForever) {
       return Future.error('위치 권한이 영구적으로 없습니다.');
     }
-    final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    _getAddressFromLatLng(position.latitude, position.longitude);
-  }
-
-  Future<void> requestLocationPermission() async {
-    final PermissionStatus permissionStatus =
-        await Permission.locationWhenInUse.request();
-
-    // 위치 권한 요청
-    if (permissionStatus == PermissionStatus.granted) {
-      // 권한 허용 시 처리할 코드
-    } else {
-      // 권한 거부 시 처리할 코드
+    setState(() {
+      nowLocation = false; // Reset the nowLocation flag
+    });
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      await _getAddressFromLatLng(_latitude, _longitude);
+      setState(() {
+        nowLocation =
+            true; // Update the nowLocation flag after successfully retrieving the address
+      });
+    } catch (error) {
+      setState(() {
+        nowLocation = false; // Update the nowLocation flag if an error occurs
+      });
+      print('Error fetching location: $error');
     }
   }
 
@@ -89,7 +98,10 @@ class _HomeState extends State<Home> {
         }
         // print(results[i]);
       }
-      setState(() {});
+      setState(() {
+        _latitude = latitude;
+        _longitude = longitude;
+      });
     }
   }
 
@@ -172,22 +184,62 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      MainSlider(
-                        title: "🌿 위치별",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                      MainSlider(
-                        title: "🎋 키워드별",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                      MainSlider(
-                        title: "🍽️ 상권",
-                        sliderWidget: HorizontalSlider(),
-                      ),
-                    ],
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder:
+                        (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: nowLocation
+                            ? [
+                                MainSlider(
+                                  title: "🌿 위치별",
+                                  sliderWidget: HorizontalSlider(
+                                    latitude: _latitude,
+                                    longitude: _longitude,
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🎋 키워드별",
+                                  sliderWidget: HorizontalSlider(
+                                    keyword: "한강",
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🍽️ 상권",
+                                  sliderWidget: HorizontalSlider(),
+                                ),
+                              ]
+                            : [
+                                const SizedBox(height: 30),
+                                const Text('🌿 위치별',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black87)),
+                                const SizedBox(height: 20),
+                                const Text('현재 위치를 동기화시켜 주세요!',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87)),
+                                const SizedBox(height: 50),
+                                const MainSlider(
+                                  title: "🎋 키워드별",
+                                  sliderWidget: HorizontalSlider(
+                                    keyword: "한강",
+                                  ),
+                                ),
+                                const MainSlider(
+                                  title: "🍽️ 상권",
+                                  sliderWidget: HorizontalSlider(),
+                                ),
+                              ]),
                   ),
                 ],
               ),

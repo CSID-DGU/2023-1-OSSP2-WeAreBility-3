@@ -124,7 +124,7 @@ class _MypageState extends State<Mypage> {
                           Column(
                             children: [
                               const Text(
-                                'Followers',
+                                '팔로워',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
@@ -138,7 +138,7 @@ class _MypageState extends State<Mypage> {
                           Column(
                             children: [
                               const Text(
-                                'Following',
+                                '팔로잉',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
@@ -160,7 +160,7 @@ class _MypageState extends State<Mypage> {
                           Column(
                             children: [
                               const Text(
-                                'Like Count',
+                                '좋아요한 산책로',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
@@ -174,7 +174,7 @@ class _MypageState extends State<Mypage> {
                           Column(
                             children: [
                               const Text(
-                                'Comment Count',
+                                '작성한 후기',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
@@ -188,7 +188,7 @@ class _MypageState extends State<Mypage> {
                           Column(
                             children: [
                               const Text(
-                                'Badge Count',
+                                '획득한 뱃지',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),

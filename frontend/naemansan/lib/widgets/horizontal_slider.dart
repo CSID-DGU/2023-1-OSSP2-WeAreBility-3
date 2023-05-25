@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/main_card.dart';
 
 class HorizontalSlider extends StatefulWidget {
-  const HorizontalSlider({super.key});
+  final double? latitude;
+  final double? longitude;
+  final String? keyword;
+
+  const HorizontalSlider({
+    Key? key,
+    this.latitude,
+    this.longitude,
+    this.keyword,
+  }) : super(key: key);
 
   @override
   _HorizontalSliderState createState() => _HorizontalSliderState();
@@ -18,91 +28,37 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
   }
 
   Future<void> fetchItems() async {
-    List<Map<String, dynamic>> dummbyData = [
-      {
-        "id": 1,
-        "title": '힐링 숲속',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 100,
-        "keywords": ['힐링', '도심'],
-      },
-      {
-        "id": 2,
-        "title": '히찬 코스',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 50,
-        "keywords": ['힐링', '도심'],
-      },
-      {
-        "id": 3,
-        "title": '디디피',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 75,
-        "keywords": ['힐링', '도심'],
-      },
-      {
-        "id": 4,
-        "title": '충무 코스',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 100,
-        "keywords": ['힐링', '도심'],
-      },
-      {
-        "id": 5,
-        "title": '힐링 숲속',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 50,
-        "keywords": ['힐링', '도심'],
-      },
-      {
-        "id": 6,
-        "title": '힐링 숲속',
-        "location": '경기도 가평군 설악면',
-        "length": '1.5km',
-        "likes": 75,
-        "keywords": ['힐링', '도심'],
-      },
-    ];
+    ApiService apiService = ApiService();
+    List<dynamic>? data;
 
-    final items = dummbyData
-        .map((item) => SlideItem(
-              id: item['id'],
-              title: item['title'],
-              location: item['location'],
-              length: item['length'],
-              likes: item['likes'],
-              keywords: item['keywords'],
-            ))
-        .toList();
-    setState(() {
-      slideItems = items;
-    });
+    if (widget.keyword != null) {
+      data = await apiService.getTagBasedCourseList(widget.keyword!);
+    } else if (widget.latitude != null && widget.longitude != null) {
+      data = await apiService.getLocationBasedCourseList(
+          widget.latitude!, widget.longitude!);
+    }
 
-    // 찐 데이터
+    print(data);
 
-//     List<dynamic>? tagBasedCourses =
-//         await ApiService.getTagBasedCourseList('태그명');
-//     if (tagBasedCourses != null) {
-//       // 성공적으로 조회된 경우 처리 로직
-//       // tagBasedCourses 리스트를 사용하여 UI 업데이트 등을 수행
-//     } else {
-//       // 조회 실패 또는 에러 발생 시 처리 로직
-//     }
+    if (data != null) {
+      final items = data
+          .map((item) => SlideItem(
+                id: item['id'],
+                title: item['title'],
+                location: item['start_location_name'],
+                length: item['distance'],
+                likes: item['like_cnt'],
+                keywords:
+                    List<String>.from(item['tags'].map((tag) => tag['name'])),
+              ))
+          .toList();
 
-// // 위치 기반 산책로 조회
-//     List<dynamic>? locationBasedCourses =
-//         await ApiService.getLocationBasedCourseList(37.12345, 127.12345);
-//     if (locationBasedCourses != null) {
-//       // 성공적으로 조회된 경우 처리 로직
-//       // locationBasedCourses 리스트를 사용하여 UI 업데이트 등을 수행
-//     } else {
-//       // 조회 실패 또는 에러 발생 시 처리 로직
-//     }
+      setState(() {
+        slideItems = items;
+      });
+    } else {
+      // Handle error when data is null
+    }
   }
 
   @override
@@ -110,7 +66,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: slideItems.length,
-      itemExtent: 190, // 아이템의 높이를 200으로 고정
+      itemExtent: 190, // Set the item height to 200
 
       itemBuilder: (context, index) {
         return CardWidget(
