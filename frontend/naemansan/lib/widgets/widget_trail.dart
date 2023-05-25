@@ -22,7 +22,7 @@ class Trail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8.0),
       child: Container(
         height: 130.0,
         decoration: BoxDecoration(
@@ -37,7 +37,7 @@ class Trail extends StatelessWidget {
           children: [
             const SizedBox(
               width: 100.0,
-              child: Icon(Icons.image),
+              child: Icon(Icons.nature_outlined),
             ),
             const SizedBox(width: 4.0),
             Expanded(
@@ -97,22 +97,26 @@ class Trail extends StatelessWidget {
                     Icon(
                       isLiked ? Icons.favorite : Icons.favorite_border_outlined,
                       color: isLiked ? Colors.red : null,
+                      size: 20,
                     ),
                     Text(
                       '$likeCnt',
                       style: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 14.0,
                       ),
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    const Icon(Icons.person_outline),
+                    const Icon(
+                      Icons.person_outline,
+                      size: 20,
+                    ),
                     Text(
                       '$userCnt',
                       style: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 14.0,
                       ),
                     ),
                   ],

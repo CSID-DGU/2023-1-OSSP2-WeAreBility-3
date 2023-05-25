@@ -1,4 +1,7 @@
-//등록한 산책로 api를 JSON형태로 변환
+//등록한 산책로 ap
+//
+//i를 JSON형태로 변환
+
 class TrailModel {
   final String userimage;
   final String title;

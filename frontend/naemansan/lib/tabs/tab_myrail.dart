@@ -152,6 +152,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               );
             },
           ),
+          // Center(
+          //   child: Text('등록한 나만의 산책로 산책로 리스트'),
+          // ),
           // 두 번째 탭
           const Center(
             child: Text('계정 사용자가 좋아요한 산책로 리스트'),
