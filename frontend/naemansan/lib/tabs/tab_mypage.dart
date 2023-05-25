@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/services/login_api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Mypage extends StatelessWidget {
-  const Mypage({super.key});
+class Mypage extends StatefulWidget {
+  const Mypage({Key? key}) : super(key: key);
 
-// 로그아웃
+  @override
+  State<Mypage> createState() => _MypageState();
+}
 
-  Future<void> deleteTokens() async {
-    const storage = FlutterSecureStorage();
-    await storage.delete(key: 'accessToken');
-    await storage.delete(key: 'refreshToken');
+class _MypageState extends State<Mypage> {
+  late Future<Map<String, dynamic>?> user;
+
+  // Fetch user info
+  Future<Map<String, dynamic>?> fetchUserInfo() async {
+    ApiService apiService = ApiService();
+    return await apiService.getUserInfo();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    user = fetchUserInfo();
   }
 
   @override
@@ -66,20 +79,162 @@ class Mypage extends StatelessWidget {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => logout(),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.green),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 100), // Adjust the top padding value as needed
+          child: FutureBuilder<Map<String, dynamic>?>(
+            future: user,
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                if (snapshot.hasData) {
+                  Map<String, dynamic>? userData = snapshot.data;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: NetworkImage(
+                          'https://avatars.githubusercontent.com/u/78739194?v=4',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        userData?['name'] ?? 'No Name',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        userData?['introduction'] ?? 'No Introduction',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      const Divider(),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                'Followers',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                userData?['follower_cnt'].toString() ?? '0',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Following',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                userData?['following_cnt'].toString() ?? '0',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      const Divider(),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                'Like Count',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${userData?['like_cnt'] ?? 0}',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Comment Count',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${userData?['comment_cnt'] ?? 0}',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Badge Count',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${userData?['badge_cnt'] ?? 0}',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Text('No user data available.');
+                }
+              }
+            },
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: logout,
+                child: const Text('Logout'),
               ),
-              child: const Text('로그아웃'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  // Delete tokens on logout
+  Future<void> deleteTokens() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', false);
   }
 }
