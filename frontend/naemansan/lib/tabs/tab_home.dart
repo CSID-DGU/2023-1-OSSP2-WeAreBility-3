@@ -28,8 +28,8 @@ class _HomeState extends State<Home> {
   String keyword = "한강"; // 기본 키워드 값
 
 // Set the latitude and longitude values
-  late double _latitude;
-  late double _longitude;
+  late double _latitude = 0.0;
+  late double _longitude = 0.0;
   @override
   void initState() {
     super.initState();

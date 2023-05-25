@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/screens/create_course_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/service/api_service.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
@@ -78,6 +79,19 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateCourseScreen(),
+                ),
+              );
+            },
+          ),
+        ],
         titleSpacing: 0,
         bottom: TabBar(
           controller: _tabController,

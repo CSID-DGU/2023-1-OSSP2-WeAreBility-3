@@ -495,9 +495,11 @@ class ApiService {
   }
 
 // 개인 산책로 등록
-  Future<bool> registerIndividualCourse(Map<String, dynamic> courseData) async {
+  Future<Map<String, dynamic>> registerIndividualCourse(
+      Map<String, dynamic> courseData) async {
     final response = await postRequest('course/individual', courseData);
-    return response.statusCode == 200;
+    final responseBody = jsonDecode(response.body);
+    return responseBody;
   }
 
   // 개인 산책로 조회
