@@ -126,9 +126,10 @@ class ApiService {
   /*           유저 정보           */
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {
-      final response = await getRequest('/user');
+      final response = await getRequest('user');
       if (response.statusCode == 200) {
         final parsedResponse = jsonDecode(response.body);
+        print(parsedResponse['data']);
         return parsedResponse['data'];
       } else {
         print('유저 정보 가져오기 실패 - ${response.statusCode}');

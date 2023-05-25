@@ -92,9 +92,9 @@ class _CourseDetailState extends State<CourseDetail> {
                       ),
                     ),
                     SizedBox(width: 15),
-                    Text("KAKAO",
+                    Text("KAKAO-014107960443",
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                            fontSize: 17, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ),
@@ -126,9 +126,14 @@ class _CourseDetailState extends State<CourseDetail> {
                   ),
                 ],
               ),
-              const Divider(),
               Text(
                 '생성날짜: $formattedDate',
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                '좋아요: $likes',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
@@ -139,7 +144,7 @@ class _CourseDetailState extends State<CourseDetail> {
               Text(
                 '시작위치: ${widget.location}',
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                 ),
               ),
               const SizedBox(height: 8),
@@ -150,12 +155,6 @@ class _CourseDetailState extends State<CourseDetail> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Likes: $likes',
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
 
               const SizedBox(height: 15),
               const Text(
