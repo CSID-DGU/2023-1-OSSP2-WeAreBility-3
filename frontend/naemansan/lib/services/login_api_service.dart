@@ -24,16 +24,12 @@ class ApiService {
       final accessToken = tokens['accessToken'];
       final refreshToken = tokens['refreshToken'];
 
-      print('Access Token: $accessToken');
-      print('Refresh Token: $refreshToken');
-
       final response = await http.get(
         Uri.parse('$baseUrl/$endpoint'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },
       );
-      print('$baseUrl/$endpoint');
 
       if (response.statusCode == 200) {
         print('GET 요청 성공');
@@ -138,6 +134,24 @@ class ApiService {
     } catch (e) {
       print('유저 정보 가져오기 실패 - $e');
       return null;
+    }
+  }
+
+  Future<String> getUserProfileImage(var path) async {
+    try {
+      final response = await getRequest('image/$path');
+      if (response.statusCode == 200) {
+        print("이미지이이이${response.body}");
+        final parsedResponse = jsonDecode(response.body);
+        print(parsedResponse);
+        return parsedResponse['data'];
+      } else {
+        print('유저 프로필 이미지 가져오기 실패 - ${response.statusCode}');
+        return '';
+      }
+    } catch (e) {
+      print('유저 프로필 이미지 가져오기 실패 - $e');
+      return '';
     }
   }
 

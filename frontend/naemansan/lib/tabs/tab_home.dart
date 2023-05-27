@@ -18,6 +18,11 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+currentLoginState() {
+  // 로그인 여부 확인
+  // isLogged 확인
+}
+
 class _HomeState extends State<Home> {
   late Future<Map<String, dynamic>?> user;
   String _city = "";

@@ -26,11 +26,16 @@ class _MypageState extends State<Mypage> {
     user = fetchUserInfo();
   }
 
+// 로그인 화면으로 이동 시키기
+  goLoginScreen() {
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<void> logout() async {
       await deleteTokens();
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      goLoginScreen();
     }
 
     return Scaffold(
