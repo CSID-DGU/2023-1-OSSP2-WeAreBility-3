@@ -1,24 +1,20 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class WebViewScreenKakao extends StatefulWidget {
+class WebViewGoogle extends StatefulWidget {
   final String loginUrl;
 
-  const WebViewScreenKakao({Key? key, required this.loginUrl})
-      : super(key: key);
+  const WebViewGoogle({Key? key, required this.loginUrl}) : super(key: key);
 
   @override
-  _WebViewScreenKakaoState createState() => _WebViewScreenKakaoState();
+  State<WebViewGoogle> createState() => _WebViewGoogleState();
 }
 
-class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
-  late WebViewController _webViewController;
-
+class _WebViewGoogleState extends State<WebViewGoogle> {
   @override
   void initState() {
     super.initState();
@@ -52,7 +48,7 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Google Login'),
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
@@ -60,12 +56,11 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
       body: WebView(
         initialUrl: widget.loginUrl,
         javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (controller) {
-          _webViewController = controller;
-        },
+        gestureNavigationEnabled: true,
+        userAgent: "random",
         navigationDelegate: (NavigationRequest request) async {
           if (request.url.startsWith(
-              'https://ossp.dcs-hyungjoon.com/auth/kakao/callback')) {
+              'https://ossp.dcs-hyungjoon.com/auth/google/callback')) {
             // Callback URL reached, process the token
             String code = Uri.parse(request.url).queryParameters['code'] ?? '';
             print("2️⃣ CODE는 : $code");
@@ -73,7 +68,7 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
             // Token request
             var response = await http.get(
               Uri.parse(
-                  "https://ossp.dcs-hyungjoon.com/auth/kakao/callback?code=$code"),
+                  "https://ossp.dcs-hyungjoon.com/auth/google/callback?code=$code"),
             );
 
             var parsedResponse = jsonDecode(response.body);
