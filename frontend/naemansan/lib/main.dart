@@ -40,8 +40,8 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    super.initState();
     getLoginStatus();
+    super.initState();
   }
 
   Future<void> getLoginStatus() async {

@@ -24,11 +24,38 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
     super.initState();
   }
 
+  successLogin() {
+    Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+  }
+
+  failedLogin() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Login Error'),
+          content: const Text('Failed to log in. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        elevation: 2,
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.white,
       ),
       body: WebView(
         initialUrl: widget.loginUrl,
@@ -62,28 +89,9 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
 
               final prefs = await SharedPreferences.getInstance();
               prefs.setBool('isLogged', true);
-              // Login successful, perform next action
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/index', (route) => false);
+              successLogin();
             } else {
-              // Handle login failure
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Login Error'),
-                    content: const Text('Failed to log in. Please try again.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
+              failedLogin();
             }
           }
           return NavigationDecision.navigate;
