@@ -137,6 +137,24 @@ class ApiService {
     }
   }
 
+  Future<String> getUserProfileImage(var path) async {
+    try {
+      final response = await getRequest('image/$path');
+      if (response.statusCode == 200) {
+        print("이미지이이이${response.body}");
+        final parsedResponse = jsonDecode(response.body);
+        print(parsedResponse);
+        return parsedResponse['data'];
+      } else {
+        print('유저 프로필 이미지 가져오기 실패 - ${response.statusCode}');
+        return '';
+      }
+    } catch (e) {
+      print('유저 프로필 이미지 가져오기 실패 - $e');
+      return '';
+    }
+  }
+
   Future<http.Response> updateUserInfo(Map<String, dynamic> updatedInfo) async {
     final response = await putRequest('user', updatedInfo);
     return response;
