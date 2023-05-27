@@ -24,16 +24,12 @@ class ApiService {
       final accessToken = tokens['accessToken'];
       final refreshToken = tokens['refreshToken'];
 
-      print('Access Token: $accessToken');
-      print('Refresh Token: $refreshToken');
-
       final response = await http.get(
         Uri.parse('$baseUrl/$endpoint'),
         headers: {
           'Authorization': 'Bearer $accessToken',
         },
       );
-      print('$baseUrl/$endpoint');
 
       if (response.statusCode == 200) {
         print('GET 요청 성공');

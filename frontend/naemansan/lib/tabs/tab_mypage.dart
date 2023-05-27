@@ -26,11 +26,15 @@ class _MypageState extends State<Mypage> {
     user = fetchUserInfo();
   }
 
+  goLoginScreen() {
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<void> logout() async {
       await deleteTokens();
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      goLoginScreen();
     }
 
     return Scaffold(

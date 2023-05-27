@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreenKakao extends StatefulWidget {
   final String loginUrl;
@@ -16,58 +17,77 @@ class WebViewScreenKakao extends StatefulWidget {
 }
 
 class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
+  late WebViewController _webViewController;
 
   @override
   void initState() {
     super.initState();
-    flutterWebViewPlugin.onUrlChanged.listen((String url) async {
-      print(url);
-      if (url
-          .startsWith('https://ossp.dcs-hyungjoon.com/auth/kakao/callback')) {
-        // Callback URL reached, process the token
-        String code = Uri.parse(url).queryParameters['code'] ?? '';
-
-        // Token request
-        var response = await http.get(
-          Uri.parse(
-              "https://ossp.dcs-hyungjoon.com/auth/kakao/callback?code=$code"),
-        );
-
-        var parsedResponse = jsonDecode(response.body);
-        print(parsedResponse);
-
-        if (response.statusCode == 200) {
-          // API response value
-          String accessToken = parsedResponse['data']['jwt']['access_token'];
-          String refreshToken = parsedResponse['data']['jwt']['refresh_token'];
-          await saveTokens(accessToken, refreshToken);
-          // Login successful, perfo rm next action
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/index', (route) => false);
-        } else {
-          // Handle login failure
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    flutterWebViewPlugin.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.loginUrl == null) {
-      // Display a loading indicator or handle the case where loginUrl is null
-      return const CircularProgressIndicator();
-    }
-    return WebviewScaffold(
-      url: widget.loginUrl,
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+      ),
+      body: WebView(
+        initialUrl: widget.loginUrl,
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (controller) {
+          _webViewController = controller;
+        },
+        navigationDelegate: (NavigationRequest request) async {
+          if (request.url.startsWith(
+              'https://ossp.dcs-hyungjoon.com/auth/kakao/callback')) {
+            // Callback URL reached, process the token
+            String code = Uri.parse(request.url).queryParameters['code'] ?? '';
+            print("2️⃣ CODE는 : $code");
+
+            // Token request
+            var response = await http.get(
+              Uri.parse(
+                  "https://ossp.dcs-hyungjoon.com/auth/kakao/callback?code=$code"),
+            );
+
+            var parsedResponse = jsonDecode(response.body);
+            print("2️⃣CODE를 보낸 후 내가 받은 토큰은 : $parsedResponse");
+
+            if (response.statusCode == 200) {
+              // API response value
+              String accessToken =
+                  parsedResponse['data']['jwt']['access_token'];
+              String refreshToken =
+                  parsedResponse['data']['jwt']['refresh_token'];
+              await saveTokens(accessToken, refreshToken);
+
+              final prefs = await SharedPreferences.getInstance();
+              prefs.setBool('isLogged', true);
+              // Login successful, perform next action
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/index', (route) => false);
+            } else {
+              // Handle login failure
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Login Error'),
+                    content: const Text('Failed to log in. Please try again.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
+          }
+          return NavigationDecision.navigate;
+        },
       ),
     );
   }

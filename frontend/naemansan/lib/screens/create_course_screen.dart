@@ -109,12 +109,10 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
     });
 
     final permissionStatus = await Geolocator.checkPermission();
-    print(permissionStatus);
     if (permissionStatus == LocationPermission.denied) {
       final permissionRequested = await Geolocator.requestPermission();
       if (permissionRequested != LocationPermission.whileInUse &&
           permissionRequested != LocationPermission.always) {
-        print("sadasdsad");
         setState(() {
           _isWalking = false;
           _isTitleInputEnabled = true;

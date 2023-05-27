@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/webview_kakao_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class LoginBtn extends StatelessWidget {
@@ -18,35 +17,29 @@ class LoginBtn extends StatelessWidget {
 
 // 서버에 토큰 보내주고 user profile가져오기
 
-// 로그인 유지
-  Future<void> persistLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLogged', true);
-    // print(prefs.getBool('isLogged'));
-  }
-
-// Function to check if the user is logged in
-  Future<bool> isLoggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isLogged') ?? false;
-  }
-
   @override
   Widget build(BuildContext context) {
+    void goLogin(String loginUrl) {
+      Navigator.push(
+        routeContext, // 네비게이션을 위한 BuildContext
+        MaterialPageRoute(
+          builder: (context) => WebViewScreenKakao(
+              loginUrl: loginUrl), // loginUrl 값을 전달하여 WebViewScreenKakao를 생성
+        ),
+      );
+    }
+
+    // login function
     void login() async {
       var response = await http.get(
         Uri.parse("http://ossp.dcs-hyungjoon.com/auth/kakao"),
       );
       var parsedResponse = jsonDecode(response.body);
-      String loginUrl = parsedResponse['data']['url'];
+      print("1️⃣ login_button.dart 에서 response.body : $parsedResponse");
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              WebViewScreenKakao(loginUrl: loginUrl), // Pass the loginUrl value
-        ),
-      );
+      String loginUrl = parsedResponse['data']['url'];
+      print("1️⃣ loginURL : $loginUrl");
+      goLogin(loginUrl);
     }
 
     return ElevatedButton(
