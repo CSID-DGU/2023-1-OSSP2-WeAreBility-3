@@ -24,7 +24,7 @@ from shapely.wkb import loads
 import pandas as pd
 
 
-
+#d
 class course_recommender():
     def __init__(self, user_id = int) :
         self.user_id = user_id
