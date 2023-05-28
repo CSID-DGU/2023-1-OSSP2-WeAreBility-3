@@ -6,7 +6,7 @@ import 'package:naemansan/tabs/tab_mypage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IndexScreen extends StatefulWidget {
-  const IndexScreen({super.key});
+  const IndexScreen({Key? key}) : super(key: key);
 
   @override
   _IndexScreenState createState() => _IndexScreenState();
