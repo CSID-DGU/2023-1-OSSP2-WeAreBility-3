@@ -71,7 +71,7 @@ class BannerSwiper extends StatelessWidget {
                                   Text(
                                     caption,
                                     style: const TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 21,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),

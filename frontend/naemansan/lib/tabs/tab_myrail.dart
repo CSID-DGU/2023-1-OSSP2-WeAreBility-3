@@ -75,7 +75,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         title: const Text(
           '나만의 산책로',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 21,
             fontWeight: FontWeight.w600,
           ),
         ),

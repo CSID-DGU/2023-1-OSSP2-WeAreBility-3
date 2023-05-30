@@ -37,7 +37,7 @@ class Edit extends StatelessWidget {
                   Text(
                     '프로필 수정',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

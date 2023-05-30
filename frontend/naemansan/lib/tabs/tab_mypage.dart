@@ -86,7 +86,7 @@ class _MypageState extends State<Mypage> {
               child: Text(
                 '마이페이지',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 21,
                   fontWeight: FontWeight.w600,
                 ),
               ),

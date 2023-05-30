@@ -28,7 +28,7 @@ class BannerDetailScreen extends StatelessWidget {
               Text(
                 caption,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 21,
                   fontWeight: FontWeight.bold,
                 ),
               ),
