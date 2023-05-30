@@ -29,8 +29,7 @@ class _HomeState extends State<Home> {
   String _district = "";
   String _street = "";
   bool nowLocation = false;
-
-  String keyword = "한강"; // 기본 키워드 값
+  String selectedKeyword = "한강"; // 선택한 키워드 초기값
 
 // Set the latitude and longitude values
   late double _latitude = 0.0;

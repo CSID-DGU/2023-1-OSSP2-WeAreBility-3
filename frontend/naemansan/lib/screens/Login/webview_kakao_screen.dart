@@ -19,9 +19,31 @@ class WebViewScreenKakao extends StatefulWidget {
 class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
   late WebViewController _webViewController;
 
+  static const storage =
+      FlutterSecureStorage(); // FlutterSecureStorage를 storage로 저장
+  dynamic userInfo = ''; // storage에 있는 유저 정보를 저장
+
   @override
   void initState() {
     super.initState();
+    // 비동기로 flutter secure storage 정보를 불러오는 작업
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    // read 함수로 key값에 맞는 정보를 불러오고 데이터타입은 String 타입
+    // 데이터가 없을때는 null을 반환
+    userInfo = await storage.read(key: 'login');
+
+    // user의 정보가 있다면 로그인 후 들어가는 첫 페이지로 넘어가게 합니다.
+    if (userInfo != null) {
+      Navigator.pushNamed(context, '/');
+      // Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+    } else {
+      print('로그인이 필요합니다');
+    }
   }
 
   successLogin() {
@@ -89,6 +111,12 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
 
               final prefs = await SharedPreferences.getInstance();
               prefs.setBool('isLogged', true);
+
+              await storage.write(
+                key: 'login',
+                value: accessToken,
+              );
+
               successLogin();
             } else {
               failedLogin();

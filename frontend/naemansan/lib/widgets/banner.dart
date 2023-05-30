@@ -5,7 +5,7 @@ class BannerSwiper extends StatelessWidget {
   final int _currentPage = 0;
   final List<String> images = [
     "https://www.visitseoul.net/comm/getImage?srvcId=MEDIA&parentSn=46163&fileTy=MEDIA&fileNo=1",
-    "https://www.visitseoul.net/comm/getImage?srvcId=MEDIA&parentSn=46163&fileTy=MEDIA&fileNo=1",
+    "https://www.goyang.go.kr/resources/park/images/content/img-walkLoad1-2.png",
     "https://previews.123rf.com/images/doraclub/doraclub1308/doraclub130800051/21489706-%EA%B3%B5%EC%9B%90-%EC%82%B0%EC%B1%85%EB%A1%9C.jpg",
   ];
 
