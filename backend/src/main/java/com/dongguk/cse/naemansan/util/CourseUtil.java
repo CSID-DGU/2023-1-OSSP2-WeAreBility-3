@@ -201,6 +201,10 @@ public class CourseUtil {
                 point.getCoordinate().getX());
     }
 
+    public Point getPointDto2Point(PointDto point) {
+        return  geometryFactory.createPoint(new Coordinate(point.getLongitude(), point.getLatitude()));
+    }
+
     public List<PointDto> getPoint2PointDto(MultiPoint multiPoint) {
         List<PointDto> locations = new ArrayList<>();
 

@@ -14,9 +14,11 @@ public enum ErrorCode {
     NOT_FOUND_COURSE_TAG("404", HttpStatus.NOT_FOUND, "Not Exist CourseTag"),
     NOT_FOUND_COMMENT("404", HttpStatus.NOT_FOUND, "Not Exist Comment"),
     NOT_FOUND_NOTIFICATION("404", HttpStatus.NOT_FOUND, "Not Exist Notification"),
+    NOT_FOUND_SHOP("404", HttpStatus.NOT_FOUND, "Not Exist Shop"),
 
     DUPLICATION_LOCATIONS("400", HttpStatus.BAD_REQUEST, "Duplication Enrollment Course Locations"),
     DUPLICATION_TITLE("400", HttpStatus.BAD_REQUEST, "Duplication Course Title"),
+    DUPLICATION_NAME("400", HttpStatus.BAD_REQUEST, "Duplication Shop/Advertisement Name"),
     EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
     NOT_EXIST_ENTITY_REQUEST("400", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
 
