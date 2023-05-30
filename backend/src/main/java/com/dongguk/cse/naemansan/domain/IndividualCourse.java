@@ -16,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @DynamicUpdate
 @Table(name="individual_courses")
@@ -41,6 +42,9 @@ public class IndividualCourse {
     @Column(name="distance")
     private Double distance;
 
+    @Column(name = "status", columnDefinition = "TINYINT(1)")
+    private Boolean status;
+
     @Builder
     public IndividualCourse(User user, String title, MultiPoint locations, Double distance) {
         this.user = user;
@@ -48,5 +52,6 @@ public class IndividualCourse {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.locations = locations;
         this.distance = distance;
+        this.status = true;
     }
 }

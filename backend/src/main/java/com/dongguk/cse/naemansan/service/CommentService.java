@@ -7,11 +7,14 @@ import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
+import com.dongguk.cse.naemansan.event.CommentEvent;
+import com.dongguk.cse.naemansan.event.IndividualCourseEvent;
 import com.dongguk.cse.naemansan.repository.CommentRepository;
 import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +33,9 @@ public class CommentService {
     private final UserRepository userRepository;
     private final EnrollmentCourseRepository enrollmentCourseRepository;
     private final CommentRepository commentRepository;
+
+    private final ApplicationEventPublisher publisher;
+
     public Boolean createComment(Long userId, Long courseId, CommentRequestDto commentRequestDto) {
         // User, Course 존재유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
@@ -41,6 +47,8 @@ public class CommentService {
                 .user(user)
                 .enrollmentCourse(enrollmentCourse)
                 .content(commentRequestDto.getContent()).build());
+
+        publisher.publishEvent(new CommentEvent(userId));
 
         return Boolean.TRUE;
     }
@@ -75,7 +83,8 @@ public class CommentService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
-        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
+        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourseAndStatus(commentId, user, enrollmentCourse, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
         // Comment 수정
         comment.setContent(commentRequestDto.getContent());
@@ -89,7 +98,8 @@ public class CommentService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findById(courseId)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
-        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourse(commentId, user, enrollmentCourse).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
+        Comment comment = commentRepository.findByIdAndUserAndEnrollmentCourseAndStatus(commentId, user, enrollmentCourse, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
         // 삭제 - status 변경
         comment.setStatus(false);

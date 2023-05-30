@@ -20,7 +20,7 @@ public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCour
     Optional<EnrollmentCourse> findByIdNotAndTitleAndStatus(Long courseId, String title, Boolean status);
     Optional<EnrollmentCourse> findByIdAndStatus(Long courseId, Boolean Status);
     Optional<EnrollmentCourse> findByTitleAndStatus(String title, Boolean status);
-
+    Long countByUser(User user);
     @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.user = :user AND c.status = true")
     Page<EnrollmentCourse> findListByUser(@Param("user") User user, Pageable pageable);
     @Query(value = "SELECT c FROM EnrollmentCourse c LEFT JOIN Like l ON c = l.enrollmentCourse WHERE l.user = :user AND c.status = true")

@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.domain;
 
+import com.dongguk.cse.naemansan.domain.type.BadgeType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,13 @@ public class BadgeName {
 
     @Column(name="name")
     private String name;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private BadgeType type;
+
+    @Column(name = "condition_num")
+    private Long conditionNum;
 
     // ------------------------------------------------------------
 
