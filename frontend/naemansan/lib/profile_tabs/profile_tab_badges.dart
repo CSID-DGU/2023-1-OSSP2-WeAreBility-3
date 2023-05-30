@@ -37,7 +37,7 @@ class Badges extends StatelessWidget {
                   Text(
                     '뱃지',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

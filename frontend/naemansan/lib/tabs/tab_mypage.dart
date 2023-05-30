@@ -14,6 +14,9 @@ class Mypage extends StatefulWidget {
 class _MypageState extends State<Mypage> {
   late Future<Map<String, dynamic>?> user;
 
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+
   // Fetch user info
   Future<Map<String, dynamic>?> fetchUserInfo() async {
     ApiService apiService = ApiService();
@@ -24,6 +27,11 @@ class _MypageState extends State<Mypage> {
   void initState() {
     super.initState();
     user = fetchUserInfo();
+
+    // 비동기로 flutter secure storage 정보를 불러오는 작업
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkUserState();
+    });
   }
 
 // 로그인 화면으로 이동 시키기
@@ -31,13 +39,24 @@ class _MypageState extends State<Mypage> {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 
+  Future<void> logout() async {
+    await deleteTokens();
+    await storage.delete(key: 'login');
+    goLoginScreen();
+  }
+
+  checkUserState() async {
+    userInfo = await storage.read(key: 'login');
+    if (userInfo == null) {
+      print('로그인 페이지로 이동');
+      Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+    } else {
+      print('로그인 중');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<void> logout() async {
-      await deleteTokens();
-      goLoginScreen();
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -67,7 +86,7 @@ class _MypageState extends State<Mypage> {
               child: Text(
                 '마이페이지',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 21,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -100,15 +119,20 @@ class _MypageState extends State<Mypage> {
               } else {
                 if (snapshot.hasData) {
                   Map<String, dynamic>? userData = snapshot.data;
+                  String imageFileName =
+                      userData?['image_path'] ?? '0_default_image.png';
+                  String imageUrl =
+                      'https://ossp.dcs-hyungjoon.com/image?uuid=$imageFileName';
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                          'https://avatars.githubusercontent.com/u/78739194?v=4',
-                        ),
-                      ),
+                      CircleAvatar(radius: 50, backgroundImage: NetworkImage(
+                              // 'imageUrl',
+                              //랜덤 이미지
+                              imageUrl)
+                          // "https://picsum.photos/200/300"),
+                          ),
                       const SizedBox(height: 16),
                       Text(
                         userData?['name'] ?? 'No Name',
