@@ -137,7 +137,7 @@ class _HomeState extends State<Home> {
                   const Text(
                     '내만산',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -232,13 +232,13 @@ class _HomeState extends State<Home> {
                               const SizedBox(height: 30),
                               const Text('🌿 위치별',
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 21,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black87)),
                               const SizedBox(height: 20),
                               const Text('현재 위치를 동기화시켜 주세요!',
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87)),
                               const SizedBox(height: 50),

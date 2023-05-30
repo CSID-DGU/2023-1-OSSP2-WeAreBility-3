@@ -29,11 +29,11 @@ class _MainSliderState extends State<MainSlider> {
         Text(
           widget.title,
           style: const TextStyle(
-            fontSize: 25,
+            fontSize: 21,
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         if (widget.title.contains("키워드별"))
           Row(
             children: [
@@ -43,7 +43,7 @@ class _MainSliderState extends State<MainSlider> {
               // Add more keyword buttons as needed
             ],
           ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         SizedBox(
           height: 170,
           child: widget.sliderWidget,

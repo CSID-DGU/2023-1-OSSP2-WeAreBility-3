@@ -80,9 +80,9 @@ class CardWidget extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(16),
           color: Colors.white,
-          boxShadow: const [],
         ),
-        child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(6.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,14 +90,14 @@ class CardWidget extends StatelessWidget {
               Text(
                 displayedTitle,
                 style: const TextStyle(
-                  fontSize: 17,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
                 displayedLocation,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
               Row(

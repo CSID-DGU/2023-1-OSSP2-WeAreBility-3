@@ -5,8 +5,8 @@ import 'package:naemansan/screens/Home/banner_detail_screen.dart';
 class BannerSwiper extends StatelessWidget {
   final List<String> images = [
     "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
-    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
-    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
+    "https://mblogthumb-phinf.pstatic.net/MjAxNzExMjJfMjUg/MDAxNTExMzI3NDIxODY3.1xiNaSwKDa6ETU8OhwUkofIWry9BGxAkfZJTtMXQOxkg.T2GO8rkb1FApzH2HOj9EoXnJPILRd6luo37JJqc4Lcsg.JPEG.knicjin/20171122-018.jpg?type=w800",
+    "https://img.freepik.com/premium-photo/detail-of-the-milky-way-with-photographers-panoramic-view-ultrawide-16-9-resolution_38810-698.jpg",
   ];
 
   final List<String> captions = [
