@@ -3,6 +3,9 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
+import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
+import com.dongguk.cse.naemansan.dto.PointDto;
+import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.dongguk.cse.naemansan.dto.response.UserDto;
@@ -19,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -27,6 +32,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserTagRepository userTagRepository;
     private final CommentRepository commentRepository;
     private final CourseUtil courseUtil;
 
@@ -81,6 +87,45 @@ public class UserService {
         return Boolean.TRUE;
     }
 
+    public List<EnrollmentCourseTagDto> createTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<UserTag> userTags = courseUtil.getTagDto2TagForUser(user, requestDto.getTags());
+        userTagRepository.saveAll(userTags);
+
+        return courseUtil.getTag2TagDtoForUser(userTags);
+    }
+
+    public List<EnrollmentCourseTagDto> readTagByUserChoice(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        List<UserTag> userTags = userTagRepository.findByUser(user);
+
+        return courseUtil.getTag2TagDtoForUser(userTags);
+    }
+
+    public List<EnrollmentCourseTagDto> updateTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        List<UserTag> userTags = new ArrayList<>();
+        for (EnrollmentCourseTagDto tagDto : requestDto.getTags()) {
+            switch (tagDto.getStatus()) {
+                case NEW -> {
+                    userTags.add(userTagRepository.save(UserTag.builder()
+                            .user(user)
+                            .tag(tagDto.getName()).build()));
+                }
+                case DELETE -> {
+                    userTagRepository.deleteByUserAndTag(user, tagDto.getName()); }
+                case DEFAULT -> {
+                    userTags.add(UserTag.builder()
+                        .user(user)
+                        .tag(tagDto.getName()).build()); }
+            }
+        }
+
+        return courseUtil.getTag2TagDtoForUser(userTags);
+    }
+
     public List<CommentDto> readCommentList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
@@ -115,7 +160,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -137,7 +182,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -164,7 +209,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())

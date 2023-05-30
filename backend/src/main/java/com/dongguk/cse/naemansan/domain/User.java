@@ -75,6 +75,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Badge> badges = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserTag> userTags = new ArrayList<>();
+
     // ------------------------------------------------------------
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
