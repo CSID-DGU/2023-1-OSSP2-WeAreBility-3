@@ -14,6 +14,6 @@ public interface BadgeRepository extends JpaRepository<Badge, Long> {
     List<Badge> findByUser(User user);
 
     // 연관관계가 없는 엔티티 조인 처리 (ON 사용)
-    @Query("SELECT b.id, n.name, b.getDate FROM Badge b INNER JOIN  b.badgeName n WHERE b.user.id = :userId")
+    @Query("SELECT b.id, n.name, b.getDate FROM Badge b INNER JOIN  b.badgeName n WHERE b.user.id = :userId ORDER BY b.getDate DESC")
     List<Object[]> findUserBadgeList(@Param("userId") Long userId);
 }

@@ -9,11 +9,15 @@ import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
+import com.dongguk.cse.naemansan.event.EnrollmentCourseEvent;
+import com.dongguk.cse.naemansan.event.IndividualCourseEvent;
+import com.dongguk.cse.naemansan.event.UsingCourseEvent;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.*;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +40,12 @@ public class CourseService {
     private final LikeRepository likeRepository;
     private final CourseUtil courseUtil;
 
+    private final ApplicationEventPublisher publisher;
+
     // Individual Course Create
     public IndividualCourseDetailDto createIndividualCourse(Long userId, IndividualCourseRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        individualCourseRepository.findByUserAndTitle(user, requestDto.getTitle()).ifPresent(str -> { throw new RestApiException(ErrorCode.DUPLICATION_TITLE); });
+        individualCourseRepository.findByUserAndTitleAndStatus(user, requestDto.getTitle(), true).ifPresent(str -> { throw new RestApiException(ErrorCode.DUPLICATION_TITLE); });
 
         Map<String, Object> pointInformation = courseUtil.getPointDto2Point(requestDto.getLocations());
         MultiPoint multiPoint = (MultiPoint) pointInformation.get("locations");
@@ -50,6 +56,8 @@ public class CourseService {
                 .title(requestDto.getTitle())
                 .locations(multiPoint)
                 .distance(distance).build());
+
+        publisher.publishEvent(new IndividualCourseEvent(userId));
 
         return IndividualCourseDetailDto.builder()
                 .id(course.getId())
@@ -62,7 +70,8 @@ public class CourseService {
     // Individual Course Read
     public IndividualCourseDetailDto readIndividualCourse(Long userId, Long courseId) {
         // 해당 유저가 만든 Course 존재 유무 확인
-        IndividualCourse course = individualCourseRepository.findByIdAndUserId(courseId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
+        IndividualCourse course = individualCourseRepository.findByIdAndUserIdAndStatus(courseId, userId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
 
         return IndividualCourseDetailDto.builder()
                 .id(course.getId())
@@ -72,10 +81,11 @@ public class CourseService {
                 .distance(course.getDistance()).build();
     }
 
-    // Individual Course Update
+    // Individual Course Update - 사용 X
     public Boolean updateIndividualCourse(Long userId, Long courseId) {
         // 해당 유저가 만든 Course 존재 유무 확인
-        IndividualCourse course = individualCourseRepository.findByIdAndUserId(courseId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
+        IndividualCourse course = individualCourseRepository.findByIdAndUserIdAndStatus(courseId, userId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
 
 //        individualCourseRepository.delete(course);
         return Boolean.TRUE;
@@ -84,9 +94,10 @@ public class CourseService {
     // Individual Course Delete
     public Boolean deleteIndividualCourse(Long userId, Long courseId) {
         // 해당 유저가 만든 Course 존재 유무 확인
-        IndividualCourse course = individualCourseRepository.findByIdAndUserId(courseId, userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
+        IndividualCourse course = individualCourseRepository.findByIdAndUserIdAndStatus(courseId, userId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
 
-        individualCourseRepository.delete(course);
+        course.setStatus(false);
         return Boolean.TRUE;
     }
 
@@ -94,6 +105,8 @@ public class CourseService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse =  enrollmentCourseRepository.findByIdAndStatus(requestDto.getEnrollment_id(),true)
                 .orElseThrow(()-> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
+
+        publisher.publishEvent(new UsingCourseEvent(userId));
 
         Boolean finishState = courseUtil.checkFinishState(requestDto.getEnrollment_id(), requestDto.getLocations());
         usingCourseRepository.save(UsingCourse.builder()
@@ -108,7 +121,7 @@ public class CourseService {
     public EnrollmentCourseDetailDto createEnrollmentCourse(Long userId, EnrollmentCourseRequestDto requestDto) {
         // User 존재, , Course Title 중복유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        IndividualCourse individualCourse = individualCourseRepository.findByIdAndUserId(requestDto.getIndividual_id(), userId)
+        IndividualCourse individualCourse = individualCourseRepository.findByIdAndUserIdAndStatus(requestDto.getIndividual_id(), userId, true)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_INDIVIDUAL_COURSE));
         enrollmentCourseRepository.findByTitleAndStatus(requestDto.getTitle(), true).ifPresent(s ->{ throw new RestApiException(ErrorCode.DUPLICATION_TITLE); });
 
@@ -134,6 +147,8 @@ public class CourseService {
         // CourseTag 등록하는 과정(TagDto2Tag and saveAll)
         List<CourseTag> courseTags = courseUtil.getTagDto2TagForEnrollmentCourse(enrollmentCourse, requestDto.getTags());
         courseTagRepository.saveAll(courseTags);
+
+        publisher.publishEvent(new EnrollmentCourseEvent(userId));
 
         // ResponseDto 를 위한 TagDto 생성
         List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(courseTags);

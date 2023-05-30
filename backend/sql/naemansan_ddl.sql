@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS `advertisements`;
 DROP TABLE IF EXISTS `shops`;
 DROP TABLE IF EXISTS `tokens`;
 DROP TABLE IF EXISTS `follows`;
+DROP TABLE IF EXISTS `user_tags`;
 DROP TABLE IF EXISTS `subscribes`;
 DROP TABLE IF EXISTS `notifications`;
 DROP TABLE IF EXISTS `users`;
@@ -53,6 +54,14 @@ CREATE TABLE `subscribes` (
                               `next_refresh` boolean,
                               CONSTRAINT SUBSCRIBES_PK PRIMARY KEY (`id`),
                               CONSTRAINT SUBSCRIBES_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `user_tags` (
+                             `id` integer AUTO_INCREMENT,
+                             `user_id` integer NOT NULL,
+                             `tag` varchar(255) NOT NULL,
+                             CONSTRAINT USER_TAGS_PK PRIMARY KEY (`id`),
+                             CONSTRAINT USER_TAGS_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `follows` (
@@ -104,6 +113,7 @@ CREATE TABLE `individual_courses` (
                                       `title` varchar(255),
                                       `locations` multipoint NOT NULL,
                                       `created_date` timestamp NOT NULL,
+                                      `status` boolean NOT NULL,
                                       CONSTRAINT INDIVIDUAL_COURSES_PK PRIMARY KEY (`id`),
                                       CONSTRAINT INDIVIDUAL_COURSES_USER_FK  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 );
@@ -169,6 +179,8 @@ CREATE TABLE `comments` (
 CREATE TABLE `badge_names` (
                                `id` integer AUTO_INCREMENT,
                                `name` varchar(255) NOT NULL,
+                               `type` ENUM('INDIVIDUAL','ENROLLMENT', 'USING', 'COMMENT') NOT NULL,
+                               `condition_num` int NOT NULL,
                                CONSTRAINT BADGE_NAMES_PK PRIMARY KEY (`id`)
 );
 
@@ -183,6 +195,31 @@ CREATE TABLE `badges` (
                           CONSTRAINT BADGES_COURSE_FK FOREIGN KEY (`badge_id`) REFERENCES `badge_names` (`id`) ON DELETE CASCADE
 );
 
-INSERT INTO users (`social_id`, `provider`, `name`, `introduction`, `role`, `created_date`, `is_login`) VALUES ("0000000git 0", 'KAKAO', "SUPER_ADMIM", "THIS IS ADIMN", 'ADMIN', now(), true);
+INSERT INTO users (`social_id`, `provider`, `name`, `introduction`, `role`, `created_date`, `is_login`) VALUES ("00000000", 'KAKAO', "SUPER_ADMIM", "THIS IS ADIMN", 'ADMIN', now(), true);
 INSERT INTO images (`use_user`, `use_shop`, `use_advertisement`, `origin_name`, `uuid_name`, `type`, `path`)
-VALUES (1, null, null, "default_image.png", "0_default_image.png", "image/png", "C:\Users\HyungJoon\Documents\0_OSSP\resources\images\0_default_image.png");
+VALUES (1, null, null, "default_image.png", "0_default_image.png", "image/png", "//home//ossp-naemansan//images//0_default_image.png");
+
+--
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("개인산책로 1회 등록!", 'INDIVIDUAL', 1);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("개인산책로 3회 등록!", 'INDIVIDUAL', 3);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("개인산책로 5회 등록!", 'INDIVIDUAL', 5);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("개인산책로 10회 등록!", 'INDIVIDUAL', 10);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("개인산책로 20회 등록!", 'INDIVIDUAL', 20);
+
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("공개산책로 1회 등록!", 'ENROLLMENT', 1);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("공개산책로 3회 등록!", 'ENROLLMENT', 3);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("공개산책로 5회 등록!", 'ENROLLMENT', 5);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("공개산책로 10회 등록!", 'ENROLLMENT', 10);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("공개산책로 20회 등록!", 'ENROLLMENT', 20);
+
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("사용산책로 1회 등록!", 'USING', 1);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("사용산책로 3회 등록!", 'USING', 3);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("사용산책로 5회 등록!", 'USING', 5);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("사용산책로 10회 등록!", 'USING', 10);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("사용산책로 20회 등록!", 'USING', 20);
+
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("산책로 댓글 1회 등록!", 'COMMENT', 1);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("산책로 댓글 3회 등록!", 'COMMENT', 3);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("산책로 댓글 5회 등록!", 'COMMENT', 5);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("산책로 댓글 10회 등록!", 'COMMENT', 10);
+INSERT INTO badge_names (`name`, `type`, `condition_num`) VALUES ("산책로 댓글 20회 등록!", 'COMMENT', 20);
