@@ -20,20 +20,13 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/image")
+@RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
 
-    @PostMapping("/user")
-    public ResponseDto<?> uploadImage(Authentication authentication, @RequestParam("image")MultipartFile file) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        map.put("uuid_name", imageService.uploadImage(Long.valueOf(authentication.getName()), ImageUseType.USER, file));
-        return new ResponseDto(map);
-    }
-
-    @GetMapping("/{fileName}")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
+    @GetMapping("")
+    public ResponseEntity<?> downloadImage(@RequestParam("uuid") String fileName) throws IOException {
         byte[] imageData = imageService.downloadImage(fileName);
 
         // 임시 체크
@@ -45,7 +38,29 @@ public class ImageController {
                             .error(new ExceptionDto(new IllegalUnbindException())).build());
         else
             return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
+                    .contentType(MediaType.valueOf("image/png"))
+                    .body(imageData);
     }
+
+    @PostMapping("/user")
+    public ResponseDto<?> uploadUserImage(Authentication authentication, @RequestParam("image") MultipartFile file) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("uuid_name", imageService.uploadImage(Long.valueOf(authentication.getName()), ImageUseType.USER, file));
+        return new ResponseDto(map);
+    }
+
+    @PostMapping("/shop/{shopId}")
+    public ResponseDto<?> uploadShopImage(@PathVariable Long shopId, @RequestParam("image") MultipartFile file) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("uuid_name", imageService.uploadImage(shopId, ImageUseType.SHOP, file));
+        return new ResponseDto(map);
+    }
+
+    @PostMapping("/advertisement/{advertisementId}")
+    public ResponseDto<?> uploadAdvertisementImage(@PathVariable Long advertisementId, @RequestParam("image")MultipartFile file) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("uuid_name", imageService.uploadImage(advertisementId, ImageUseType.ADVERTISEMENT, file));
+        return new ResponseDto(map);
+    }
+
 }
