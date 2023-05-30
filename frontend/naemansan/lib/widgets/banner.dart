@@ -2,11 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class BannerSwiper extends StatelessWidget {
-  final int _currentPage = 0;
   final List<String> images = [
-    "https://www.visitseoul.net/comm/getImage?srvcId=MEDIA&parentSn=46163&fileTy=MEDIA&fileNo=1",
-    "https://www.goyang.go.kr/resources/park/images/content/img-walkLoad1-2.png",
-    "https://previews.123rf.com/images/doraclub/doraclub1308/doraclub130800051/21489706-%EA%B3%B5%EC%9B%90-%EC%82%B0%EC%B1%85%EB%A1%9C.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
   ];
 
   BannerSwiper({
@@ -25,31 +24,22 @@ class BannerSwiper extends StatelessWidget {
                 final index = entry.key;
                 final imageUrl = entry.value;
 
-                return Stack(
-                  children: [
-                    Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: Text(
-                        "${index + 1}/${images.length}",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                return AspectRatio(
+                  aspectRatio: 16 / 9, // 이미지의 가로/세로 비율에 맞게 조정
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }).toList(),
               options: CarouselOptions(
                 autoPlay: true,
                 enlargeCenterPage: false,
+                viewportFraction: 1.0, // 한 화면에 하나의 이미지만 표시되도록 설정
               ),
             ),
           ),
