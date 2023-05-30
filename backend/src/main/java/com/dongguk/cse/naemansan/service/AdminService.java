@@ -2,8 +2,11 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
+import com.dongguk.cse.naemansan.domain.Advertisement;
 import com.dongguk.cse.naemansan.domain.Shop;
+import com.dongguk.cse.naemansan.dto.request.AdvertisementRequestDto;
 import com.dongguk.cse.naemansan.dto.request.ShopRequestDto;
+import com.dongguk.cse.naemansan.dto.response.AdvertisementDto;
 import com.dongguk.cse.naemansan.dto.response.ShopDto;
 import com.dongguk.cse.naemansan.repository.AdvertisementRepository;
 import com.dongguk.cse.naemansan.repository.ShopRepository;
@@ -41,7 +44,8 @@ public class AdminService {
                 .id(shop.getId())
                 .name(shop.getShopName())
                 .introduction(shop.getShopIntroduction())
-                .location(courseUtil.getPoint2PointDto(shop.getShopLocation())).build();
+                .location(courseUtil.getPoint2PointDto(shop.getShopLocation()))
+                .image(shop.getImage()).build();
     }
 
     public ShopDto updateShopProfile(Long shopId, ShopRequestDto requestDto) {
@@ -58,7 +62,8 @@ public class AdminService {
                 .id(shop.getId())
                 .name(shop.getShopName())
                 .introduction(shop.getShopIntroduction())
-                .location(courseUtil.getPoint2PointDto(shop.getShopLocation())).build();
+                .location(courseUtil.getPoint2PointDto(shop.getShopLocation()))
+                .image(shop.getImage()).build();
     }
 
     public Boolean deleteShopProfile(Long shopId) {
@@ -66,6 +71,51 @@ public class AdminService {
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_SHOP));
 
         shopRepository.delete(shop);
+
+        return Boolean.TRUE;
+    }
+
+    public Boolean createAdvertisementProfile(AdvertisementRequestDto requestDto) {
+        advertisementRepository.findByEnterpriseName(requestDto.getName())
+                .ifPresent(ads -> { throw new RestApiException(ErrorCode.DUPLICATION_NAME); });
+
+        Advertisement advertisement = advertisementRepository.save(Advertisement.builder()
+                .enterpriseName(requestDto.getName())
+                .enterpriseUrl(requestDto.getUrl()).build());
+
+        return Boolean.TRUE;
+    }
+
+    public AdvertisementDto readAdvertisementProfile(Long advertisementId) {
+        Advertisement advertisement = advertisementRepository.findById(advertisementId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ADVERTISEMENT));
+
+        return AdvertisementDto.builder()
+                .id(advertisement.getId())
+                .name(advertisement.getEnterpriseName())
+                .url(advertisement.getEnterpriseUrl())
+                .image(advertisement.getImage()).build();
+    }
+
+    public AdvertisementDto updateAdvertisementProfile(Long advertisementId, AdvertisementRequestDto requestDto) {
+        Advertisement advertisement = advertisementRepository.findById(advertisementId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ADVERTISEMENT));
+
+        advertisement.setEnterpriseName(requestDto.getName());
+        advertisement.setEnterpriseUrl(requestDto.getUrl());
+
+        return AdvertisementDto.builder()
+                .id(advertisement.getId())
+                .name(advertisement.getEnterpriseName())
+                .url(advertisement.getEnterpriseUrl())
+                .image(advertisement.getImage()).build();
+    }
+
+    public Boolean deleteAdvertisementProfile(Long advertisementId) {
+        Advertisement advertisement = advertisementRepository.findById(advertisementId)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ADVERTISEMENT));
+
+        advertisementRepository.delete(advertisement);
 
         return Boolean.TRUE;
     }

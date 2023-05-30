@@ -24,7 +24,7 @@ public class Advertisement {
     private String enterpriseName;
 
     @Column(name = "enterprise_url")
-    private Point enterpriseUrl;
+    private String enterpriseUrl;
 
     // ------------------------------------------------------------
 
@@ -32,7 +32,7 @@ public class Advertisement {
     private Image image;
 
     @Builder
-    public Advertisement(String enterpriseName, Point enterpriseUrl) {
+    public Advertisement(String enterpriseName, String enterpriseUrl) {
         this.enterpriseName = enterpriseName;
         this.enterpriseUrl = enterpriseUrl;
     }
