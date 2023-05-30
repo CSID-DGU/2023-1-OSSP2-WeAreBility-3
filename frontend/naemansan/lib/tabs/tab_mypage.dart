@@ -123,7 +123,6 @@ class _MypageState extends State<Mypage> {
                       userData?['image_path'] ?? '0_default_image.png';
                   String imageUrl =
                       'https://ossp.dcs-hyungjoon.com/image?uuid=$imageFileName';
-                  print("이미지 주소는 $imageUrl 입니다.");
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
