@@ -37,7 +37,7 @@ class Settings extends StatelessWidget {
                   Text(
                     '설정',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

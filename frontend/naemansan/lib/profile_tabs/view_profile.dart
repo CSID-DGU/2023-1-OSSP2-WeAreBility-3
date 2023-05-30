@@ -43,7 +43,7 @@ class View extends StatelessWidget {
                   Text(
                     '000님의 프로필', //추가 작업 필요
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

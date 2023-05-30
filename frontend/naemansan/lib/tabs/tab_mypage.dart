@@ -86,7 +86,7 @@ class _MypageState extends State<Mypage> {
               child: Text(
                 '마이페이지',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 21,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -123,18 +123,16 @@ class _MypageState extends State<Mypage> {
                       userData?['image_path'] ?? '0_default_image.png';
                   String imageUrl =
                       'https://ossp.dcs-hyungjoon.com/image?uuid=$imageFileName';
-                  print("이미지 주소는 $imageUrl 입니다.");
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                            // 'imageUrl',
-                            //랜덤 이미지
-                            "https://picsum.photos/200/300"),
-                      ),
+                      CircleAvatar(radius: 50, backgroundImage: NetworkImage(
+                              // 'imageUrl',
+                              //랜덤 이미지
+                              imageUrl)
+                          // "https://picsum.photos/200/300"),
+                          ),
                       const SizedBox(height: 16),
                       Text(
                         userData?['name'] ?? 'No Name',

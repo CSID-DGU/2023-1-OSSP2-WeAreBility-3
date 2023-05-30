@@ -53,6 +53,8 @@ dependencies:
     webview_flutter: ^3.0.4
     flutter_secure_storage: ^8.0.0
     intl: ^0.18.1
+    flutter_redux: ^0.10.0
+    redux: ^5.0.0
 dev_dependencies:
     flutter_test:
         sdk: flutter

@@ -75,7 +75,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         title: const Text(
           '나만의 산책로',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 21,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -100,31 +100,31 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '등록한',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '이용',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '댓글',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
           ],

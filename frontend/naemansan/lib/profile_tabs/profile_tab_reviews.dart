@@ -37,7 +37,7 @@ class Reviews extends StatelessWidget {
                   Text(
                     '후기',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
