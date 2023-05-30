@@ -4,9 +4,9 @@ import 'package:naemansan/screens/Home/banner_detail_screen.dart';
 
 class BannerSwiper extends StatelessWidget {
   final List<String> images = [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Aspect_ratio_-_16x9.svg/2560px-Aspect_ratio_-_16x9.svg.png",
+    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
+    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
+    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
   ];
 
   final List<String> captions = [
