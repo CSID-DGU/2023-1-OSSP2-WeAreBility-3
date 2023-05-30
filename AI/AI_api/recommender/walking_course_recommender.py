@@ -63,9 +63,9 @@ class course_recommender():
         
         cursor = conn.cursor()
         query = """
-        SELECT course_id 
+        SELECT course_id  
         FROM using_courses 
-        WHERE user_id = %d""" % (id_input)
+        WHERE user_id = %d""" % (id_input) 
         cursor.execute(query)
         results = cursor.fetchall()
         number = len(results)
@@ -85,14 +85,14 @@ class course_recommender():
             query = """
             SELECT tag 
             FROM course_tags 
-            WHERE course_id = %d""" % (co_id)
+            WHERE course_id = %d""" % (co_id)  # status또한 fetch
             cursor.execute(query)
             results = cursor.fetchall()
 
             raw_tags = results[0][0]
             token_tags = self.tokenizer(raw_tags)
             course_vector = self.course_vector_calculator(token_tags)
-            user_vector += course_vector
+            user_vector += course_vector    # status가 1이면 한번 더 더하고 number++
         user_vector = user_vector / number
 
         # 유저 vector와 전체 course tag의 유사도 점수 계산
