@@ -16,6 +16,6 @@ public class AdvertisementDto {
         this.id = id;
         this.name = name;
         this.url = url;
-        this.image_path = image.getPath();
+        this.image_path = image.getUuidName();
     }
 }

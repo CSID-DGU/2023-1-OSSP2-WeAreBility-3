@@ -22,7 +22,7 @@ public class ShopDto {
         this.id = id;
         this.name = name;
         this.introduction = introduction;
-        this.image_path = image.getPath();
+        this.image_path = image.getUuidName();
         this.location = location;
     }
 }
