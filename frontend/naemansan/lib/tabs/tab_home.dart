@@ -34,6 +34,13 @@ class _HomeState extends State<Home> {
 // Set the latitude and longitude values
   late double _latitude = 0.0;
   late double _longitude = 0.0;
+
+  void handleKeywordSelected(String keyword) {
+    setState(() {
+      selectedKeyword = keyword;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -200,52 +207,53 @@ class _HomeState extends State<Home> {
                       );
                     },
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: nowLocation
-                            ? [
-                                MainSlider(
-                                  title: "🌿 위치별",
-                                  sliderWidget: HorizontalSlider(
-                                    latitude: _latitude,
-                                    longitude: _longitude,
-                                  ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: nowLocation
+                          ? [
+                              MainSlider(
+                                title: "🌿 위치별",
+                                sliderWidget: HorizontalSlider(
+                                  latitude: _latitude,
+                                  longitude: _longitude,
                                 ),
-                                const MainSlider(
-                                  title: "🎋 키워드별",
-                                  sliderWidget: HorizontalSlider(
-                                    keyword: "한강",
-                                  ),
+                              ),
+                              MainSlider(
+                                title: "🎋 키워드별",
+                                sliderWidget: HorizontalSlider(
+                                  keyword: selectedKeyword,
                                 ),
-                                const MainSlider(
-                                  title: "🍽️ 상권",
-                                  sliderWidget: HorizontalSlider(),
+                              ),
+                              const MainSlider(
+                                title: "🍽️ 상권",
+                                sliderWidget: HorizontalSlider(),
+                              ),
+                            ]
+                          : [
+                              const SizedBox(height: 30),
+                              const Text('🌿 위치별',
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black87)),
+                              const SizedBox(height: 20),
+                              const Text('현재 위치를 동기화시켜 주세요!',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87)),
+                              const SizedBox(height: 50),
+                              MainSlider(
+                                title: "🎋 키워드별",
+                                sliderWidget: HorizontalSlider(
+                                  keyword: selectedKeyword,
                                 ),
-                              ]
-                            : [
-                                const SizedBox(height: 30),
-                                const Text('🌿 위치별',
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black87)),
-                                const SizedBox(height: 20),
-                                const Text('현재 위치를 동기화시켜 주세요!',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black87)),
-                                const SizedBox(height: 50),
-                                const MainSlider(
-                                  title: "🎋 키워드별",
-                                  sliderWidget: HorizontalSlider(
-                                    keyword: "한강",
-                                  ),
-                                ),
-                                const MainSlider(
-                                  title: "🍽️ 상권",
-                                  sliderWidget: HorizontalSlider(),
-                                ),
-                              ]),
+                              ),
+                              const MainSlider(
+                                title: "🍽️ 상권",
+                                sliderWidget: HorizontalSlider(),
+                              ),
+                            ],
+                    ),
                   ),
                 ],
               ),
