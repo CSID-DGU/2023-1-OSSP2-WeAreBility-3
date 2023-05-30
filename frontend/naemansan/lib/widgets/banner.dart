@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:naemansan/screens/Home/banner_detail_screen.dart';
 
 class BannerSwiper extends StatelessWidget {
   final List<String> images = [
@@ -12,6 +13,12 @@ class BannerSwiper extends StatelessWidget {
     "산책을 즐기는 5가지 방법",
     "내만산 이용하는 방법",
     "산책시 유의점",
+  ];
+
+  final List<String> contents = [
+    "1. 룰루 랄라? \n2. 룰루룰ㄹ루 \n3.으얽?\n4. 집 가고싶다.. \n5.흐하..",
+    "1. 룰루 랄라? \n2. 룰루룰ㄹ루 \n3.으얽?\n4. 집 가고싶다.. \n5.흐하..",
+    "1. 룰루 랄라? \n2. 룰루룰ㄹ루 \n3.으얽?\n4. 집 가고싶다.. \n5.흐하..",
   ];
 
   BannerSwiper({
@@ -30,12 +37,19 @@ class BannerSwiper extends StatelessWidget {
                 final index = entry.key;
                 final imageUrl = entry.value;
                 final caption = captions[index];
+                final content = contents[index];
 
                 return GestureDetector(
                   onTap: () {
-                    // Handle slide click here
-                    // You can navigate to the corresponding page using Navigator
-                    print("Clicked on slide $index");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BannerDetailScreen(
+                          caption: caption,
+                          content: content,
+                        ),
+                      ),
+                    );
                   },
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
@@ -67,7 +81,7 @@ class BannerSwiper extends StatelessWidget {
                                     "더 알아보기 >",
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.white,
+                                      color: Color.fromRGBO(255, 255, 255, 1),
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
