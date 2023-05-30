@@ -128,13 +128,12 @@ class _MypageState extends State<Mypage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(
-                            // 'imageUrl',
-                            //랜덤 이미지
-                            "https://picsum.photos/200/300"),
-                      ),
+                      CircleAvatar(radius: 50, backgroundImage: NetworkImage(
+                              // 'imageUrl',
+                              //랜덤 이미지
+                              imageUrl)
+                          // "https://picsum.photos/200/300"),
+                          ),
                       const SizedBox(height: 16),
                       Text(
                         userData?['name'] ?? 'No Name',
