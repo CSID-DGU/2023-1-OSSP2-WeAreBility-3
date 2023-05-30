@@ -49,7 +49,7 @@ class _MypageState extends State<Mypage> {
     userInfo = await storage.read(key: 'login');
     if (userInfo == null) {
       print('로그인 페이지로 이동');
-      Navigator.pushNamed(context, '/'); // 로그인 페이지로 이동
+      Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
     } else {
       print('로그인 중');
     }
