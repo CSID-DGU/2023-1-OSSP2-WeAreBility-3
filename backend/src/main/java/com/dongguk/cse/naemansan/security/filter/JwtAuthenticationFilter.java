@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final String[] urls = { "/auth/kakao", "/auth/kakao/callback",
             "/auth/google", "/auth/google/callback",
             "/auth/apple", "/auth/apple/callback",
-            "/auth/refresh" };
+            "/auth/refresh", "/image" };
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

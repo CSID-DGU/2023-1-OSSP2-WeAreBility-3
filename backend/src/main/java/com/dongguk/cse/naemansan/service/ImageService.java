@@ -2,7 +2,9 @@ package com.dongguk.cse.naemansan.service;
 
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
+import com.dongguk.cse.naemansan.domain.Advertisement;
 import com.dongguk.cse.naemansan.domain.Image;
+import com.dongguk.cse.naemansan.domain.Shop;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.repository.AdvertisementRepository;
@@ -48,31 +50,27 @@ public class ImageService {
         }
 
         // Path DB Save
-        Optional<? extends Object> useObject = null;
+        Object useObject = null;
         switch (imageUseType) {
-            case USER -> { useObject = userRepository.findById(useId); }
-            case SHOP -> { useObject = shopRepository.findById(useId); }
-            case ADVERTISEMENT -> { useObject = advertisementRepository.findById(useId); }
+            case USER -> { useObject = userRepository.findById(useId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER)); }
+            case SHOP -> { useObject = shopRepository.findById(useId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_SHOP)); }
+            case ADVERTISEMENT -> { useObject = advertisementRepository.findById(useId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ADVERTISEMENT)); }
         }
 
-        // 기존 파일이 없다면 새롭게 추가, 아니라면 기존 파일 삭제 후 저장
-        Optional<Image> findImage = imageRepository.findByUser((User) useObject.get());
-        if (findImage.isEmpty()) {
-            imageRepository.save(Image.builder()
-                    .useObject(useObject)
-                    .imageUseType(imageUseType)
-                    .originName(file.getOriginalFilename())
-                    .uuidName(uuidImageName)
-                    .type(file.getContentType())
-                    .path(filePath).build());
-        } else {
-            if (!findImage.get().getOriginName().equals("0_default_image.png")) {
-                File currentFile = new File(findImage.get().getPath());
-                boolean result = currentFile.delete();
-            }
-
-            findImage.get().updateImage(file.getOriginalFilename(), uuidImageName, filePath, file.getContentType());
+        // Image Object find
+        Image findImage = null;
+        switch (imageUseType) {
+            case USER -> { findImage = imageRepository.findByUser((User) useObject).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_ENTITY_REQUEST)); }
+            case SHOP -> { findImage = imageRepository.findByShop((Shop) useObject).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_ENTITY_REQUEST)); }
+            case ADVERTISEMENT -> { findImage = imageRepository.findByAdvertisement((Advertisement) useObject).orElseThrow(() -> new RestApiException(ErrorCode.NOT_EXIST_ENTITY_REQUEST)); }
         }
+
+        if (!findImage.getUuidName().equals("0_default_image.png")) {
+            File currentFile = new File(findImage.getPath());
+            boolean result = currentFile.delete();
+        }
+
+        findImage.updateImage(file.getOriginalFilename(), uuidImageName, filePath, file.getContentType());
 
         return uuidImageName;
     }
@@ -89,7 +87,6 @@ public class ImageService {
 
         }
 
-        log.info(filePath);
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
         return images;
     }

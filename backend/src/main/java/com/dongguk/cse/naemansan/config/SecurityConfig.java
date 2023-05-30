@@ -34,7 +34,7 @@ public class SecurityConfig {
                     .requestMatchers("/auth/kakao", "/auth/kakao/callback",
                             "/auth/google", "/auth/google/callback",
                             "/auth/apple", "/auth/apple/callback",
-                            "/auth/refresh").permitAll()
+                            "/auth/refresh", "/image").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling()
