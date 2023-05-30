@@ -84,31 +84,31 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '거리순',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요순',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '이용자순',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '최신순',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
           ],

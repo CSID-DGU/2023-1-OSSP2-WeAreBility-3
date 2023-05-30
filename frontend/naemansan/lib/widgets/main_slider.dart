@@ -18,7 +18,8 @@ class _MainSliderState extends State<MainSlider> {
   List<bool> keywordButtonStates = [
     true,
     false,
-    false
+    false,
+    false,
   ]; // Initial button states
 
   @override
@@ -40,6 +41,7 @@ class _MainSliderState extends State<MainSlider> {
               _buildKeywordButton("한강", index: 0),
               _buildKeywordButton("숲", index: 1),
               _buildKeywordButton("공원", index: 2),
+              _buildKeywordButton("추가+", index: 3),
               // Add more keyword buttons as needed
             ],
           ),
