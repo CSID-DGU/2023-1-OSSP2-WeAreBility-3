@@ -132,11 +132,11 @@ public class CourseService {
                 .distance(distance).build());
 
         // CourseTag 등록하는 과정(TagDto2Tag and saveAll)
-        List<CourseTag> courseTags = courseUtil.getTagDto2Tag(enrollmentCourse, requestDto.getTags());
+        List<CourseTag> courseTags = courseUtil.getTagDto2TagForEnrollmentCourse(enrollmentCourse, requestDto.getTags());
         courseTagRepository.saveAll(courseTags);
 
         // ResponseDto 를 위한 TagDto 생성
-        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDto(courseTags);
+        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(courseTags);
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -159,7 +159,7 @@ public class CourseService {
 
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
-        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags());
+        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags());
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -216,7 +216,7 @@ public class CourseService {
                 .title(enrollmentCourse.getTitle())
                 .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(courseUtil.getTag2TagDto(courseTagList))
+                .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(courseTagList))
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
                 .distance(enrollmentCourse.getDistance()).build();
@@ -353,7 +353,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -380,7 +380,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -407,7 +407,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDto(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
