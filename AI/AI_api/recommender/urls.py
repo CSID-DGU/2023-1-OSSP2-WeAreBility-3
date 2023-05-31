@@ -5,5 +5,4 @@ from recommender import views # c
 
 urlpatterns = [
     path('', views.user_list, name="user_list"),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
