@@ -1,5 +1,4 @@
 //홈 페이지 Home()
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +12,6 @@ import 'dart:convert';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
-
   @override
   State<Home> createState() => _HomeState();
 }
@@ -124,7 +122,6 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false, // 앱바의 뒤로가기 버튼을 없애기 위해 false로 설정
-
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
