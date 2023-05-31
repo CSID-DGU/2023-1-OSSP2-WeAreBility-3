@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
+import 'package:naemansan/providers/location.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
 // 알림
 
@@ -23,7 +25,16 @@ void main() async {
   // final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
 
-  runApp(const App());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LocationProvider(),
+        ),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 //---

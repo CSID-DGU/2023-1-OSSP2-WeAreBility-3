@@ -27,13 +27,15 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
   }
 
   void _getCurrentLocation() async {
-    final permissionStatus = await Geolocator.checkPermission();
-    if (permissionStatus == LocationPermission.denied) {
-      final permissionRequested = await Geolocator.requestPermission();
-      if (permissionRequested != LocationPermission.whileInUse &&
-          permissionRequested != LocationPermission.always) {
-        return;
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('위치 권한이 없습니다.');
       }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('위치 권한이 영구적으로 없습니다.');
     }
 
     final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
@@ -45,6 +47,10 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
       });
     } catch (e) {
       print('Failed to get current location: $e');
+      // 위치 가져오기 실패 시 에러 처리 작업 추가
+      setState(() {
+        _currentPosition = null;
+      });
     }
   }
 
@@ -75,6 +81,12 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                 labelStyle: TextStyle(color: Colors.black87),
               ),
               enabled: _isTitleInputEnabled,
+              onChanged: (text) {
+                setState(() {
+                  // 입력된 텍스트가 있는지 확인하여 버튼 상태를 업데이트
+                  _isTitleEntered = text.isNotEmpty;
+                });
+              },
             ),
             const SizedBox(height: 16),
             const Text(
@@ -108,8 +120,12 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed:
-                  _isWalking || !_isTitleInputEnabled ? _endWalk : _startWalk,
+              onPressed: _isWalking
+                  ? _endWalk
+                  : (_isTitleInputEnabled && _isTitleEntered)
+                      ? _startWalk
+                      : null,
+              // _isWalking || !_isTitleInputEnabled ? _endWalk : _startWalk,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
