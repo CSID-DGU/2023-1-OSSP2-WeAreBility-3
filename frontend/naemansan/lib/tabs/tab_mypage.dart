@@ -62,13 +62,12 @@ class _MypageState extends State<Mypage> {
 
   @override
   Widget build(BuildContext context) {
-/*
     Future<void> logout() async {
       await deleteTokens();
       await storage.delete(key: 'login');
       goLogin();
     }
-*/
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
