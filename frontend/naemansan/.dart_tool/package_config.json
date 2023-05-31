@@ -476,6 +476,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/path-1.8.2",
       "packageUri": "lib/",
@@ -558,6 +564,12 @@
       "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/process-4.2.4",
       "packageUri": "lib/",
       "languageVersion": "2.14"
+    },
+    {
+      "name": "provider",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/provider-6.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "quiver",
@@ -806,7 +818,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-05-31T18:02:00.823059Z",
+  "generated": "2023-05-31T18:36:22.848879Z",
   "generator": "pub",
   "generatorVersion": "2.19.5"
 }

@@ -30,20 +30,15 @@ class _MypageState extends State<Mypage> {
     user = fetchUserInfo();
 
     // 비동기로 flutter secure storage 정보를 불러오는 작업
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkUserState();
-    });
-  }
-
-// 로그인 화면으로 이동 시키기
-  goLoginScreen() {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   checkUserState();
+    // });
   }
 
   Future<void> logout() async {
     await deleteTokens();
     await storage.delete(key: 'login');
-    goLoginScreen();
+    goLogin();
   }
 
   checkUserState() async {
@@ -57,7 +52,7 @@ class _MypageState extends State<Mypage> {
   }
 
   goLogin() {
-    Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
