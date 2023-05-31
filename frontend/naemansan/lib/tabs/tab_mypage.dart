@@ -63,7 +63,8 @@ class _MypageState extends State<Mypage> {
   Widget build(BuildContext context) {
     Future<void> logout() async {
       await deleteTokens();
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      await storage.delete(key: 'login');
+      goLogin();
     }
 
     return Scaffold(
@@ -271,6 +272,7 @@ class _MypageState extends State<Mypage> {
     const storage = FlutterSecureStorage();
     await storage.delete(key: 'accessToken');
     await storage.delete(key: 'refreshToken');
+    print("삭제 진행함?");
 
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLogged', false);

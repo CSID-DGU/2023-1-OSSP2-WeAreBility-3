@@ -50,14 +50,9 @@ class _AppState extends State<App> {
     userInfo = await storage.read(key: 'login');
     print("userInfo 가 있냐고 $userInfo");
     userInfo == null ? isLogged = false : isLogged = true;
-    // final prefs = await SharedPreferences.getInstance();
-    // print(prefs.getBool('isLogged'));
 
     setState(
-      () {
-        // isLogged = prefs.getBool('isLogged') ?? false;
-        // isLogged = false;
-      },
+      () {},
     );
 
     // 새로고침하면 로그인 상태가 반영이 안됨
