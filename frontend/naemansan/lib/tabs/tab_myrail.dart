@@ -65,6 +65,10 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         TrailapiService.getLikedCourses(page, num);
     final Future<List<TrailModel>?> UsedTrail =
         TrailapiService.getUsedCourses(page, num);
+    //final Future<List<TrailModel>?> CommentedTrail =
+    //  TrailapiService.getCommentedCourses(page, num);
+    final Future<List<TrailModel>?> KeyWordTrail =
+        TrailapiService.getKeywordCourse(page, num, '마포구'); //키워드 선택부분 구현 필요
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -113,25 +117,25 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '등록한',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
-                '이용',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                '이용한',
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
               child: Text(
-                '댓글',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                '댓글단',
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
             Tab(
@@ -146,31 +150,32 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: [
-          /* 등록된 산책로가 없을 경우 
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CreateCourseScreen(),
-                ),
-              );
-            },
-          ),
-          */
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
               future: EnrolledTrail,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Row(
-                    children: [Expanded(child: makeList(snapshot))],
-                  );
+                  if (snapshot.data!.isNotEmpty) {
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
+                    );
+                  } else {
+                    return IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateCourseScreen(),
+                          ),
+                        );
+                      },
+                    );
+                  }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
@@ -183,12 +188,18 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               future: LikedTrail,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Row(
-                    children: [Expanded(child: makeList(snapshot))],
-                  );
+                  if (snapshot.data!.isNotEmpty) {
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('좋아요한 산책로가 없습니다'),
+                    );
+                  }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
@@ -200,23 +211,72 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               future: UsedTrail,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Row(
-                    children: [Expanded(child: makeList(snapshot))],
-                  );
+                  if (snapshot.data!.isNotEmpty) {
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('이용한 산책로가 없습니다'),
+                    );
+                  }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
           ),
           // 네 번째 탭
-          const Center(
-            child: Text('계정 사용자가 작성한 댓글 모음'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: KeyWordTrail, //나중에 고챠
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isNotEmpty) {
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('댓글을 작성한한 산책로가 없습니다'),
+                    );
+                  }
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
           // 다섯 번째 탭
-          const Center(
-            child: Text('키워드'),
+          Column(
+            children: [
+              //Row(), //키워드 선택이 아니라 팔로우한 키워드 보기
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: FutureBuilder(
+                  future: KeyWordTrail,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return Row(
+                          children: [Expanded(child: makeList(snapshot))],
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('해당 산책로가 없습니다'),
+                        );
+                      }
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -256,19 +256,57 @@ class TrailApiService {
     }
   }
 
-  //댓글
+  //댓글  'course/{courseId}/comment?page=$page&num=$num'
 
   // 나만의 Tap Tag 기준 산책로 조회 course/list/individual/tag?page=$page&num=$num&name=$encodedTagName
-  Future<List<TrailModel>?> getIndividualCoursesByTag(
+  Future<List<TrailModel>?> getKeywordCourse(
       int page, int num, String tagName) async {
-    final encodedTagName = Uri.encodeComponent(tagName);
-    final response = await getRequest(
-        'course/list/individual/tag?page=$page&num=$num&name=$encodedTagName');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
+    try {
+      final encodedTagName = Uri.encodeComponent(tagName);
+      final response = await getRequest(
+          'course/list/individual/tag?page=$page&num=$num&name=$encodedTagName');
+
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('키워드별 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
       return null;
     }
   }
+
+  /*Future<List<TrailModel>?> getKeywordCourse(
+      int page, int num, String tagName) async {
+    try {
+      final response =
+          await getRequest('course/{courseId}/comment?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('키워드별 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
+      return null;
+    } */
 }
