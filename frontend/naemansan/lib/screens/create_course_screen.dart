@@ -17,6 +17,30 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
   bool _isTitleInputEnabled = true;
   bool _isTitleEntered = false;
   GoogleMapController? _mapController;
+  Position? _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  void _getCurrentLocation() async {
+    final permissionStatus = await Geolocator.checkPermission();
+    if (permissionStatus == LocationPermission.denied) {
+      final permissionRequested = await Geolocator.requestPermission();
+      if (permissionRequested != LocationPermission.whileInUse &&
+          permissionRequested != LocationPermission.always) {
+        return;
+      }
+      print("현재위치는?$_currentPosition");
+    }
+
+    final position = await Geolocator.getCurrentPosition();
+    setState(() {
+      _currentPosition = position;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +79,18 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
             Expanded(
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(0, 0),
-                  zoom: 15,
-                ),
+                initialCameraPosition: _currentPosition != null
+                    ? CameraPosition(
+                        target: LatLng(
+                          _currentPosition!.latitude,
+                          _currentPosition!.longitude,
+                        ),
+                        zoom: 15,
+                      )
+                    : const CameraPosition(
+                        target: LatLng(0, 0),
+                        zoom: 15,
+                      ),
                 polylines: {
                   Polyline(
                     polylineId: const PolylineId('courseRoute'),
@@ -147,6 +179,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그 닫기
+                Navigator.pop(context); // 이전 페이지로 이동
               },
               child: const Text('확인'),
             ),
