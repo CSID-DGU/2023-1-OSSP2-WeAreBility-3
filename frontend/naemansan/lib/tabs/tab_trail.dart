@@ -86,7 +86,8 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
 
     const int page = 0;
     const int num = 10000000;
-
+    final Future<List<TrailModel>?> RecommendTrail =
+        TrailapiService.getRecommendedCourses(page, num);
     final Future<List<TrailModel>?> NearestTrail =
         TrailapiService.getNearestCourses(
             page, num, _latitude, _longitude); //위도 경도 불러와야함
@@ -141,6 +142,12 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           tabs: const [
             Tab(
               child: Text(
+                '추천순',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            Tab(
+              child: Text(
                 '거리순',
                 style: TextStyle(color: Colors.black),
               ),
@@ -163,18 +170,28 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                 style: TextStyle(color: Colors.black),
               ),
             ),
-            Tab(
-              child: Text(
-                '키워드',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: NearestTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
+                );
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
@@ -238,10 +255,6 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                 );
               },
             ),
-          ),
-          const Center(
-            //키워드별 정렬
-            child: Text('키워드별 보기 기능 추가'),
           ),
         ],
       ),

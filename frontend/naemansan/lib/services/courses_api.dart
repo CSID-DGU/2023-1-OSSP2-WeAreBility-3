@@ -46,6 +46,32 @@ class TrailApiService {
   }
 
   /* ---------------- 산책로 탭 ---------------- */
+  // 산책로 tap 추천순 전체 산책로 조회
+  Future<List<TrailModel>?> getRecommendedCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('/course/list/recommend?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('추천순 전체 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
+      return null;
+    }
+  }
+
   // 산책로 Tap 거리순 전체 산책로 조회
   Future<List<TrailModel>?> getNearestCourses(
       int page, int num, double latitude, double longitude) async {
