@@ -4,6 +4,7 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//profile_tabs 폴더에 있는 파일들 사용
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
 
@@ -61,6 +62,13 @@ class _MypageState extends State<Mypage> {
 
   @override
   Widget build(BuildContext context) {
+/*
+    Future<void> logout() async {
+      await deleteTokens();
+      await storage.delete(key: 'login');
+      goLogin();
+    }
+*/
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -266,6 +274,7 @@ class _MypageState extends State<Mypage> {
     const storage = FlutterSecureStorage();
     await storage.delete(key: 'accessToken');
     await storage.delete(key: 'refreshToken');
+    print("삭제 진행함?");
 
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLogged', false);
