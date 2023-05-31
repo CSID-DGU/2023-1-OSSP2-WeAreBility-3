@@ -5,7 +5,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/screens/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -37,6 +36,9 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   bool isLogged = false;
+  static const storage = FlutterSecureStorage();
+
+  dynamic userInfo = '';
 
   @override
   void initState() {
@@ -45,11 +47,16 @@ class _AppState extends State<App> {
   }
 
   Future<void> getLoginStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    print(prefs.getBool('isLogged'));
+    userInfo = await storage.read(key: 'login');
+    print("userInfo 가 있냐고 $userInfo");
+    userInfo == null ? isLogged = false : isLogged = true;
+    // final prefs = await SharedPreferences.getInstance();
+    // print(prefs.getBool('isLogged'));
+
     setState(
       () {
-        isLogged = prefs.getBool('isLogged') ?? false;
+        // isLogged = prefs.getBool('isLogged') ?? false;
+        // isLogged = false;
       },
     );
 
