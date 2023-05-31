@@ -82,6 +82,7 @@ class _AppState extends State<App> {
             home: isLogged ? const IndexScreen() : const LoginScreen(),
             routes: {
               '/index': (context) => const IndexScreen(),
+              '/login': (context) => const LoginScreen(),
             },
           );
         }
