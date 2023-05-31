@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:naemansan/screens/course_detail.dart';
 
 class TrailWidget extends StatelessWidget {
   final String title;
   final String startpoint;
   final double distance;
-  final List<String>? CourseKeyWord;
+  final List<String> CourseKeyWord;
   final int likeCnt, userCnt;
   final bool isLiked;
-  //id
-  //키워드?
-  //created data
+  final int id;
+  final String created_date;
 
   const TrailWidget({
     Key? key,
     required this.title,
     required this.startpoint,
     required this.distance,
-    this.CourseKeyWord,
+    required this.CourseKeyWord,
     required this.likeCnt,
     required this.userCnt,
     required this.isLiked,
+    required this.id,
+    required this.created_date,
   }) : super(key: key);
 
   @override
@@ -83,15 +85,13 @@ class TrailWidget extends StatelessWidget {
                   ),
                   if (CourseKeyWord != null)
                     Wrap(
-                      children: CourseKeyWord!
-                          .map((word) => Text(
-                                '#$word ',
-                                style: const TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.black,
-                                ),
-                              ))
-                          .toList(),
+                      children: CourseKeyWord.map((word) => Text(
+                            '#$word ',
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black,
+                            ),
+                          )).toList(),
                     ),
                 ],
               ),
@@ -104,20 +104,21 @@ class TrailWidget extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.arrow_forward_ios_outlined),
                       onPressed: () {
-                        /* widget_trail.dart 상단, trailmodel.dart 수정 필요 
                         Navigator.push(
-          context, 
-          MaterialPageRoute(
-            builder: (context) => CourseDetail(
-              id: id,
-              title: title,
-              location: startpoint,
-              //length: length,
-              length: distance,
-              likes: likeCnt,
-              keywords: CourseKeyWord,
-              created_date: created_date,
-                      */
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CourseDetail(
+                              id: id,
+                              title: title,
+                              location: startpoint,
+                              //length: length,
+                              length: distance,
+                              likes: likeCnt,
+                              keywords: CourseKeyWord,
+                              created_date: created_date,
+                            ),
+                          ),
+                        );
                       }, // 산책로 세부 페이지로 이동
                     ),
                   ],

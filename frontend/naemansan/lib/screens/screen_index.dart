@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_home.dart';
+import 'package:naemansan/tabs/tab_trail.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +32,7 @@ class _IndexScreenState extends State<IndexScreen> {
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     const Home(),
-    const Myrail(), //임시
+    const Trail(), //임시
     const Myrail(),
     const Mypage(),
   ];

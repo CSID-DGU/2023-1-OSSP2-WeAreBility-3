@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
-//import 'package:naemansan/services/api_service.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
+import 'package:geolocator/geolocator.dart';
+
+Future<Position> _getCurrentLocation() async {
+  LocationPermission permission;
+  // 위치 권한 요청
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+
+  if (permission == LocationPermission.denied ||
+      permission == LocationPermission.deniedForever) {
+    // 권한이 거부되었을 때 또는 영구적으로 거부되었을 때
+    throw Exception('위치 권한이 필요합니다.');
+  }
+
+  // 현재 위치 가져오기
+  Position position = await Geolocator.getCurrentPosition();
+
+  return position;
+}
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
@@ -15,12 +35,21 @@ class Trail extends StatefulWidget {
 class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService; // ApiService 인스턴스 변수 추가
+  double _latitude = 0.0;
+  double _longitude = 0.0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    TrailapiService = TrailApiService(); // ApiService의 인스턴스 생성
+    TrailapiService = TrailApiService();
+
+    _getCurrentLocation().then((position) {
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+      });
+    });
   }
 
   @override
@@ -38,13 +67,16 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
         var trail = snapshot.data![index];
 
         return TrailWidget(
-            title: trail.title,
-            startpoint: trail.startLocationName,
-            distance: trail.distance,
-            CourseKeyWord: trail.tags,
-            likeCnt: trail.likeCount,
-            userCnt: trail.userCount,
-            isLiked: trail.isLiked);
+          id: trail.id,
+          title: trail.title,
+          startpoint: trail.startLocationName,
+          distance: trail.distance,
+          CourseKeyWord: trail.tags,
+          likeCnt: trail.likeCount,
+          userCnt: trail.userCount,
+          isLiked: trail.isLiked,
+          created_date: trail.createdDate.toString(),
+        );
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -53,11 +85,15 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //final Future<List<TrailModel>> nearestTrail = apiService.getNearestTrail();
+    // 위도와 경도 값 가져오기
+
     const int page = 0;
-    const int num = 35;
+    const int num = 10000000;
+    final Future<List<TrailModel>?> RecommendTrail =
+        TrailapiService.getRecommendedCourses(page, num);
     final Future<List<TrailModel>?> NearestTrail =
-        TrailapiService.getNearestCourses(page, num, 0, 0); //위도 경도 불러와야함
+        TrailapiService.getNearestCourses(
+            page, num, _latitude, _longitude); //위도 경도 불러와야함
     final Future<List<TrailModel>?> MostLikedTrail =
         TrailapiService.getMostLikedTrail(page, num);
     final Future<List<TrailModel>?> MostUsedTrail =
@@ -108,34 +144,24 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           indicatorColor: Colors.black, //선택된 항목 나타내기
           tabs: const [
             Tab(
-              child: Text(
-                '거리순',
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text('추천순',
+                  style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text(
-                '좋아요순',
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text('거리순',
+                  style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text(
-                '이용자순',
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text('좋아요순',
+                  style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text(
-                '최신순',
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text('이용자순',
+                  style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text(
-                '키워드',
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text('최신순',
+                  style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
           ],
         ),
@@ -143,6 +169,22 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: NearestTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
+                );
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
@@ -206,10 +248,6 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                 );
               },
             ),
-          ),
-          const Center(
-            //키워드별 정렬
-            child: Text('키워드별 보기 기능 추가'),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+//산책로 탭, 나만의 산책로 탭에서 산책로 목록을 불러올 때 사용
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -44,41 +45,32 @@ class TrailApiService {
     }
   }
 
-  /*           COURSE           */
-  Future<List<dynamic>?> getCourseList() async {
-    final response = await getRequest('course');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
+  /* ---------------- 산책로 탭 ---------------- */
+  // 산책로 tap 추천순 전체 산책로 조회
+  Future<List<TrailModel>?> getRecommendedCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('/course/list/recommend?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('추천순 전체 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
       return null;
     }
   }
-
-  Future<List<dynamic>?> getTagBasedCourseList(String tagName) async {
-    final response = await getRequest('course/list/main/tag?name=$tagName');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  // 위치 기반 산책로 조회
-  Future<List<dynamic>?> getLocationBasedCourseList(
-      double? latitude, double? longitude) async {
-    final response = await getRequest(
-        'course/list/main/location?latitude=$latitude&longitude=$longitude');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  /* ---------------- TAP 산책로 가져오기 ---------------- */
 
   // 산책로 Tap 거리순 전체 산책로 조회
   Future<List<TrailModel>?> getNearestCourses(
@@ -107,7 +99,7 @@ class TrailApiService {
     }
   }
 
-  // 좋아요수 전체 산책로 조회
+  // 산책로 Tap - 좋아요수 전체 산책로 조회
   Future<List<TrailModel>?> getMostLikedTrail(int page, int num) async {
     try {
       final response = await getRequest('course/list/like?page=$page&num=$num');
@@ -132,7 +124,7 @@ class TrailApiService {
     }
   }
 
-  // 산책로 Tap 사용자순 전체 산책로 조회
+  // 산책로 Tap - 이용자순 전체 산책로 조회
   Future<List<TrailModel>?> getMostUsedTrail(int page, int num) async {
     try {
       final response =
@@ -158,10 +150,11 @@ class TrailApiService {
     }
   }
 
-  // 등록된 전체 산책 코스 -> 최신순에서 사용 //조회 실패
+  // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용 //조회 실패
   Future<List<TrailModel>?> getAllCourses(int page, int num) async {
     try {
-      final response = await getRequest('course'); //재확인햐
+      final response =
+          await getRequest('course/list/all?page=$page&num=$num'); //재확인햐
 
       if (response.statusCode == 200) {
         final parsedResponse =
@@ -184,54 +177,86 @@ class TrailApiService {
   }
 
 /* ---------------- TAP 나만의 산책로 가져오기 ----------------course/list/individual/basic?page=$page&num=$num */
-  // 나만의 Tap 개인 산책로 조회
-  Future<List<TrailModel>?> getIndividualBasicCourses(int page, int num) async {
-    final response =
-        await getRequest('course/list/individual/basic?page=$page&num=$num');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
 
   // 나만의 Tap 등록한 산책로 조회 course/list/individual/enrollment?page=$page&num=$num
-  Future<List<TrailModel>?> getIndividualEnrollmentCourses(
-      int page, int num) async {
-    final response = await getRequest(
-        'course/list/individual/enrollment?page=$page&num=$num');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
+  Future<List<TrailModel>?> getEnrolledCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('course/list/individual/basic?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('등록한 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
       return null;
     }
   }
 
   // 나만의 Tap 좋아요한 산책로 조회 course/list/individual/like?page=$page&num=$num
-  Future<List<TrailModel>?> getIndividualLikedCourses(int page, int num) async {
-    final response =
-        await getRequest('course/list/individual/like?page=$page&num=$num');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
+  Future<List<TrailModel>?> getLikedCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('course/list/individual/like?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('좋아요한 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
       return null;
     }
   }
 
-  // 나만의 Tap 사용한 산책로 조회 course/list/individual/using?page=$page&num=$num
-  Future<List<TrailModel>?> getIndividualUsedCourses(int page, int num) async {
-    final response =
-        await getRequest('course/list/individual/using?page=$page&num=$num');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
+  // 나만의 Tap 이용한 산책로 조회 course/list/individual/using?page=$page&num=$num
+  Future<List<TrailModel>?> getUsedCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('course/list/individual/using?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('좋아요한 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
       return null;
     }
   }
+
+  //댓글
 
   // 나만의 Tap Tag 기준 산책로 조회 course/list/individual/tag?page=$page&num=$num&name=$encodedTagName
   Future<List<TrailModel>?> getIndividualCoursesByTag(
@@ -239,18 +264,6 @@ class TrailApiService {
     final encodedTagName = Uri.encodeComponent(tagName);
     final response = await getRequest(
         'course/list/individual/tag?page=$page&num=$num&name=$encodedTagName');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  /* -------- 전체 산책로 관련 기능 -------- glm */
-  // 전체 산책로 조회 course/enrollment/$id
-  Future<dynamic> getEnrollmentCourse(int id) async {
-    final response = await getRequest('course/enrollment/$id');
     if (response.statusCode == 200) {
       final parsedResponse = jsonDecode(response.body);
       return parsedResponse['data'];
