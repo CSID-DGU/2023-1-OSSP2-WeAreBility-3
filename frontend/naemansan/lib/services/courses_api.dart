@@ -1,3 +1,4 @@
+//산책로 탭, 나만의 산책로 탭에서 산책로 목록을 불러올 때 사용
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -45,7 +46,6 @@ class TrailApiService {
   }
 
   /* ---------------- 산책로 탭 ---------------- */
-
   // 산책로 Tap 거리순 전체 산책로 조회
   Future<List<TrailModel>?> getNearestCourses(
       int page, int num, double latitude, double longitude) async {
@@ -127,7 +127,8 @@ class TrailApiService {
   // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용 //조회 실패
   Future<List<TrailModel>?> getAllCourses(int page, int num) async {
     try {
-      final response = await getRequest('course'); //재확인햐
+      final response =
+          await getRequest('course/list/all?page=$page&num=$num'); //재확인햐
 
       if (response.statusCode == 200) {
         final parsedResponse =
@@ -237,18 +238,6 @@ class TrailApiService {
     final encodedTagName = Uri.encodeComponent(tagName);
     final response = await getRequest(
         'course/list/individual/tag?page=$page&num=$num&name=$encodedTagName');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  /* -------- 전체 산책로 관련 기능 -------- glm */
-  // 전체 산책로 조회 course/enrollment/$id
-  Future<dynamic> getEnrollmentCourse(int id) async {
-    final response = await getRequest('course/enrollment/$id');
     if (response.statusCode == 200) {
       final parsedResponse = jsonDecode(response.body);
       return parsedResponse['data'];
