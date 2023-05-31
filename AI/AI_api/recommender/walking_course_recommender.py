@@ -24,11 +24,13 @@ from shapely.wkb import loads
 import pandas as pd
 
 
-
+#d
 class course_recommender():
     def __init__(self, user_id = int) :
         self.user_id = user_id
-        self.model = Word2Vec.load("./recommender/word2vec.model")
+
+        self.model = Word2Vec.load(".\\recommender\word2vec.model")
+
         self.best = 3
 
     # 산책로 tag를 pasing 하는 함수
@@ -59,9 +61,9 @@ class course_recommender():
         
         cursor = conn.cursor()
         query = """
-        SELECT course_id 
+        SELECT course_id, finish_status  
         FROM using_courses 
-        WHERE user_id = %d""" % (id_input)
+        WHERE user_id = %d""" % (id_input) 
         cursor.execute(query)
         results = cursor.fetchall()
         number = len(results)
@@ -73,22 +75,27 @@ class course_recommender():
     # db읽기 -2 user_id에 담긴 정보로 tag 읽어서 vector 만들기
         user_vector = np.zeros((1,20))
         course_list =[]
+        finish_list =[]
         for i in range(number):
             course_list.append(results[i][0])
-        
+            finish_list.append(results[i][1])
+
         # 유저 vector 계산
-        for co_id in course_list :
+        for idx, co_id in enumerate(course_list) :
             query = """
             SELECT tag 
             FROM course_tags 
-            WHERE course_id = %d""" % (co_id)
+            WHERE course_id = %d""" % (co_id)  # status또한 fetch
             cursor.execute(query)
             results = cursor.fetchall()
 
             raw_tags = results[0][0]
             token_tags = self.tokenizer(raw_tags)
             course_vector = self.course_vector_calculator(token_tags)
-            user_vector += course_vector
+            user_vector += course_vector    # status가 1이면 한번 더 더하고 number++
+            if finish_list[idx] == 1 : #
+                user_vector += course_vector
+                number += 1
         user_vector = user_vector / number
 
         # 유저 vector와 전체 course tag의 유사도 점수 계산

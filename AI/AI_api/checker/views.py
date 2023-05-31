@@ -15,7 +15,7 @@ def user_list(request):
         for i in locations_data :
             points += str(i["latitude"]) + " "
             points += str(i["longitude"]) + " "
-
+            
         checker = similarity_Checker()
         return JsonResponse(checker.calculate_Similarity(points), safe=False)
 
