@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
-//import 'package:naemansan/services/api_service.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
-import 'package:naemansan/tabs/tab_home.dart';
 import 'package:geolocator/geolocator.dart';
 
 Future<Position> _getCurrentLocation() async {
   LocationPermission permission;
-
   // 위치 권한 요청
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
@@ -27,8 +24,6 @@ Future<Position> _getCurrentLocation() async {
 
   return position;
 }
-
-const Home home = Home();
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
@@ -90,7 +85,8 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     // 위도와 경도 값 가져오기
 
     const int page = 0;
-    const int num = 35;
+    const int num = 10000000;
+
     final Future<List<TrailModel>?> NearestTrail =
         TrailapiService.getNearestCourses(
             page, num, _latitude, _longitude); //위도 경도 불러와야함
