@@ -44,41 +44,7 @@ class TrailApiService {
     }
   }
 
-  /*           COURSE           */
-  Future<List<dynamic>?> getCourseList() async {
-    final response = await getRequest('course');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<dynamic>?> getTagBasedCourseList(String tagName) async {
-    final response = await getRequest('course/list/main/tag?name=$tagName');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  // 위치 기반 산책로 조회
-  Future<List<dynamic>?> getLocationBasedCourseList(
-      double? latitude, double? longitude) async {
-    final response = await getRequest(
-        'course/list/main/location?latitude=$latitude&longitude=$longitude');
-    if (response.statusCode == 200) {
-      final parsedResponse = jsonDecode(response.body);
-      return parsedResponse['data'];
-    } else {
-      return null;
-    }
-  }
-
-  /* ---------------- TAP 산책로 가져오기 ---------------- */
+  /* ---------------- 산책로 탭 ---------------- */
 
   // 산책로 Tap 거리순 전체 산책로 조회
   Future<List<TrailModel>?> getNearestCourses(
@@ -107,7 +73,7 @@ class TrailApiService {
     }
   }
 
-  // 좋아요수 전체 산책로 조회
+  // 산책로 Tap - 좋아요수 전체 산책로 조회
   Future<List<TrailModel>?> getMostLikedTrail(int page, int num) async {
     try {
       final response = await getRequest('course/list/like?page=$page&num=$num');
@@ -132,7 +98,7 @@ class TrailApiService {
     }
   }
 
-  // 산책로 Tap 사용자순 전체 산책로 조회
+  // 산책로 Tap - 이용자순 전체 산책로 조회
   Future<List<TrailModel>?> getMostUsedTrail(int page, int num) async {
     try {
       final response =
@@ -158,7 +124,7 @@ class TrailApiService {
     }
   }
 
-  // 등록된 전체 산책 코스 -> 최신순에서 사용 //조회 실패
+  // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용 //조회 실패
   Future<List<TrailModel>?> getAllCourses(int page, int num) async {
     try {
       final response = await getRequest('course'); //재확인햐

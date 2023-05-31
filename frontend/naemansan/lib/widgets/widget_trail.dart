@@ -9,7 +9,7 @@ class TrailWidget extends StatelessWidget {
   final int likeCnt, userCnt;
   final bool isLiked;
   //id
-  //키워드?
+  //키워드gi?
   //created data
 
   const TrailWidget({

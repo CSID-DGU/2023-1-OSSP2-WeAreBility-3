@@ -4,6 +4,31 @@ import 'package:naemansan/widgets/widget_trail.dart';
 //import 'package:naemansan/services/api_service.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/tabs/tab_home.dart';
+import 'package:geolocator/geolocator.dart';
+
+Future<Position> _getCurrentLocation() async {
+  LocationPermission permission;
+
+  // 위치 권한 요청
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+
+  if (permission == LocationPermission.denied ||
+      permission == LocationPermission.deniedForever) {
+    // 권한이 거부되었을 때 또는 영구적으로 거부되었을 때
+    throw Exception('위치 권한이 필요합니다.');
+  }
+
+  // 현재 위치 가져오기
+  Position position = await Geolocator.getCurrentPosition();
+
+  return position;
+}
+
+const Home home = Home();
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
@@ -15,12 +40,21 @@ class Trail extends StatefulWidget {
 class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService; // ApiService 인스턴스 변수 추가
+  double _latitude = 0.0;
+  double _longitude = 0.0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    TrailapiService = TrailApiService(); // ApiService의 인스턴스 생성
+    TrailapiService = TrailApiService();
+
+    _getCurrentLocation().then((position) {
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+      });
+    });
   }
 
   @override
@@ -53,11 +87,13 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //final Future<List<TrailModel>> nearestTrail = apiService.getNearestTrail();
+    // 위도와 경도 값 가져오기
+
     const int page = 0;
     const int num = 35;
     final Future<List<TrailModel>?> NearestTrail =
-        TrailapiService.getNearestCourses(page, num, 0, 0); //위도 경도 불러와야함
+        TrailapiService.getNearestCourses(
+            page, num, _latitude, _longitude); //위도 경도 불러와야함
     final Future<List<TrailModel>?> MostLikedTrail =
         TrailapiService.getMostLikedTrail(page, num);
     final Future<List<TrailModel>?> MostUsedTrail =
