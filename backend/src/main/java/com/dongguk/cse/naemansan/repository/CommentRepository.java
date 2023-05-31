@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findByEnrollmentCourseAndStatus(EnrollmentCourse course, Boolean status, Pageable pageable);
 
+    Optional<Comment> findByIdAndUserAndEnrollmentCourseAndStatus(Long id, User user, EnrollmentCourse enrollmentCourse, Boolean status);
+
+    Long countByUser(User user);
     Optional<Comment> findByIdAndUserAndEnrollmentCourse(Long id, User user, EnrollmentCourse enrollmentCourse);
 
     @Query(value = "SELECT c FROM Comment c WHERE c.user = :user")

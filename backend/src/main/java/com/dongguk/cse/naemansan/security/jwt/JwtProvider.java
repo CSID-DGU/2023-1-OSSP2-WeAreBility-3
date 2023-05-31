@@ -112,7 +112,7 @@ public class JwtProvider implements InitializingBean {
         if (StringUtils.hasText(beforeToken) && beforeToken.startsWith("Bearer ")) {
             afterToken =  beforeToken.substring(7);
         } else {
-            throw new SecurityException();
+            throw new IllegalArgumentException();
         }
 
         return afterToken;

@@ -20,12 +20,11 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/image")
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
 
-    @GetMapping("")
+    @GetMapping("/image")
     public ResponseEntity<?> downloadImage(@RequestParam("uuid") String fileName) throws IOException {
         byte[] imageData = imageService.downloadImage(fileName);
 
@@ -42,21 +41,21 @@ public class ImageController {
                     .body(imageData);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/image/user")
     public ResponseDto<?> uploadUserImage(Authentication authentication, @RequestParam("image") MultipartFile file) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("uuid_name", imageService.uploadImage(Long.valueOf(authentication.getName()), ImageUseType.USER, file));
         return new ResponseDto(map);
     }
 
-    @PostMapping("/shop/{shopId}")
+    @PostMapping("/admin/image/shop/{shopId}")
     public ResponseDto<?> uploadShopImage(@PathVariable Long shopId, @RequestParam("image") MultipartFile file) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("uuid_name", imageService.uploadImage(shopId, ImageUseType.SHOP, file));
         return new ResponseDto(map);
     }
 
-    @PostMapping("/advertisement/{advertisementId}")
+    @PostMapping("/admin/image/enterprise/{advertisementId}")
     public ResponseDto<?> uploadAdvertisementImage(@PathVariable Long advertisementId, @RequestParam("image")MultipartFile file) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("uuid_name", imageService.uploadImage(advertisementId, ImageUseType.ADVERTISEMENT, file));

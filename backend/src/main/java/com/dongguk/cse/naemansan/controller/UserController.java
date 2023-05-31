@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
+import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.common.ResponseDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
@@ -7,11 +9,15 @@ import com.dongguk.cse.naemansan.service.BadgeService;
 import com.dongguk.cse.naemansan.service.FollowService;
 import com.dongguk.cse.naemansan.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -58,5 +64,26 @@ public class UserController {
     @GetMapping("/follower")
     public ResponseDto<List<FollowDto>> readFollower(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
         return new ResponseDto<List<FollowDto>>(followService.readFollower(Long.valueOf(authentication.getName()), page, num));
+    }
+
+    @PostMapping("/tags")
+    public ResponseDto<?> createUserTag(Authentication authentication, @RequestBody UserTagRequestDto requestDto) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("tags", userService.createTagByUserChoice(Long.valueOf(authentication.getName()), requestDto));
+        return new ResponseDto<Map<String, Object>>(map);
+    }
+
+    @GetMapping("/tags")
+    public ResponseDto<?> readUserTag(Authentication authentication) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("tags", userService.readTagByUserChoice(Long.valueOf(authentication.getName())));
+        return new ResponseDto<Map<String, Object>>(map);
+    }
+
+    @PutMapping("/tags")
+    public ResponseDto<?> readUserTag(Authentication authentication, @RequestBody UserTagRequestDto requestDto) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("tags", userService.updateTagByUserChoice(Long.valueOf(authentication.getName()), requestDto));
+        return new ResponseDto<Map<String, Object>>(map);
     }
 }
