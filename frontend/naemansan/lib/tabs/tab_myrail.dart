@@ -38,13 +38,16 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         var trail = snapshot.data![index];
 
         return TrailWidget(
-            title: trail.title,
-            startpoint: trail.startLocationName,
-            distance: trail.distance,
-            CourseKeyWord: trail.tags,
-            likeCnt: trail.likeCount,
-            userCnt: trail.userCount,
-            isLiked: trail.isLiked);
+          title: trail.title,
+          startpoint: trail.startLocationName,
+          distance: trail.distance,
+          CourseKeyWord: trail.tags,
+          likeCnt: trail.likeCount,
+          userCnt: trail.userCount,
+          isLiked: trail.isLiked,
+          id: trail.id,
+          created_date: trail.createdDate.toString(),
+        );
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),

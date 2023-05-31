@@ -3,7 +3,7 @@ class TrailModel {
   final int id;
   final String title;
   final DateTime createdDate;
-  final List<String>? tags;
+  final List<String> tags;
   final String startLocationName;
   final double distance;
   final int likeCount;
@@ -14,7 +14,7 @@ class TrailModel {
     required this.id,
     required this.title,
     required this.createdDate,
-    this.tags,
+    required this.tags,
     required this.startLocationName,
     required this.distance,
     required this.likeCount,
