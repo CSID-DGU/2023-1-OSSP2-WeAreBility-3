@@ -31,7 +31,7 @@ class _IndexScreenState extends State<IndexScreen> {
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     const Home(),
-    //const Trail(),
+    const Myrail(), //임시
     const Myrail(),
     const Mypage(),
   ];

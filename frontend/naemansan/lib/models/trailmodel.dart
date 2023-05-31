@@ -1,23 +1,38 @@
-//등록한 산책로 ap
-//
-//i를 JSON형태로 변환
-
+//trailmodel.dart
 class TrailModel {
-  final String userimage;
+  final int id;
   final String title;
-  final String startpoint; //시작 위치 불러오기  (Segment ID -startpoint)
-  final double distance; //거리 (endpoint - startpoint)
-  final List<String>? CourseKeyWord; //여러개일수도 있음
-  final int likeCnt, userCnt;
+  final DateTime createdDate;
+  final List<String>? tags;
+  final String startLocationName;
+  final double distance;
+  final int likeCount;
+  final int userCount;
   final bool isLiked;
 
-  TrailModel.fromJson(Map<String, dynamic> json)
-      : userimage = json['userimage'],
-        title = json['title'],
-        startpoint = json['startpoint'],
-        distance = json['distance'],
-        CourseKeyWord = (json['CourseKeyword'] as List<dynamic>).cast<String>(),
-        likeCnt = json['likeCnt'],
-        userCnt = json['userCnt'],
-        isLiked = json['isLiked'];
+  TrailModel({
+    required this.id,
+    required this.title,
+    required this.createdDate,
+    this.tags,
+    required this.startLocationName,
+    required this.distance,
+    required this.likeCount,
+    required this.userCount,
+    required this.isLiked,
+  });
+
+  factory TrailModel.fromJson(Map<String, dynamic> json) {
+    return TrailModel(
+      id: json['id'],
+      title: json['title'],
+      createdDate: DateTime.parse(json['created_date']),
+      tags: List<String>.from(json['tags'].map((tag) => tag['name'])),
+      startLocationName: json['start_location_name'],
+      distance: json['distance'].toDouble(),
+      likeCount: json['like_cnt'],
+      userCount: json['using_unt'],
+      isLiked: json['is_like'],
+    );
+  }
 }

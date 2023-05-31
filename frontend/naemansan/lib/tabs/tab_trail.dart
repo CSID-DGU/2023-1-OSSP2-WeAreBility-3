@@ -1,10 +1,9 @@
-//산책로 페이지 Trail()
-/*
 import 'package:flutter/material.dart';
-import 'package:naemansan/models/trailmodel.dart';
-import 'package:naemansan/screens/public_course_detail_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:naemansan/service/api_service.dart';
+import 'package:naemansan/widgets/widget_trail.dart';
+//import 'package:naemansan/services/api_service.dart';
+import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/services/courses_api.dart';
 
 class Trail extends StatefulWidget {
   const Trail({Key? key}) : super(key: key);
@@ -15,11 +14,13 @@ class Trail extends StatefulWidget {
 
 class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late TrailApiService TrailapiService; // ApiService 인스턴스 변수 추가
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+    TrailapiService = TrailApiService(); // ApiService의 인스턴스 생성
   }
 
   @override
@@ -28,7 +29,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  ListView makeList(AsyncSnapshot<List<TrailModel>> snapshot) {
+  ListView makeList(AsyncSnapshot<List<TrailModel>?> snapshot) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: snapshot.data!.length,
@@ -46,15 +47,24 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             isLiked: trail.isLiked);
       },
       separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
     );
   }
 
   @override
-  //산책로
-
   Widget build(BuildContext context) {
-    final Future<List<TrailModel>> TestTrail = ApiService.getTrail();
+    //final Future<List<TrailModel>> nearestTrail = apiService.getNearestTrail();
+    const int page = 0;
+    const int num = 35;
+    final Future<List<TrailModel>?> NearestTrail =
+        TrailapiService.getNearestCourses(page, num, 0, 0); //위도 경도 불러와야함
+    final Future<List<TrailModel>?> MostLikedTrail =
+        TrailapiService.getMostLikedTrail(page, num);
+    final Future<List<TrailModel>?> MostUsedTrail =
+        TrailapiService.getMostUsedTrail(page, num);
+    final Future<List<TrailModel>?> NewTrail =
+        TrailapiService.getAllCourses(page, num);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -79,29 +89,20 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
         title: const Text(
           '산책로',
           style: TextStyle(
-            fontSize: 21,
+            fontSize: 24,
             fontWeight: FontWeight.w600,
           ),
         ),
-        titleSpacing: 0,
         actions: [
-          const SizedBox(width: 16), // 여백 추가
           IconButton(
             icon: const Icon(
               Icons.add_box_outlined, //산책로 추가 시 버튼으로 사용
               color: Colors.black,
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        const PublicCourseDetailScreen(courseName: "공소 코스")),
-              );
-            },
+            onPressed: () {},
           ),
-          const SizedBox(width: 10)
         ],
+        //오른쪽 여백 넣기
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.black, //선택된 항목 나타내기
@@ -109,31 +110,31 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '거리순',
-                style: TextStyle(color: Colors.black, fontSize: 12.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '좋아요순',
-                style: TextStyle(color: Colors.black, fontSize: 12.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '이용자순',
-                style: TextStyle(color: Colors.black, fontSize: 12.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '최신순',
-                style: TextStyle(color: Colors.black, fontSize: 12.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black, fontSize: 12.5),
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ],
@@ -141,161 +142,72 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8.0),
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       border: Border.all(
-          //         color: Colors.grey.withOpacity(0.5),
-          //         width: 1,
-          //       ),
-          //       borderRadius: BorderRadius.circular(16),
-          //     ),
-          //     child: Row(
-          //       children: [
-          //         const SizedBox(
-          //           width: 100.0,
-          //           child: Icon(Icons.nature_outlined),
-          //         ),
-          //         const SizedBox(width: 4.0),
-          //         Expanded(
-          //           child: Column(
-          //             mainAxisAlignment: MainAxisAlignment.center,
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: const [
-          //               Text(
-          //                 "공소 코스",
-          //                 style: TextStyle(
-          //                   fontSize: 18.0,
-          //                   fontWeight: FontWeight.bold,
-          //                 ),
-          //               ),
-          //               SizedBox(height: 4.0),
-          //               Text(
-          //                 "서울 특별시 중구",
-          //                 style: TextStyle(
-          //                   fontSize: 12.0,
-          //                 ),
-          //               ),
-          //               Text(
-          //                 '0.1km',
-          //                 style: TextStyle(
-          //                   fontSize: 12.0,
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //         Column(
-          //           children: [
-          //             Row(
-          //               children: [
-          //                 const SizedBox(width: 8.0, height: 4.0),
-          //                 IconButton(
-          //                   icon: const Icon(Icons.arrow_forward_ios_outlined),
-          //                   onPressed: () {}, //산책로 세부 페이지로 이동
-          //                 ),
-          //               ],
-          //             ),
-          //             const SizedBox(height: 15),
-          //             Row(
-          //               children: const [
-          //                 Icon(
-          //                   true
-          //                       ? Icons.favorite
-          //                       : Icons.favorite_border_outlined,
-          //                   color: true ? Colors.red : null,
-          //                   size: 20,
-          //                 ),
-          //                 Text(
-          //                   '1',
-          //                   style: TextStyle(
-          //                     fontSize: 14.0,
-          //                   ),
-          //                 ),
-          //               ],
-          //             ),
-          //             Row(
-          //               children: const [
-          //                 Icon(
-          //                   Icons.person_outline,
-          //                   size: 20,
-          //                 ),
-          //                 Text(
-          //                   '0',
-          //                   style: TextStyle(
-          //                     fontSize: 14.0,
-          //                   ),
-          //                 ),
-          //               ],
-          //             ),
-          //           ],
-          //         ),
-          //         const SizedBox(width: 4.0),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          Center(
-            child: Text('거리순 정렬 리스트 추가'),
-          ),
-          FutureBuilder(
-            future: MostLikedTrail,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Row(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Expanded(child: makeList(snapshot))
-                  ],
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: NearestTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
                 );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+              },
+            ),
           ),
-          FutureBuilder(
-            future: MostUsedTrail,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Row(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Expanded(child: makeList(snapshot))
-                  ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: MostLikedTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
                 );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+              },
+            ),
           ),
-          FutureBuilder(
-            future: NewTrail,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Row(
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Expanded(child: makeList(snapshot))
-                  ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: MostUsedTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
                 );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+              },
+            ),
           ),
-          Center(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: NewTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [Expanded(child: makeList(snapshot))],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(), //gma
+                );
+              },
+            ),
+          ),
+          const Center(
             //키워드별 정렬
             child: Text('키워드별 보기 기능 추가'),
           ),
@@ -303,4 +215,4 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
       ),
     );
   }
-}*/
+}
