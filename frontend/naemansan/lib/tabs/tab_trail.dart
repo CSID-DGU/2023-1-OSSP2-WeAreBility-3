@@ -1,4 +1,5 @@
 //산책로 페이지 Trail()
+/*
 import 'package:flutter/material.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/screens/public_course_detail_screen.dart';
@@ -27,7 +28,31 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  ListView makeList(AsyncSnapshot<List<TrailModel>> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var trail = snapshot.data![index];
+
+        return TrailWidget(
+            title: trail.title,
+            startpoint: trail.startLocationName,
+            distance: trail.distance,
+            CourseKeyWord: trail.tags,
+            likeCnt: trail.likeCount,
+            userCnt: trail.userCount,
+            isLiked: trail.isLiked);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 10),
+    );
+  }
+
   @override
+  //산책로
+
   Widget build(BuildContext context) {
     final Future<List<TrailModel>> TestTrail = ApiService.getTrail();
     return Scaffold(
@@ -216,20 +241,66 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           Center(
             child: Text('거리순 정렬 리스트 추가'),
           ),
-          Center(
-            child: Text('좋아요순 정렬 리스트 추가'),
+          FutureBuilder(
+            future: MostLikedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
+          FutureBuilder(
+            future: MostUsedTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
+          FutureBuilder(
+            future: NewTrail,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Row(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(child: makeList(snapshot))
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
           Center(
-            child: Text('이용자순 정렬 리스트 추가'),
-          ),
-          Center(
-            child: Text('최신순 정렬 리스트 추가'),
-          ),
-          Center(
+            //키워드별 정렬
             child: Text('키워드별 보기 기능 추가'),
           ),
         ],
       ),
     );
   }
-}
+}*/

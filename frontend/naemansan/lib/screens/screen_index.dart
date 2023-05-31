@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_home.dart';
-import 'package:naemansan/tabs/tab_trail.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IndexScreen extends StatefulWidget {
   const IndexScreen({Key? key}) : super(key: key);
-
   @override
   _IndexScreenState createState() => _IndexScreenState();
 }
@@ -33,11 +31,10 @@ class _IndexScreenState extends State<IndexScreen> {
   int _currentIndex = 0;
   final List<Widget> _tabs = [
     const Home(),
-    const Trail(),
+    //const Trail(),
     const Myrail(),
     const Mypage(),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

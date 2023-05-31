@@ -57,6 +57,11 @@ class _MypageState extends State<Mypage> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> logout() async {
+      await deleteTokens();
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

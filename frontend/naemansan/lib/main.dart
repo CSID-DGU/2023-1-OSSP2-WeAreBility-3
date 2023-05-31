@@ -77,7 +77,7 @@ class _AppState extends State<App> {
         } else {
           return MaterialApp(
             title: '내가 만든 산책로',
-            home: isLogged ? const IndexScreen() : LoginScreen(),
+            home: isLogged ? const IndexScreen() : const LoginScreen(),
             routes: {
               '/index': (context) => const IndexScreen(),
             },
