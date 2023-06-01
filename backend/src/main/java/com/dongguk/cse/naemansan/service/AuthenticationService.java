@@ -46,6 +46,7 @@ public class AuthenticationService {
                 return oauth2Util.getGoogleRedirectUrl();
             }
             case APPLE -> {
+                return oauth2Util.getAppleRedirectUrl();
             }
         }
         return null;
@@ -64,6 +65,7 @@ public class AuthenticationService {
                 socialId = oauth2Util.getGoogleUserInformation(accessToken);
             }
             case APPLE -> {
+                socialId = oauth2Util.getAppleUserInformation(authorizationCode);
             }
         }
 
