@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
 
 //profile_tabs 폴더에 있는 파일들 사용
 class Mypage extends StatefulWidget {
@@ -129,6 +130,7 @@ class _MypageState extends State<Mypage> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 if (snapshot.hasData) {
+                  //프로필 이미지
                   Map<String, dynamic>? userData = snapshot.data;
                   String imageFileName =
                       userData?['image_path'] ?? '0_default_image.png';
@@ -167,11 +169,15 @@ class _MypageState extends State<Mypage> {
                                 '팔로워',
                                 style: TextStyle(fontSize: 16),
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                userData?['follower_cnt'].toString() ?? '0',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  userData?['follower_cnt'].toString() ?? '0',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ],
                           ),
@@ -182,11 +188,16 @@ class _MypageState extends State<Mypage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                userData?['following_cnt'].toString() ?? '0',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  userData?['following_cnt'].toString() ?? '0',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
                             ],
                           ),
                         ],
@@ -204,11 +215,16 @@ class _MypageState extends State<Mypage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                '${userData?['like_cnt'] ?? 0}',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  '${userData?['like_cnt'] ?? 0}',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
                             ],
                           ),
                           Column(
@@ -218,11 +234,16 @@ class _MypageState extends State<Mypage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                '${userData?['comment_cnt'] ?? 0}',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  '${userData?['comment_cnt'] ?? 0}',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
                             ],
                           ),
                           Column(
@@ -232,11 +253,23 @@ class _MypageState extends State<Mypage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                '${userData?['badge_cnt'] ?? 0}',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const Badges(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  '${userData?['badge_cnt'] ?? 0}',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
                             ],
                           ),
                         ],

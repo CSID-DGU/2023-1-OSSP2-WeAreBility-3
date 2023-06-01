@@ -65,10 +65,10 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         TrailapiService.getLikedCourses(page, num);
     final Future<List<TrailModel>?> UsedTrail =
         TrailapiService.getUsedCourses(page, num);
-    //final Future<List<TrailModel>?> CommentedTrail =
-    //  TrailapiService.getCommentedCourses(page, num);
+    final Future<List<TrailModel>?> CommentedTrail =
+        TrailapiService.getCommentedCourses(page, num);
     final Future<List<TrailModel>?> KeyWordTrail =
-        TrailapiService.getKeywordCourse(page, num, '마포구'); //키워드 선택부분 구현 필요
+        TrailapiService.getKeywordCourse(page, num, '중구'); //내가 선택한 태그 불러오기 햐
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -141,7 +141,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             Tab(
               child: Text(
                 '키워드',
-                style: TextStyle(color: Colors.black, fontSize: 13.5),
+                style: TextStyle(color: Colors.black, fontSize: 12.5),
               ),
             ),
           ],
@@ -231,7 +231,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
-              future: KeyWordTrail, //나중에 고챠
+              future: CommentedTrail, //나중에 고챠
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.isNotEmpty) {
@@ -240,7 +240,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                     );
                   } else {
                     return const Center(
-                      child: Text('댓글을 작성한한 산책로가 없습니다'),
+                      child: Text('댓글을 작성한 산책로가 없습니다'),
                     );
                   }
                 }
@@ -251,33 +251,33 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             ),
           ),
           // 다섯 번째 탭
-          Column(
-            children: [
-              //Row(), //키워드 선택이 아니라 팔로우한 키워드 보기
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: FutureBuilder(
-                  future: KeyWordTrail,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return Row(
-                          children: [Expanded(child: makeList(snapshot))],
-                        );
-                      } else {
-                        return const Center(
-                          child: Text('해당 산책로가 없습니다'),
-                        );
-                      }
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(),
+          //  Column(
+          //  children: [
+          // Row(children: Text()), //팔로우한 키워드 보기 하지말까여
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: FutureBuilder(
+              future: KeyWordTrail,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.isNotEmpty) {
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
                     );
-                  },
-                ),
-              ),
-            ],
+                  } else {
+                    return const Center(
+                      child: Text('해당 산책로가 없습니다'),
+                    );
+                  }
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
           ),
+          //  ],
+          //),
         ],
       ),
     );

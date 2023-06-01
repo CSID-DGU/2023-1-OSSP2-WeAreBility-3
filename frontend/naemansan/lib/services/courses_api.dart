@@ -150,11 +150,10 @@ class TrailApiService {
     }
   }
 
-  // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용 //조회 실패
+  // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용
   Future<List<TrailModel>?> getAllCourses(int page, int num) async {
     try {
-      final response =
-          await getRequest('course/list/all?page=$page&num=$num'); //재확인햐
+      final response = await getRequest('course/list/all?page=$page&num=$num');
 
       if (response.statusCode == 200) {
         final parsedResponse =
@@ -257,6 +256,31 @@ class TrailApiService {
   }
 
   //댓글  'course/{courseId}/comment?page=$page&num=$num'
+  //사용자 댓글 조회 /user/comment?page={}&num={}
+
+  Future<List<TrailModel>?> getCommentedCourses(int page, int num) async {
+    try {
+      final response = await getRequest('/user/comment?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('댓글 단 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
+      return null;
+    }
+  }
 
   // 나만의 Tap Tag 기준 산책로 조회 course/list/individual/tag?page=$page&num=$num&name=$encodedTagName
   Future<List<TrailModel>?> getKeywordCourse(
@@ -284,6 +308,8 @@ class TrailApiService {
       return null;
     }
   }
+
+  // 나만의 Tag Tag기준 산책로 조회 - tag 조회
 
   /*Future<List<TrailModel>?> getKeywordCourse(
       int page, int num, String tagName) async {
