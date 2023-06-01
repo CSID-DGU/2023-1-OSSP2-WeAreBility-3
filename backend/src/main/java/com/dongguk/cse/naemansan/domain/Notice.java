@@ -47,6 +47,7 @@ public class Notice {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.isEdit = true;
         this.status = true;
+        this.readCnt = 0L;
     }
 
     public void incrementCnt() {

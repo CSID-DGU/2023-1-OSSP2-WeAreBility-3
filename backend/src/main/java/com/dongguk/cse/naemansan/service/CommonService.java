@@ -219,10 +219,11 @@ public class CommonService {
     public NoticeDetailDto updateNotice(Long noticeId, NoticeRequestDto requestDto) {
         Notice notice = noticeRepository.findByIdAndStatus(noticeId, true)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTICE));
+        noticeRepository.findByIdNotAndTitleAndStatus(noticeId, requestDto.getTitle(), true)
+                .ifPresent(c -> { throw new RestApiException(ErrorCode.DUPLICATION_TITLE);});
 
         notice.setTitle(requestDto.getTitle());
         notice.setContent(requestDto.getContent());
-
 
         return NoticeDetailDto.builder()
                 .id(notice.getId())
@@ -243,7 +244,7 @@ public class CommonService {
     }
 
     public List<NoticeListDto> readNoticeList(Long pageIndex, Long maxNum) {
-        Pageable paging = PageRequest.of(pageIndex.intValue(), maxNum.intValue(), Sort.by(Sort.Direction.ASC, "createdDate"));
+        Pageable paging = PageRequest.of(pageIndex.intValue(), maxNum.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Notice> page = noticeRepository.findAllByStatus(true, paging);
 
         List<NoticeListDto> list = new ArrayList<>();

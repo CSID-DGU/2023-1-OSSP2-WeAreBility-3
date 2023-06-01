@@ -12,5 +12,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Optional<Notice> findByIdAndStatus(Long noticeId, Boolean status);
 
+    Optional<Notice> findByIdNotAndTitleAndStatus(Long noticeId, String title, Boolean status);
+
     Page<Notice> findAllByStatus(Boolean status, Pageable pageable);
 }
