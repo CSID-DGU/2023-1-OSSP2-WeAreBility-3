@@ -244,7 +244,7 @@ public class CommonService {
 
     public List<NoticeListDto> readNoticeList(Long pageIndex, Long maxNum) {
         Pageable paging = PageRequest.of(pageIndex.intValue(), maxNum.intValue(), Sort.by(Sort.Direction.ASC, "createdDate"));
-        Page<Notice> page = noticeRepository.findAll(paging);
+        Page<Notice> page = noticeRepository.findAllByStatus(true, paging);
 
         List<NoticeListDto> list = new ArrayList<>();
         for (Notice notice : page.getContent()) {
