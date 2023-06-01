@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EnrollmentCourseTagDto {
+public class CourseTagDto {
     private CourseTagType name;
     private TagStatusType status;
 }

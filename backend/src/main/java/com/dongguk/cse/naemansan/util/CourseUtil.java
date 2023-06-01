@@ -2,7 +2,7 @@ package com.dongguk.cse.naemansan.util;
 
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.domain.type.TagStatusType;
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.google.gson.JsonArray;
@@ -217,21 +217,21 @@ public class CourseUtil {
         return geometryFactory.createPoint(before);
     }
 
-    public List<CourseTag> getTagDto2TagForEnrollmentCourse(EnrollmentCourse enrollmentCourse, List<EnrollmentCourseTagDto> dtoList) {
+    public List<CourseTag> getTagDto2TagForEnrollmentCourse(EnrollmentCourse enrollmentCourse, List<CourseTagDto> dtoList) {
         List<CourseTag> tagList = new ArrayList<>();
 
-        for (EnrollmentCourseTagDto enrollmentCourseTagDto : dtoList) {
+        for (CourseTagDto courseTagDto : dtoList) {
             tagList.add(CourseTag.builder()
-                    .enrollmentCourse(enrollmentCourse).courseTagType(enrollmentCourseTagDto.getName()).build());
+                    .enrollmentCourse(enrollmentCourse).courseTagType(courseTagDto.getName()).build());
         }
 
         return tagList;
     }
 
-    public List<UserTag> getTagDto2TagForUser(User user, List<EnrollmentCourseTagDto> dtoList) {
+    public List<UserTag> getTagDto2TagForUser(User user, List<CourseTagDto> dtoList) {
         List<UserTag> tagList = new ArrayList<>();
 
-        for (EnrollmentCourseTagDto tagDto : dtoList) {
+        for (CourseTagDto tagDto : dtoList) {
             tagList.add(UserTag.builder()
                     .user(user)
                     .tag(tagDto.getName()).build());
@@ -240,11 +240,11 @@ public class CourseUtil {
         return tagList;
     }
 
-    public List<EnrollmentCourseTagDto> getTag2TagDtoForEnrollmentCourse(List<CourseTag> tagList) {
-        List<EnrollmentCourseTagDto> dtoList = new ArrayList<>();
+    public List<CourseTagDto> getTag2TagDtoForEnrollmentCourse(List<CourseTag> tagList) {
+        List<CourseTagDto> dtoList = new ArrayList<>();
 
         for (CourseTag courseTag : tagList) {
-            dtoList.add(EnrollmentCourseTagDto.builder()
+            dtoList.add(CourseTagDto.builder()
                     .name(courseTag.getCourseTagType())
                     .status(TagStatusType.DEFAULT).build());
         }
@@ -252,11 +252,11 @@ public class CourseUtil {
         return dtoList;
     }
 
-    public List<EnrollmentCourseTagDto> getTag2TagDtoForUser(List<UserTag> tagList) {
-        List<EnrollmentCourseTagDto> dtoList = new ArrayList<>();
+    public List<CourseTagDto> getTag2TagDtoForUser(List<UserTag> tagList) {
+        List<CourseTagDto> dtoList = new ArrayList<>();
 
         for (UserTag tag : tagList) {
-            dtoList.add(EnrollmentCourseTagDto.builder()
+            dtoList.add(CourseTagDto.builder()
                     .name(tag.getTag())
                     .status(TagStatusType.DEFAULT).build());
         }

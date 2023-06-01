@@ -4,16 +4,16 @@ import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.Advertisement;
 import com.dongguk.cse.naemansan.domain.Image;
+import com.dongguk.cse.naemansan.domain.Notice;
 import com.dongguk.cse.naemansan.domain.Shop;
 import com.dongguk.cse.naemansan.domain.type.ImageUseType;
 import com.dongguk.cse.naemansan.dto.request.AdvertisementRequestDto;
+import com.dongguk.cse.naemansan.dto.request.NoticeRequestDto;
 import com.dongguk.cse.naemansan.dto.request.ShopRequestDto;
 import com.dongguk.cse.naemansan.dto.response.AdvertisementDto;
+import com.dongguk.cse.naemansan.dto.response.NoticeDetailDto;
 import com.dongguk.cse.naemansan.dto.response.ShopDto;
-import com.dongguk.cse.naemansan.repository.AdvertisementRepository;
-import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
-import com.dongguk.cse.naemansan.repository.ImageRepository;
-import com.dongguk.cse.naemansan.repository.ShopRepository;
+import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,7 @@ import java.util.List;
 public class CommonService {
     private final ShopRepository shopRepository;
     private final AdvertisementRepository advertisementRepository;
+    private final NoticeRepository noticeRepository;
     private final ImageRepository imageRepository;
     private final CourseUtil courseUtil;
 
@@ -186,5 +187,42 @@ public class CommonService {
         }
 
         return list;
+    }
+
+    public Boolean createNotice(NoticeRequestDto requestDto) {
+        noticeRepository.findByTitleAndStatus(requestDto.getTitle(), true)
+                .ifPresent(notice -> { throw new RestApiException(ErrorCode.DUPLICATION_TITLE); });
+
+        noticeRepository.save(Notice.builder()
+                        .title(requestDto.getTitle())
+                        .content(requestDto.getContent()).build());
+
+        return Boolean.TRUE;
+    }
+
+    public NoticeDetailDto updateNotice(Long noticeId, NoticeRequestDto requestDto) {
+        Notice notice = noticeRepository.findByIdAndStatus(noticeId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTICE));
+
+        notice.setTitle(requestDto.getTitle());
+        notice.setContent(requestDto.getContent());
+
+
+        return NoticeDetailDto.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .created_date(notice.getCreatedDate())
+                .read_cnt(notice.getReadCnt())
+                .is_edit(notice.getIsEdit()).build();
+    }
+
+    public Boolean deleteNotice(Long noticeId) {
+        Notice notice = noticeRepository.findByIdAndStatus(noticeId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTICE));
+
+        notice.setStatus(false);
+
+        return Boolean.TRUE;
     }
 }

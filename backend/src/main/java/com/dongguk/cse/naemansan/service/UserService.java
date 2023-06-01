@@ -3,8 +3,7 @@ package com.dongguk.cse.naemansan.service;
 import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
-import com.dongguk.cse.naemansan.dto.PointDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
@@ -22,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -87,7 +84,7 @@ public class UserService {
         return Boolean.TRUE;
     }
 
-    public List<EnrollmentCourseTagDto> createTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
+    public List<CourseTagDto> createTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<UserTag> userTags = courseUtil.getTagDto2TagForUser(user, requestDto.getTags());
@@ -96,18 +93,18 @@ public class UserService {
         return courseUtil.getTag2TagDtoForUser(userTags);
     }
 
-    public List<EnrollmentCourseTagDto> readTagByUserChoice(Long userId) {
+    public List<CourseTagDto> readTagByUserChoice(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         List<UserTag> userTags = userTagRepository.findByUser(user);
 
         return courseUtil.getTag2TagDtoForUser(userTags);
     }
 
-    public List<EnrollmentCourseTagDto> updateTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
+    public List<CourseTagDto> updateTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         List<UserTag> userTags = new ArrayList<>();
-        for (EnrollmentCourseTagDto tagDto : requestDto.getTags()) {
+        for (CourseTagDto tagDto : requestDto.getTags()) {
             switch (tagDto.getStatus()) {
                 case NEW -> {
                     userTags.add(userTagRepository.save(UserTag.builder()
