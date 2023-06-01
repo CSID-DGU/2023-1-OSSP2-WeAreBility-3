@@ -31,17 +31,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     userInfo = await storage.read(key: "login");
-    print(userInfo);
 
     if (userInfo != null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
-    } else {
-      print('로그인이 필요합니다');
-    }
-
+      goIndex();
+    } else {}
     setState(() {
       isLoading = false; // 로딩 상태 갱신
     });
+  }
+
+  goIndex() {
+    Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
   }
 
   Widget _buildLoginButtons() {

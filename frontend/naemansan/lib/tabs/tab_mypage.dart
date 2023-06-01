@@ -4,6 +4,7 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+//profile_tabs 폴더에 있는 파일들 사용
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
 
@@ -29,20 +30,15 @@ class _MypageState extends State<Mypage> {
     user = fetchUserInfo();
 
     // 비동기로 flutter secure storage 정보를 불러오는 작업
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkUserState();
-    });
-  }
-
-// 로그인 화면으로 이동 시키기
-  goLoginScreen() {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   checkUserState();
+    // });
   }
 
   Future<void> logout() async {
     await deleteTokens();
     await storage.delete(key: 'login');
-    goLoginScreen();
+    goLogin();
   }
 
   checkUserState() async {
@@ -56,14 +52,15 @@ class _MypageState extends State<Mypage> {
   }
 
   goLogin() {
-    Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
     Future<void> logout() async {
       await deleteTokens();
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      await storage.delete(key: 'login');
+      goLogin();
     }
 
     return Scaffold(
@@ -271,6 +268,7 @@ class _MypageState extends State<Mypage> {
     const storage = FlutterSecureStorage();
     await storage.delete(key: 'accessToken');
     await storage.delete(key: 'refreshToken');
+    print("삭제 진행함?");
 
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLogged', false);

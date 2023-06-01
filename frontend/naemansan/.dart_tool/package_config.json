@@ -158,10 +158,10 @@
       "languageVersion": "2.18"
     },
     {
-      "name": "flutter_redux",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_redux-0.10.0",
+      "name": "flutter_plugin_android_lifecycle",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.15",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.18"
     },
     {
       "name": "flutter_secure_storage",
@@ -288,6 +288,30 @@
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "google_maps_flutter",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/google_maps_flutter-2.2.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "google_maps_flutter_android",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/google_maps_flutter_android-2.4.15",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "google_maps_flutter_ios",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/google_maps_flutter_ios-2.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "google_maps_flutter_platform_interface",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.2.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "google_sign_in",
@@ -452,6 +476,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.8.2",
       "packageUri": "lib/",
@@ -536,16 +566,16 @@
       "languageVersion": "2.14"
     },
     {
+      "name": "provider",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "quiver",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/quiver-3.2.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
-    },
-    {
-      "name": "redux",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/redux-5.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "shared_preferences",
@@ -628,6 +658,12 @@
     {
       "name": "stream_channel",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/stream_channel-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
+      "name": "stream_transform",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/stream_transform-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -782,7 +818,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-05-31T17:36:27.890676Z",
+  "generated": "2023-06-01T16:44:28.351265Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }
