@@ -12,6 +12,7 @@ import com.dongguk.cse.naemansan.dto.request.NoticeRequestDto;
 import com.dongguk.cse.naemansan.dto.request.ShopRequestDto;
 import com.dongguk.cse.naemansan.dto.response.AdvertisementDto;
 import com.dongguk.cse.naemansan.dto.response.NoticeDetailDto;
+import com.dongguk.cse.naemansan.dto.response.NoticeListDto;
 import com.dongguk.cse.naemansan.dto.response.ShopDto;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
@@ -200,6 +201,21 @@ public class CommonService {
         return Boolean.TRUE;
     }
 
+    public NoticeDetailDto readNotice(Long noticeId) {
+        Notice notice = noticeRepository.findByIdAndStatus(noticeId, true)
+                .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTICE));
+
+        notice.incrementCnt();
+
+        return NoticeDetailDto.builder()
+                .id(notice.getId())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .created_date(notice.getCreatedDate())
+                .read_cnt(notice.getReadCnt())
+                .is_edit(notice.getIsEdit()).build();
+    }
+
     public NoticeDetailDto updateNotice(Long noticeId, NoticeRequestDto requestDto) {
         Notice notice = noticeRepository.findByIdAndStatus(noticeId, true)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_NOTICE));
@@ -224,5 +240,21 @@ public class CommonService {
         notice.setStatus(false);
 
         return Boolean.TRUE;
+    }
+
+    public List<NoticeListDto> readNoticeList(Long pageIndex, Long maxNum) {
+        Pageable paging = PageRequest.of(pageIndex.intValue(), maxNum.intValue(), Sort.by(Sort.Direction.ASC, "createdDate"));
+        Page<Notice> page = noticeRepository.findAll(paging);
+
+        List<NoticeListDto> list = new ArrayList<>();
+        for (Notice notice : page.getContent()) {
+            list.add(NoticeListDto.builder()
+                    .id(notice.getId())
+                    .title(notice.getTitle())
+                    .created_date(notice.getCreatedDate())
+                    .read_cnt(notice.getReadCnt()).build());
+        }
+
+        return list;
     }
 }

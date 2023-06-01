@@ -48,4 +48,8 @@ public class Notice {
         this.isEdit = true;
         this.status = true;
     }
+
+    public void incrementCnt() {
+        readCnt++;
+    }
 }
