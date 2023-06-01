@@ -13,10 +13,46 @@ class CreateCourseScreen extends StatefulWidget {
 class _CreateCourseScreenState extends State<CreateCourseScreen> {
   final TextEditingController _titleController = TextEditingController();
   final List<LatLng> _locations = [];
+  final Set<Marker> _markers = {}; // Added markers set
   bool _isWalking = false;
   bool _isTitleInputEnabled = true;
   bool _isTitleEntered = false;
   GoogleMapController? _mapController;
+  Position? _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  void _getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('위치 권한이 없습니다.');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('위치 권한이 영구적으로 없습니다.');
+    }
+
+    final GeolocatorPlatform geolocator = GeolocatorPlatform.instance;
+
+    try {
+      final position = await geolocator.getCurrentPosition();
+      setState(() {
+        _currentPosition = position;
+      });
+    } catch (e) {
+      print('Failed to get current location: $e');
+      // 위치 가져오기 실패 시 에러 처리 작업 추가
+      setState(() {
+        _currentPosition = null;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +81,12 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                 labelStyle: TextStyle(color: Colors.black87),
               ),
               enabled: _isTitleInputEnabled,
+              onChanged: (text) {
+                setState(() {
+                  // 입력된 텍스트가 있는지 확인하여 버튼 상태를 업데이트
+                  _isTitleEntered = text.isNotEmpty;
+                });
+              },
             ),
             const SizedBox(height: 16),
             const Text(
@@ -55,10 +97,18 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
             Expanded(
               child: GoogleMap(
                 onMapCreated: _onMapCreated,
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(0, 0),
-                  zoom: 15,
-                ),
+                initialCameraPosition: _currentPosition != null
+                    ? CameraPosition(
+                        target: LatLng(
+                          _currentPosition!.latitude,
+                          _currentPosition!.longitude,
+                        ),
+                        zoom: 15,
+                      )
+                    : const CameraPosition(
+                        target: LatLng(0, 0),
+                        zoom: 15,
+                      ),
                 polylines: {
                   Polyline(
                     polylineId: const PolylineId('courseRoute'),
@@ -66,11 +116,16 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
                     points: _locations,
                   ),
                 },
+                markers: _markers, // Added markers set
               ),
             ),
             ElevatedButton(
-              onPressed:
-                  _isWalking || !_isTitleInputEnabled ? _endWalk : _startWalk,
+              onPressed: _isWalking
+                  ? _endWalk
+                  : (_isTitleInputEnabled && _isTitleEntered)
+                      ? _startWalk
+                      : null,
+              // _isWalking || !_isTitleInputEnabled ? _endWalk : _startWalk,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
@@ -94,6 +149,28 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
+    if (_currentPosition != null) {
+      final latitude = _currentPosition!.latitude;
+      final longitude = _currentPosition!.longitude;
+      final location = LatLng(latitude, longitude);
+      _locations.add(location);
+      _addMarker(latitude, longitude);
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(location, 15),
+      );
+    }
+  }
+
+  void _addMarker(double latitude, double longitude) {
+    const markerId = MarkerId('currentLocation');
+    final marker = Marker(
+      markerId: markerId,
+      position: LatLng(latitude, longitude),
+      icon: BitmapDescriptor.defaultMarker,
+    );
+    setState(() {
+      _markers.add(marker);
+    });
   }
 
   void _startWalk() async {
@@ -123,6 +200,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
         final longitude = position.longitude;
         final location = LatLng(latitude, longitude);
         _locations.add(location);
+        _addMarker(latitude, longitude); // Add marker for each position
 
         if (_mapController != null) {
           _mapController!.animateCamera(
@@ -147,6 +225,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // 다이얼로그 닫기
+                Navigator.pop(context); // 이전 페이지로 이동
               },
               child: const Text('확인'),
             ),
@@ -170,7 +249,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
     print(courseData);
 
     // Send the route data to the server and save it
-    // ...
+    // …
   }
 
   void _completeTitleInput() {
