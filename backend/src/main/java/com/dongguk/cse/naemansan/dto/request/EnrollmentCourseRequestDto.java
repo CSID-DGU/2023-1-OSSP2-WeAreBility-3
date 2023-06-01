@@ -1,7 +1,6 @@
 package com.dongguk.cse.naemansan.dto.request;
 
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
-import com.dongguk.cse.naemansan.dto.PointDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +14,5 @@ public class EnrollmentCourseRequestDto {
     private Long individual_id;
     private String title;
     private String introduction;
-    private List<EnrollmentCourseTagDto> tags;
+    private List<CourseTagDto> tags;
 }

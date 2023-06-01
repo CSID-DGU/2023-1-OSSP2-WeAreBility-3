@@ -7,7 +7,7 @@ import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import com.dongguk.cse.naemansan.dto.request.IndividualCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.event.EnrollmentCourseEvent;
 import com.dongguk.cse.naemansan.event.IndividualCourseEvent;
@@ -151,7 +151,7 @@ public class CourseService {
         publisher.publishEvent(new EnrollmentCourseEvent(userId));
 
         // ResponseDto 를 위한 TagDto 생성
-        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(courseTags);
+        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(courseTags);
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -160,7 +160,7 @@ public class CourseService {
                 .title(enrollmentCourse.getTitle())
                 .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(enrollmentCourseTagDtoList)
+                .tags(courseTagDtoList)
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(courseUtil.getPoint2PointDto(enrollmentCourse.getLocations()))
                 .distance(enrollmentCourse.getDistance()).build();
@@ -174,7 +174,7 @@ public class CourseService {
 
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
-        List<EnrollmentCourseTagDto> enrollmentCourseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags());
+        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags());
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -183,7 +183,7 @@ public class CourseService {
                 .title(enrollmentCourse.getTitle())
                 .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(enrollmentCourseTagDtoList)
+                .tags(courseTagDtoList)
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
                 .distance(enrollmentCourse.getDistance()).build();
@@ -207,17 +207,17 @@ public class CourseService {
 
         // Course Tag Data Update, 최적화 필요
         List<CourseTag> courseTagList = new ArrayList<>();
-        for (EnrollmentCourseTagDto enrollmentCourseTagDto : enrollmentCourseRequestDto.getTags()) {
-            switch (enrollmentCourseTagDto.getStatus()) {
+        for (CourseTagDto courseTagDto : enrollmentCourseRequestDto.getTags()) {
+            switch (courseTagDto.getStatus()) {
                 case NEW -> {
                     courseTagList.add(courseTagRepository.save(CourseTag.builder()
                             .enrollmentCourse(enrollmentCourse)
-                            .courseTagType(enrollmentCourseTagDto.getName()).build()));
+                            .courseTagType(courseTagDto.getName()).build()));
                 }
-                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, enrollmentCourseTagDto.getName()); }
+                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, courseTagDto.getName()); }
                 case DEFAULT -> { courseTagList.add(CourseTag.builder()
                         .enrollmentCourse(enrollmentCourse)
-                        .courseTagType(enrollmentCourseTagDto.getName()).build()); }
+                        .courseTagType(courseTagDto.getName()).build()); }
             }
         }
 
