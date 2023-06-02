@@ -54,7 +54,7 @@ dependencies:
     webview_flutter: ^3.0.4
     flutter_secure_storage: ^8.0.0
 
-    flutter_webview_plugin: ^0.3.11
+    flutter_webview_plugin: ^0.4.0
     google_maps_flutter: ^2.2.8
     provider: ^6.0.5
 
