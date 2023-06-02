@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:naemansan/services/login_api_service.dart';
 
-//홈,산책로, 나만의 산책로, 마이페이지 상단바에 사용된 구조를 변형해 사용
-class Edit extends StatelessWidget {
-  const Edit({super.key});
+class Editpage extends StatefulWidget {
+  const Editpage({Key? key}) : super(key: key);
+
+  @override
+  State<Editpage> createState() => _EditpageState();
+}
+
+class _EditpageState extends State<Editpage> {
+  late Future<Map<String, dynamic>?> user;
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+
+  // Fetch user info
+  Future<Map<String, dynamic>?> fetchUserInfo() async {
+    ApiService apiService = ApiService();
+    return await apiService.getUserInfo();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    user = fetchUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
@@ -61,6 +84,65 @@ class Edit extends StatelessWidget {
             const SizedBox(width: 6),
           ],
         ),
+      ),
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: user,
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            if (snapshot.hasData) {
+              Map<String, dynamic>? userData = snapshot.data;
+              String imageFileName =
+                  userData?['image_path'] ?? '0_default_image.png';
+              String imageUrl =
+                  'https://ossp.dcs-hyungjoon.com/image?uuid=$imageFileName';
+
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(imageUrl),
+                    ),
+                    const SizedBox(height: 20),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: Divider(
+                        thickness: 1,
+                      ),
+                    ),
+                    Text(
+                      userData?['name'] ?? 'No Name',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: Divider(
+                        thickness: 1,
+                      ),
+                    ),
+                    Text(
+                      userData?['introduction'] ?? 'No Introduction',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return const Text('No user data available.');
+            }
+          }
+        },
       ),
     );
   }
