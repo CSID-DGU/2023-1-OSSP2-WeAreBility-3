@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:naemansan/screens/Login/webview_apple_screen.dart';
 import 'package:naemansan/screens/Login/webview_google_screen.dart';
 import 'package:naemansan/screens/Login/webview_kakao_screen.dart';
 import 'package:http/http.dart' as http;
@@ -45,16 +46,13 @@ class LoginBtn extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              WebViewScreenKakao(loginUrl: loginUrl), // Pass the loginUrl value
+              WebViewApple(loginUrl: loginUrl), // Pass the loginUrl value
         ),
       );
     }
 
     // login function
     void login(logo) async {
-      if (logo == "apple") {
-        logo = "kakao";
-      }
       var response = await http.get(
         Uri.parse("http://ossp.dcs-hyungjoon.com/auth/$logo"),
       );
@@ -68,6 +66,7 @@ class LoginBtn extends StatelessWidget {
       } else if (logo == 'google') {
         googleLogin(loginUrl);
       } else if (logo == 'apple') {
+        print("apple login Parse Responds : $loginUrl");
         appleLogin(loginUrl);
       }
     }

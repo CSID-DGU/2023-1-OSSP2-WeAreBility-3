@@ -11,7 +11,7 @@ class BannerSwiper extends StatelessWidget {
 
   final List<String> captions = [
     "산책을 즐기는 5가지 방법",
-    "내만산 이용하는 방법",
+    "내만산을 이용하는 방법",
     "산책시 유의점",
   ];
 
@@ -31,75 +31,73 @@ class BannerSwiper extends StatelessWidget {
       width: double.infinity,
       child: Stack(
         children: [
-          Container(
-            child: CarouselSlider(
-              items: images.asMap().entries.map((entry) {
-                final index = entry.key;
-                final imageUrl = entry.value;
-                final caption = captions[index];
-                final content = contents[index];
+          CarouselSlider(
+            items: images.asMap().entries.map((entry) {
+              final index = entry.key;
+              final imageUrl = entry.value;
+              final caption = captions[index];
+              final content = contents[index];
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BannerDetailScreen(
-                          caption: caption,
-                          content: content,
-                        ),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BannerDetailScreen(
+                        caption: caption,
+                        content: content,
                       ),
-                    );
-                  },
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Stack(
-                      children: [
-                        Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            color: Colors.black.withOpacity(0.4),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 30),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    caption,
-                                    style: const TextStyle(
-                                      fontSize: 21,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                    ),
+                  );
+                },
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withOpacity(0.4),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 30),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  caption,
+                                  style: const TextStyle(
+                                    fontSize: 21,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  const SizedBox(height: 20),
-                                  const Text(
-                                    "더 알아보기 >",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color.fromRGBO(255, 255, 255, 1),
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                ),
+                                const SizedBox(height: 20),
+                                const Text(
+                                  "더 알아보기 >",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(255, 255, 255, 1),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-              }).toList(),
-              options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: false,
-                viewportFraction: 1.0,
-              ),
+                ),
+              );
+            }).toList(),
+            options: CarouselOptions(
+              autoPlay: true,
+              enlargeCenterPage: false,
+              viewportFraction: 1.0,
             ),
           ),
         ],
