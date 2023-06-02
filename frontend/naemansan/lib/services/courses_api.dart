@@ -280,7 +280,7 @@ class TrailApiService {
       int page,
       int num) async {
     try {
-      final response = await getRequest('/user/comment?page=$page&num=$num');
+      final response = await getRequest('user/comment?page=$page&num=$num');
 
       if (response.statusCode == 200) {
         final parsedResponse = jsonDecode(response.body);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+//좌측에 아이콘, 우측에 댓글 내용만을 표시
 class CommentTrailWidget extends StatelessWidget {
   final IconData icon;
   final String content;

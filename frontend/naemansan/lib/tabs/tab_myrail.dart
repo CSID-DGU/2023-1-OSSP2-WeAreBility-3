@@ -17,6 +17,7 @@ class Myrail extends StatefulWidget {
 class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService;
+  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -73,6 +74,11 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     const int page = 0;
     const int num = 100000000;
+    List<String> keywords = [
+      '한강',
+      '마포구',
+      '퇴근길'
+    ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
     final Future<List<TrailModel>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
@@ -83,8 +89,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     final Future<List<TrailCommentModel>?> CommentedTrail =
         TrailapiService.getCommentedCourses(page, num);
     final Future<List<TrailModel>?> KeyWordTrail =
-        TrailapiService.getKeywordCourse(page, num, '중구'); //내가 선택한 태그 불러오기 햐
-
+        TrailapiService.getKeywordCourse(page, num, keywords[selectedIndex]);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -265,34 +270,96 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               },
             ),
           ),
+
           // 다섯 번째 탭
-          //  Column(
-          //  children: [
-          // Row(children: Text()), //팔로우한 키워드 보기 하지말까여
+          //
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: FutureBuilder(
-              future: KeyWordTrail,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data!.isNotEmpty) {
-                    return Row(
-                      children: [Expanded(child: makeList(snapshot))],
-                    );
-                  } else {
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Column(
+              children: [
+                Row(
+                  children: List<Widget>.generate(
+                    keywords.length,
+                    (index) {
+                      final keyword = keywords[index];
+                      bool isSelected =
+                          index == selectedIndex; // 현재 버튼이 선택된 상태인지 확인
+
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedIndex = index; // 선택된 버튼 인덱스 변경
+                            });
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (isSelected &&
+                                    !states.contains(MaterialState.pressed)) {
+                                  return Colors.green;
+                                }
+                                return Colors.white;
+                              },
+                            ),
+                            foregroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (isSelected &&
+                                    !states.contains(MaterialState.pressed)) {
+                                  return Colors.white;
+                                }
+                                return Colors.black;
+                              },
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : Colors
+                                          .white, // 선택된 버튼의 테두리 색상은 투명하게, 선택되지 않은 버튼의 테두리 색상은 흰색
+                                  width: 2.0, // 테두리 두께
+                                ),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            keyword,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                FutureBuilder(
+                  future: KeyWordTrail,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return Expanded(child: makeList(snapshot));
+                      } else {
+                        return const Center(
+                          child: Text('해당 산책로가 없습니다'),
+                        );
+                      }
+                    }
                     return const Center(
-                      child: Text('해당 산책로가 없습니다'),
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
+                  },
+                ),
+              ],
             ),
-          ),
-          //  ],
-          //),
+          )
         ],
       ),
     );
