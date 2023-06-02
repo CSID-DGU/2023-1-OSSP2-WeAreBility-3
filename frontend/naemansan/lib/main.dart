@@ -1,5 +1,3 @@
-//로그인 권한 문제로 main.dart주석 처리 후 이전 버전으로 사용하였습니다//
-
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

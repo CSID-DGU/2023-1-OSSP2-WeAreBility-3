@@ -4,6 +4,8 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/models/trailcommentmodel.dart';
+import 'package:naemansan/widgets/widget_trailcomment.dart';
 
 class Myrail extends StatefulWidget {
   const Myrail({Key? key}) : super(key: key);
@@ -29,25 +31,38 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  ListView makeList(AsyncSnapshot<List<TrailModel>?> snapshot) {
+  ListView makeList(AsyncSnapshot<List<dynamic>?> snapshot) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: snapshot.data!.length,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
-        var trail = snapshot.data![index];
+        var data = snapshot.data![index];
 
-        return TrailWidget(
-          title: trail.title,
-          startpoint: trail.startLocationName,
-          distance: trail.distance,
-          CourseKeyWord: trail.tags,
-          likeCnt: trail.likeCount,
-          userCnt: trail.userCount,
-          isLiked: trail.isLiked,
-          id: trail.id,
-          created_date: trail.createdDate.toString(),
-        );
+        if (data is TrailModel) {
+          var trail = data;
+
+          return TrailWidget(
+            title: trail.title,
+            startpoint: trail.startLocationName,
+            distance: trail.distance,
+            CourseKeyWord: trail.tags,
+            likeCnt: trail.likeCount,
+            userCnt: trail.userCount,
+            isLiked: trail.isLiked,
+            id: trail.id,
+            created_date: trail.createdDate.toString(),
+          );
+        } else if (data is TrailCommentModel) {
+          var comment = data;
+
+          return CommentTrailWidget(
+            icon: Icons.ac_unit, // 아이콘을 원하는 아이콘으로 변경해주세요.
+            content: comment.content,
+          );
+        }
+
+        return const SizedBox();
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -65,7 +80,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         TrailapiService.getLikedCourses(page, num);
     final Future<List<TrailModel>?> UsedTrail =
         TrailapiService.getUsedCourses(page, num);
-    final Future<List<TrailModel>?> CommentedTrail =
+    final Future<List<TrailCommentModel>?> CommentedTrail =
         TrailapiService.getCommentedCourses(page, num);
     final Future<List<TrailModel>?> KeyWordTrail =
         TrailapiService.getKeywordCourse(page, num, '중구'); //내가 선택한 태그 불러오기 햐
@@ -231,7 +246,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
-              future: CommentedTrail, //나중에 고챠
+              future: CommentedTrail,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.isNotEmpty) {

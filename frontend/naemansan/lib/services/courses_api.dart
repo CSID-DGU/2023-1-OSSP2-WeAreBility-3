@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/models/trailcommentmodel.dart';
 
 class TrailApiService {
   final String baseUrl = 'https://ossp.dcs-hyungjoon.com';
@@ -42,6 +43,24 @@ class TrailApiService {
     } catch (e) {
       print('GET 요청 실패 - $e');
       return http.Response('Error', 500);
+    }
+  }
+
+/*유저정보 가져오기*/
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    try {
+      final response = await getRequest('user');
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        print(parsedResponse['data']);
+        return parsedResponse['data'];
+      } else {
+        print('유저 정보 가져오기 실패 - ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('유저 정보 가져오기 실패 - $e');
+      return null;
     }
   }
 
@@ -255,20 +274,20 @@ class TrailApiService {
     }
   }
 
-  //댓글  'course/{courseId}/comment?page=$page&num=$num'
-  //사용자 댓글 조회 /user/comment?page={}&num={}
-
-  Future<List<TrailModel>?> getCommentedCourses(int page, int num) async {
+  //사용자 댓글 조회 /user/comment?page={}&num={} //여기 get 요청 실패 ...
+  Future<List<TrailCommentModel>?> getCommentedCourses(
+      //위젯 디자인이 달라 여기만 다른 위젯 사용
+      int page,
+      int num) async {
     try {
       final response = await getRequest('/user/comment?page=$page&num=$num');
 
       if (response.statusCode == 200) {
-        final parsedResponse =
-            jsonDecode(response.body) as Map<String, dynamic>;
+        final parsedResponse = jsonDecode(response.body);
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TrailCommentModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TrailCommentModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
