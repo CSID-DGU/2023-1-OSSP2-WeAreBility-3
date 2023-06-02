@@ -9,7 +9,7 @@ class  finish_Checker():
         self.courseid = courseid
 
     def calculate_Similarity(self, input_coord) :
-        # Token
+        # 두 산책로의 유사도가 높으면 false/true를 반환 하는 함수
         token_true = {
             "success" : True
         }
@@ -17,34 +17,30 @@ class  finish_Checker():
             "success" : False
         }
 
-        # 표준화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
+        # 정규화 (X_mean, Y_mean : [ 37.554812 126.988204] X_std, Y_std :  [0.0031548  0.00720859])
+        # jupyter notebook에서 standard scaler를 이용해서 얻을 결과를 값만 사용
         X_mean, Y_mean = 37.554812, 126.988204
         X_std, Y_std = np.sqrt(0.0031548), np.sqrt(0.00720859)
 
-        # 유저 input(좌표의 x,y 값을 순서대로 입력한다.)
+        # user가 등록하고자 하는 gps의 json을 좌표형식으로 쪼갠다.
         temp = np.array(input_coord.split())
         user_input = np.array([])
         for i in temp:
             user_input = np.append(user_input, float(i))
         user_input = user_input.reshape(-1, 2)
 
-        # 유사도 검사를 통과하면 db에 저장되는 유저의 좌표
-        user_coordinates = [tuple(e) for e in user_input]
-        #print(user_coordinates)
-
-
-        # 정규화
+        # 위에서 얻은 좌표형식의 gps값을 정규화
         user_frame = pd.DataFrame(user_input)
         user_frame.iloc[:, 0] = (user_frame.iloc[:, 0] - X_mean) / X_std
         user_frame.iloc[:, 1] = (user_frame.iloc[:, 1] - Y_mean) / Y_std
         user_std = user_frame.values
-        #print(user_std)
 
         # DB연결
         conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
 
         cursor = conn.cursor()
 
+        # DB에서 유저가 이용한 산책로를 모두 갖고온다.
         query = """
         SELECT ST_AsText(locations) 
         FROM enrollment_courses
@@ -71,9 +67,9 @@ class  finish_Checker():
                 float_coord.append(float(i))
             coordinates_list.append(float_coord)
 
-
         # 좌표를 데이터프레임으로 변환
         walking_Path = pd.DataFrame(coordinates_list)
+
         # 산책로 마다 데이터프레임으로 변환
         X, Y = walking_Path.shape
         for i in range(X):
@@ -95,19 +91,15 @@ class  finish_Checker():
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
             
             # threshold -> 0.8 (나중에 바뀔수도..??)
+            # checker와 다르게 finisher의 경우 약간 후하게 책정
             threshold = 0.95
 
-            # 유사도가 높으면 true 반환
+            # 유사도가 높으면 반복문 멈추고 등록 불가
+            # 산책로의 좌표가 길면 유사도 벡터가 점점 희소해지는 문제를 벡터 열의 max값만 사용
+            # 벡터 열의 max값을 이용한다는 것의 의미는 A 산책로의 한 좌표와 제일 가까운 B 산책로의 한 좌표와의 유사도를 의미
             if (similarity_score > threshold or similarity_score < -threshold) or np.all(np.isclose(np.diag(similarity_vector), 1.0)):
                 return token_true
-                token = 1
-                break
-            else:
-                token = 0
 
-
-        # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)
-        # userid 추가 필요..(5.14) 참조 테이블?? 
         return token_false
 
 
