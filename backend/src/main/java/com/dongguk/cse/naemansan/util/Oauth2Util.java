@@ -7,7 +7,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -23,7 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
@@ -206,7 +208,6 @@ public class Oauth2Util {
     }
 
     public String getAppleUserInformation(String authorizationCode)  {
-        log.info("getAppleUserInformation 작동");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/x-www-form-urlencoded");
         try {
@@ -231,7 +232,6 @@ public class Oauth2Util {
     }
 
     private String generateSecretKey() throws Exception {
-        log.info("generateSecretKey 작동");
         PrivateKey pKey = generatePrivateKey();
         return Jwts.builder()
                 .setHeaderParam(JwsHeader.KEY_ID, APPLE_CLIENT_KEY)
@@ -245,8 +245,6 @@ public class Oauth2Util {
     }
 
     private PrivateKey generatePrivateKey() throws Exception {
-        log.info("generatePrivateKey 작동");
-
         InputStream inputStream = new ClassPathResource("AuthKey_25QLY6KYS4.p8").getInputStream();
 
         File file = File.createTempFile("AuthKey", ".p8");
@@ -275,8 +273,7 @@ public class Oauth2Util {
         return "User id Not Found";
     }
 
-    public String createPublicKeyApple(AppleIdTokenResponse appleIdTokenResponse, List<JWTSetKeys> keysList) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        log.info("createPublicKeyApple 작동");
+    private String createPublicKeyApple(AppleIdTokenResponse appleIdTokenResponse, List<JWTSetKeys> keysList) throws NoSuchAlgorithmException, InvalidKeySpecException {
         JWTSetKeys applePublicKey = null;
         for (JWTSetKeys keys : keysList) {
             applePublicKey = keys;
@@ -287,7 +284,6 @@ public class Oauth2Util {
                 Claims claims = getClaims(publicKey, appleIdTokenResponse);
                 return claims.get("sub", String.class);
             } catch (Exception exception) {
-                System.out.println("Trying for another key");
             }
         }
 
@@ -298,5 +294,38 @@ public class Oauth2Util {
         return Jwts.parser()
                 .setSigningKey(publicKey)
                 .parseClaimsJws(appleIdTokenResponse.getId_token()).getBody();
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @RequiredArgsConstructor
+    private static class AppleIdTokenResponse {
+        private String access_token;
+        private String token_type;
+        private String expires_in;
+        private String refresh_token;
+        private String id_token;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @RequiredArgsConstructor
+    private static class JWTSetKeys {
+        private String kty;
+        private String kid;
+        private String use;
+        private String alg;
+        private String n;
+        private String e;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @RequiredArgsConstructor
+    private static class Key {
+        private List<JWTSetKeys> keys;
     }
 }
