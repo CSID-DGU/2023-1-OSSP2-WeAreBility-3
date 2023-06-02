@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:naemansan/screens/create_course_screen.dart';
+import 'package:naemansan/screens/map/naver_map_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
@@ -99,7 +99,8 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const CreateCourseScreen(),
+                  builder: (context) => const NaverMapScreen(),
+                  // builder: (context) => const CreateCourseScreen(),
                 ),
               );
             },
