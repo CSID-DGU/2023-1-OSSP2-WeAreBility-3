@@ -14,14 +14,9 @@ db에 적용시킬 알고리즘
 """
 
 from gensim.models import Word2Vec
-from gensim.models import KeyedVectors
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import pymysql
-from shapely import wkt
-from shapely.geometry import MultiPoint
-from shapely.wkb import loads
-import pandas as pd
 
 
 #d
@@ -127,35 +122,3 @@ class course_recommender():
         
         else :
             return { "courseid" : []}
-
-"""
- 이부분은 load를 하기 때문에 필요가 없음
-keyword_raw = 힐링 스타벅스 자연 오솔길 도심 출근길 퇴근길 점심시간 스트레스해소
-한강 공원 성수 강아지 바다 해안가 러닝 맛집 카페 영화 문화 사색
-핫플 서울숲 경복궁 한옥마을 문화재 고양이 개울가 계곡 들판 산 동산 야경 노을 숲길
-강서구 양천구 구로구 영등포구 금천구 동작구 관악구 서초구 강남구 송파구 강동구
-은평구 서대문구 마포구 용산구 중구 종로구 도봉구 강북구 성북구 동대문구 성동구 노원구
-중랑구 광진구
-keyword = keyword_raw.replace("\n", " ")
-keyword = keyword.split(" ")
-keyword_list = [[single] for single in keyword]
-model = Word2Vec(sentences = keyword_list, vector_size=20, window=1, min_count=1, workers=4)
-model.save("word2vec.model")
-
-"""
-
-
-"""model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
-
-example1 = "힐링 스타벅스 자연"
-example1_vector = course_vector_calculator(tokenizer(example1))
-print(example1_vector)
-
-example2 = "스타벅스 힐링 자연"
-example2_vecotr = course_vector_calculator(tokenizer(example2))
-print(example2_vecotr)
-
-vector, score = similarity_calculator(example1_vector, example2_vecotr)
-print("유사도 vector : ", vector)
-print("점수 : ", score)
-"""

@@ -1,10 +1,6 @@
 import pymysql
-from shapely import wkt
-from shapely.geometry import MultiPoint
-from shapely.wkb import loads
 import pandas as pd
 import numpy as np
-import sys
 from sklearn.metrics.pairwise import cosine_similarity
 
 
@@ -114,10 +110,7 @@ class  similarity_Checker():
                 similarity_score > threshold or similarity_score < -threshold
             )) or np.all(np.isclose(np.diag(similarity_vector), 1.0)) :
                 return token_false
-                token = 1
-                break
-            else:
-                token = 0
+
 
 
         # 유사도 검사를 통과하면 좌표 정보를 db에 저장(추후에 모든 정보를 추가하도록 코드 수정)

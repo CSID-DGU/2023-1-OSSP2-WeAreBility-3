@@ -1,7 +1,4 @@
 import pymysql
-from shapely import wkt
-from shapely.geometry import MultiPoint
-from shapely.wkb import loads
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
