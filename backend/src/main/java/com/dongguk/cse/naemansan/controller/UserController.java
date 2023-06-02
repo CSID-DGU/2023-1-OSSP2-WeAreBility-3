@@ -1,6 +1,5 @@
 package com.dongguk.cse.naemansan.controller;
 
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.common.ResponseDto;

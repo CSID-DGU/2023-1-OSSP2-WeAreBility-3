@@ -25,6 +25,7 @@ bin/
 application-local.yml
 application-server.yml
 *.json
+*.p8
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
