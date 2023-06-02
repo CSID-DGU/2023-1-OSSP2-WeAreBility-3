@@ -46,7 +46,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
         _currentPosition = position;
       });
     } catch (e) {
-      print('Failed to get current location: $e');
+      // print('Failed to get current location: $e');
       // 위치 가져오기 실패 시 에러 처리 작업 추가
       setState(() {
         _currentPosition = null;
@@ -246,7 +246,7 @@ class _CreateCourseScreenState extends State<CreateCourseScreen> {
       'title': title,
       'locations': _locations,
     };
-    print(courseData);
+    // print(courseData);
 
     // Send the route data to the server and save it
     // …

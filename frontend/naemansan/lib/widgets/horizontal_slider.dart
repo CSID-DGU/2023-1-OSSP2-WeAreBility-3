@@ -38,7 +38,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
           widget.latitude!, widget.longitude!);
     }
 
-    print(data);
+    // print(data);
 
     if (data != null) {
       final items = data

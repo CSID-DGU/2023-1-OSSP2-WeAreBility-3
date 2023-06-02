@@ -16,6 +16,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
 
   final MapType _mapType = MapType.Basic;
   LatLng? _currentLocation;
+
   Timer? _timer; // 추가
 
   bool _isTracking = false;
@@ -47,9 +48,16 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
                   ? LocationTrackingMode.Face
                   : LocationTrackingMode.None,
               locationButtonEnable: true,
+              initialCameraPosition: _currentLocation != null
+                  ? CameraPosition(
+                      target: _currentLocation!,
+                      zoom: 16,
+                    )
+                  : null,
             ),
           ),
           Container(
+            // only top margin
             padding: const EdgeInsets.all(16),
             child: Text(
               _getDurationString(),
@@ -99,7 +107,10 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     final seconds = duration.inSeconds.remainder(60);
+    goBack(hours, minutes, seconds);
+  }
 
+  goBack(hours, minutes, seconds) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -107,7 +118,10 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         content: Text('산책 시간: $hours시간 $minutes분 $seconds초'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
             child: const Text('확인'),
           ),
         ],

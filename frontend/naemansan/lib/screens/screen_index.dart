@@ -19,7 +19,7 @@ class _IndexScreenState extends State<IndexScreen> {
     setState(() {
       isLogged_local = prefs.getBool('isLogged') ?? false;
       _checkLoginStatus();
-      print("지금 screen_index.dart 가 파악하는 로그인 상태는$isLogged_local");
+      // print("지금 screen_index.dart 가 파악하는 로그인 상태는$isLogged_local");
     });
   }
 

@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
                   "http://34.22.79.208:8080/auth/kakao/callback?code=$code"),
             );
             var parseResponse = jsonDecode(response.body);
-            print(parseResponse);
+            // print(parseResponse);
 
             if (response.statusCode == 200) {
               // API 응답 값
