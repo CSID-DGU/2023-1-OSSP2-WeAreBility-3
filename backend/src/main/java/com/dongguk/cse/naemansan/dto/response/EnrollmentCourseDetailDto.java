@@ -1,6 +1,6 @@
 package com.dongguk.cse.naemansan.dto.response;
 
-import com.dongguk.cse.naemansan.dto.EnrollmentCourseTagDto;
+import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,14 +15,14 @@ public class EnrollmentCourseDetailDto {
     private String title;
     private Timestamp created_date;
     private String introduction;
-    private List<EnrollmentCourseTagDto> tags;
+    private List<CourseTagDto> tags;
     private String start_location_name;
     private List<PointDto> locations;
     private Double distance;
 
     @Builder
     public EnrollmentCourseDetailDto(Long id, Long user_id, String user_name, String title, Timestamp created_date, String introduction,
-                                     List<EnrollmentCourseTagDto> tags, String start_location_name, List<PointDto> locations, Double distance) {
+                                     List<CourseTagDto> tags, String start_location_name, List<PointDto> locations, Double distance) {
         this.id = id;
         this.user_id = user_id;
         this.user_name = user_name;
