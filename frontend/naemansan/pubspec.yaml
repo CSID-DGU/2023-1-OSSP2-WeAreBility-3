@@ -57,6 +57,8 @@ dependencies:
     flutter_webview_plugin: ^0.4.0
     google_maps_flutter: ^2.2.8
     provider: ^6.0.5
+    naver_map_plugin:
+        git: https://github.com/LBSTECH/naver_map_plugin
 
 dev_dependencies:
     flutter_test:
