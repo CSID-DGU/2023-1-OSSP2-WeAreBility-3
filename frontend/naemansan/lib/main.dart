@@ -59,7 +59,7 @@ class _AppState extends State<App> {
 
   Future<void> getLoginStatus() async {
     userInfo = await storage.read(key: 'login');
-    print("userInfo 가 있냐고 $userInfo");
+    // print("userInfo 가 있냐고 $userInfo");
     userInfo == null ? isLogged = false : isLogged = true;
 
     setState(
@@ -67,7 +67,7 @@ class _AppState extends State<App> {
     );
 
     // 새로고침하면 로그인 상태가 반영이 안됨
-    print("🤔지금 main.dart가 파악하는 로그인 상태는$isLogged");
+    // print("🤔지금 main.dart가 파악하는 로그인 상태는$isLogged");
   }
 
   Future<bool> isUserLoggedIn() async {

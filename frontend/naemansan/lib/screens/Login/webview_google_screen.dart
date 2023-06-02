@@ -105,6 +105,10 @@ class _WebViewGoogleState extends State<WebViewGoogle> {
 
               final prefs = await SharedPreferences.getInstance();
               prefs.setBool('isLogged', true);
+              await storage.write(
+                key: 'login',
+                value: accessToken,
+              );
               successLogin();
             } else {
               failedLogin();
