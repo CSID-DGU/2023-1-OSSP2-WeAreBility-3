@@ -77,7 +77,11 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     List<String> keywords = [
       '한강',
       '마포구',
-      '퇴근길'
+      '퇴근길',
+      '중구',
+      '사색',
+      '야경',
+      '공원'
     ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
     final Future<List<TrailModel>?> EnrolledTrail =
@@ -277,66 +281,71 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             padding: const EdgeInsets.only(left: 16.0),
             child: Column(
               children: [
-                Row(
-                  children: List<Widget>.generate(
-                    keywords.length,
-                    (index) {
-                      final keyword = keywords[index];
-                      bool isSelected =
-                          index == selectedIndex; // 현재 버튼이 선택된 상태인지 확인
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List<Widget>.generate(
+                      keywords.length,
+                      (index) {
+                        final keyword = keywords[index];
+                        bool isSelected = index == selectedIndex;
 
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedIndex = index; // 선택된 버튼 인덱스 변경
-                            });
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (isSelected &&
-                                    !states.contains(MaterialState.pressed)) {
-                                  return Colors.green;
-                                }
-                                return Colors.white;
-                              },
-                            ),
-                            foregroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (isSelected &&
-                                    !states.contains(MaterialState.pressed)) {
-                                  return Colors.white;
-                                }
-                                return Colors.black;
-                              },
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                side: BorderSide(
-                                  color: isSelected
-                                      ? Colors.transparent
-                                      : Colors
-                                          .white, // 선택된 버튼의 테두리 색상은 투명하게, 선택되지 않은 버튼의 테두리 색상은 흰색
-                                  width: 2.0, // 테두리 두께
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedIndex = index;
+                              });
+                            },
+                            style: ButtonStyle(
+                              elevation:
+                                  MaterialStateProperty.resolveWith<double>(
+                                (Set<MaterialState> states) {
+                                  return 8.0;
+                                },
+                              ),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (isSelected) {
+                                    return Colors.green; // 선택된 버튼은 초록색 배경
+                                  }
+                                  return Colors.white; // 선택되지 않은 버튼은 흰 배경
+                                },
+                              ),
+                              foregroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (isSelected) {
+                                    return Colors.white; // 선택된 버튼은 하얀 글씨
+                                  }
+                                  return Colors.black; // 선택되지 않은 버튼은 검은 글씨
+                                },
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                    color: isSelected
+                                        ? Colors.transparent
+                                        : Colors.white,
+                                    width: 2.0,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          child: Text(
-                            keyword,
-                            style: const TextStyle(
-                              color: Colors.black,
+                            child: Text(
+                              keyword,
+                              style: const TextStyle(
+                                fontSize: 16, // 글자 크기를 16으로 조정
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -359,7 +368,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
