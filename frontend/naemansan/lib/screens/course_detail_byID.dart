@@ -1,36 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:naemansan/models/traildetailmodel.dart';
+import 'package:naemansan/services/courses_api.dart';
 
-// ID 값으로
-
-class CourseDetail extends StatefulWidget {
+class CourseDetailbyID extends StatefulWidget {
   final int id;
-  final String title;
-  final String location;
-  final double length;
-  final int likes;
-  final List<String> keywords;
-  final String created_date;
 
-  const CourseDetail({
+  const CourseDetailbyID({
     Key? key,
     required this.id,
-    required this.title,
-    required this.location,
-    required this.length,
-    required this.likes,
-    required this.keywords,
-    required this.created_date,
   }) : super(key: key);
 
   @override
-  _CourseDetailState createState() => _CourseDetailState();
+  _CourseDetailbyIDState createState() => _CourseDetailbyIDState();
 }
 
-class _CourseDetailState extends State<CourseDetail> {
+class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   int likes = 0;
   List<String> comments = [];
   bool _isLiked = false;
+  TraildetailModel? trailDetail;
 
   void addComment(String comment) {
     setState(() {
@@ -51,10 +41,38 @@ class _CourseDetailState extends State<CourseDetail> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchTrailDetail();
+  }
+
+  void fetchTrailDetail() {
+    final apiService = TrailApiService();
+    apiService.getRequest('api/course/${widget.id}').then((response) {
+      setState(() {
+        trailDetail = TraildetailModel.fromJson(jsonDecode(response.body));
+      });
+    }).catchError((error) {
+      // 오류 처리
+      print('오류 발생: $error');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final double lengthInKm = widget.length / 1000;
-    final formattedDate =
-        DateFormat("MM/dd").format(DateTime.parse(widget.created_date));
+    if (trailDetail == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Course Detail'),
+        ),
+        body: const Center(
+          child: Text('조회 오류류'),
+        ),
+      );
+    } // null이라고 나오는데 null일수가 있나
+
+    final double lengthInKm = trailDetail!.distance / 1000;
+    final formattedDate = DateFormat("MM/dd").format(trailDetail!.createdDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +82,7 @@ class _CourseDetailState extends State<CourseDetail> {
             Navigator.pop(context);
           },
         ),
-        title: Text(widget.title),
+        title: Text(trailDetail!.title),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -113,7 +131,7 @@ class _CourseDetailState extends State<CourseDetail> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.title,
+                    trailDetail!.title,
                     style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -144,7 +162,7 @@ class _CourseDetailState extends State<CourseDetail> {
 
               const SizedBox(height: 16),
               Text(
-                '시작위치: ${widget.location}',
+                '시작위치: ${trailDetail!.startLocationName}',
                 style: const TextStyle(
                   fontSize: 18,
                 ),
@@ -170,7 +188,7 @@ class _CourseDetailState extends State<CourseDetail> {
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
-                children: widget.keywords.map((keyword) {
+                children: trailDetail!.tags.map((keyword) {
                   return Chip(
                     label: Text(
                       keyword,
@@ -209,4 +227,3 @@ class _CourseDetailState extends State<CourseDetail> {
     );
   }
 }
-//

@@ -1,5 +1,6 @@
 // traildetailmodel.dart
-// 위치 값도 불러오게
+// 위치 값도 불러오게 - trailmodel.dart에 locations만 추가
+// 아이디 값
 class TraildetailModel {
   final int id;
   final String title;
