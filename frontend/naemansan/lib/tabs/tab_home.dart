@@ -107,9 +107,11 @@ class _HomeState extends State<Home> {
             true; // Update the nowLocation flag after successfully retrieving the address
       });
     } catch (error) {
-      setState(() {
-        nowLocation = false; // Update the nowLocation flag if an error occurs
-      });
+      if (mounted) {
+        setState(() {
+          nowLocation = false; // Update the nowLocation flag if an error occurs
+        });
+      }
       // print('Error fetching location: $error');
     }
   }

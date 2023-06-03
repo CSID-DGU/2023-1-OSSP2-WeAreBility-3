@@ -65,9 +65,6 @@ class _AppState extends State<App> {
     setState(
       () {},
     );
-
-    // 새로고침하면 로그인 상태가 반영이 안됨
-    // print("🤔지금 main.dart가 파악하는 로그인 상태는$isLogged");
   }
 
   goLogin() {
