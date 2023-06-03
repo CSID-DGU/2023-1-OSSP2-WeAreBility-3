@@ -62,6 +62,10 @@ class _HomeState extends State<Home> {
         goLogin();
       }
     });
+    _getCurrentLocation();
+    setState(() {
+      nowLocation = true;
+    });
   }
 
   goLogin() async {
