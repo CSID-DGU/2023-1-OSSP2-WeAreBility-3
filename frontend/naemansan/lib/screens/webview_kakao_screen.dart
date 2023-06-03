@@ -22,7 +22,7 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
   void initState() {
     super.initState();
     flutterWebViewPlugin.onUrlChanged.listen((String url) async {
-      print(url);
+      // print(url);
       if (url
           .startsWith('https://ossp.dcs-hyungjoon.com/auth/kakao/callback')) {
         // Callback URL reached, process the token
@@ -35,7 +35,7 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
         );
 
         var parsedResponse = jsonDecode(response.body);
-        print(parsedResponse);
+        // print(parsedResponse);
 
         if (response.statusCode == 200) {
           // API response value

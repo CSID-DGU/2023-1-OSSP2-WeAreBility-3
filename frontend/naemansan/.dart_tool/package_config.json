@@ -219,9 +219,9 @@
     },
     {
       "name": "flutter_webview_plugin",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_webview_plugin-0.3.11",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_webview_plugin-0.4.0",
       "packageUri": "lib/",
-      "languageVersion": "2.0"
+      "languageVersion": "2.12"
     },
     {
       "name": "geocoding",
@@ -472,6 +472,12 @@
     {
       "name": "meta",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.8.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "naver_map_plugin",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/git/naver_map_plugin-d6029c020e13c926ff5f94b445b4f65abb48b85f/",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -818,7 +824,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-01T16:44:28.351265Z",
+  "generated": "2023-06-03T06:39:48.454034Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }

@@ -80,7 +80,7 @@ class _HomeState extends State<Home> {
       setState(() {
         nowLocation = false; // Update the nowLocation flag if an error occurs
       });
-      print('Error fetching location: $error');
+      // print('Error fetching location: $error');
     }
   }
 
