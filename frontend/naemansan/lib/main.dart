@@ -7,7 +7,7 @@ import 'package:naemansan/screens/login_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/services.dart';
 // 알림
 
 void main() async {
@@ -18,7 +18,7 @@ void main() async {
   // spalsh 시간 조절하기
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   // 로그인 여부 확인
   // final isLoggedin = prefs.getBool('isLoggedIn') ?? false;
   KakaoSdk.init(nativeAppKey: "${dotenv.env['YOUR_NATIVE_APP_KEY']}");
