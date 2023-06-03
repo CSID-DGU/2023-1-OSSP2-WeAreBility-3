@@ -69,7 +69,7 @@ class TrailApiService {
   Future<List<TrailModel>?> getRecommendedCourses(int page, int num) async {
     try {
       final response =
-          await getRequest('/course/list/recommend?page=$page&num=$num');
+          await getRequest('course/list/recommend?page=$page&num=$num');
 
       if (response.statusCode == 200) {
         final parsedResponse =

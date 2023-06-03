@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
-import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/services/mypage_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
 import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
@@ -20,7 +20,7 @@ class _MypageState extends State<Mypage> {
 
   // Fetch user info
   Future<Map<String, dynamic>?> fetchUserInfo() async {
-    ApiService apiService = ApiService();
+    ProfileApiService apiService = ProfileApiService();
     return await apiService.getUserInfo();
   }
 
