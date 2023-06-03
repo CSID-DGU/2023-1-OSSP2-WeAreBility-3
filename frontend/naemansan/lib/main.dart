@@ -59,7 +59,9 @@ class _AppState extends State<App> {
     userInfo = await storage.read(key: 'login');
     // print("userInfo 가 있냐고 $userInfo");
     userInfo == null ? isLogged = false : isLogged = true;
-
+    if (isLogged == false) {
+      goLogin();
+    }
     setState(
       () {},
     );
@@ -68,10 +70,17 @@ class _AppState extends State<App> {
     // print("🤔지금 main.dart가 파악하는 로그인 상태는$isLogged");
   }
 
+  goLogin() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
+
   Future<bool> isUserLoggedIn() async {
     const storage = FlutterSecureStorage();
     String? accessToken = await storage.read(key: 'accessToken');
     String? refreshToken = await storage.read(key: 'refreshToken');
+    if (accessToken == null) {
+      goLogin();
+    }
     return accessToken != null && refreshToken != null;
   }
 
