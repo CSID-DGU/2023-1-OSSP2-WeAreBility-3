@@ -10,6 +10,7 @@ class Badges extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,

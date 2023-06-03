@@ -172,7 +172,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
-              future: NearestTrail,
+              future: RecommendTrail,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Row(
