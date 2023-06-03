@@ -4,15 +4,15 @@ import 'package:naemansan/screens/Home/banner_detail_screen.dart';
 
 class BannerSwiper extends StatelessWidget {
   final List<String> images = [
-    "https://i.pinimg.com/originals/89/2c/bc/892cbcd3d9d1982f3966acf2e41650d4.jpg",
-    "https://mblogthumb-phinf.pstatic.net/MjAxNzExMjJfMjUg/MDAxNTExMzI3NDIxODY3.1xiNaSwKDa6ETU8OhwUkofIWry9BGxAkfZJTtMXQOxkg.T2GO8rkb1FApzH2HOj9EoXnJPILRd6luo37JJqc4Lcsg.JPEG.knicjin/20171122-018.jpg?type=w800",
-    "https://img.freepik.com/premium-photo/detail-of-the-milky-way-with-photographers-panoramic-view-ultrawide-16-9-resolution_38810-698.jpg",
+    "https://i.pinimg.com/564x/91/d7/fb/91d7fb01a2c4ad831a07c147d8138237.jpg",
+    "https://i.pinimg.com/564x/d7/4f/46/d74f46a5980f8cf768b58c81f7038181.jpg",
+    "https://i.pinimg.com/564x/2b/bd/be/2bbdbe2c5ab8176c3eef8a59368367bd.jpg",
   ];
 
   final List<String> captions = [
+    "내가 만든 산책로, 내만산이란?",
     "산책을 즐기는 5가지 방법",
-    "내만산을 이용하는 방법",
-    "산책시 유의점",
+    "내만산 이용시 유의할점",
   ];
 
   final List<String> contents = [
