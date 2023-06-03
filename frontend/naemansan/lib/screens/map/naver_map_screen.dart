@@ -68,23 +68,23 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       final List<LatLng> coordinates =
           _pathOverlays.expand((overlay) => overlay.coords).toList();
 
-      print(coordinates);
-
       if (coordinates.isNotEmpty) {
         final lastCoordinate = coordinates.last;
         if (lastCoordinate.latitude == _currentLocation!.latitude &&
             lastCoordinate.longitude == _currentLocation!.longitude) {
           return;
         }
+      } else {
+        coordinates.add(_currentLocation!);
       }
       coordinates.add(_currentLocation!);
-      coordinates.isNotEmpty ? "" : coordinates.add(_currentLocation!);
+      print(coordinates);
 
       final pathOverlay = PathOverlay(
         PathOverlayId('walking_path'),
         coordinates,
         width: 10,
-        color: Colors.blue,
+        color: Colors.green,
         outlineColor: Colors.transparent,
       );
 
@@ -103,10 +103,21 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
-        title: const Text('산책로 추가'),
+        title: Text(_getDurationString(),
+            style: const TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w500,
+            )),
       ),
       body: Column(
         children: [
+          // Container(
+          //   padding: const EdgeInsets.all(16),
+          //   child: Text(
+          //     _getDurationString(),
+          //     style: const TextStyle(fontSize: 18),
+          //   ),
+          // ),
           Expanded(
             child: NaverMap(
               onMapCreated: onMapCreated,
@@ -114,13 +125,6 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
               initLocationTrackingMode: LocationTrackingMode.Face,
               locationButtonEnable: true,
               pathOverlays: _pathOverlays,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              _getDurationString(),
-              style: const TextStyle(fontSize: 18),
             ),
           ),
         ],
@@ -215,9 +219,9 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       final hours = duration.inHours;
       final minutes = duration.inMinutes.remainder(60);
       final seconds = duration.inSeconds.remainder(60);
-      return '현재 산책 시간: $hours시간 $minutes분 $seconds초';
+      return '산책 시간: $hours시간 $minutes분 $seconds초';
     } else {
-      return '산책을 시작해보세요!';
+      return '✨산책을 시작해보세요!';
     }
   }
 

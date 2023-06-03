@@ -60,7 +60,7 @@ class _AppState extends State<App> {
     // print("userInfo 가 있냐고 $userInfo");
     userInfo == null ? isLogged = false : isLogged = true;
     if (isLogged == false) {
-      goLogin();
+      // goLogin();
     }
     setState(
       () {},
@@ -71,7 +71,7 @@ class _AppState extends State<App> {
   }
 
   goLogin() {
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    // Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   Future<bool> isUserLoggedIn() async {
