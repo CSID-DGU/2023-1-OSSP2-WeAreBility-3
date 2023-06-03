@@ -6,6 +6,7 @@ import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
 import 'package:naemansan/widgets/widget_trailcomment.dart';
+import 'package:naemansan/screens/create_course_screen.dart';
 
 class Myrail extends StatefulWidget {
   const Myrail({Key? key}) : super(key: key);
