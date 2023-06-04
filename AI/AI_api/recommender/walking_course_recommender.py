@@ -14,20 +14,24 @@ db에 적용시킬 알고리즘
 """
 
 from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import pymysql
-from haversine import haversine
+from shapely import wkt
+from shapely.geometry import MultiPoint
+from shapely.wkb import loads
+import pandas as pd
 
 
 #d
 class course_recommender():
     def __init__(self, user_id = int) :
-        self.user_id = user_id # json에서 갖고온 유저의 ID
+        self.user_id = user_id
 
-        self.model = Word2Vec.load(".\\recommender\word2vec.model") # 미리 학습한 word2Vec 모델 load
+        self.model = Word2Vec.load(".\\recommender\word2vec.model")
 
-        self.best = 3 # 몇 개의 산책로를 추천할 것인지
+        self.best = 3
 
     # 산책로 tag를 pasing 하는 함수
     def tokenizer(self, text):
@@ -43,21 +47,19 @@ class course_recommender():
         course_vector = course_vector / len(temp_list)
         return course_vector
 
-    # 두 산책로의 tag vector의 유사도를 구하는 함수
     def similarity_calculator(self, vector1, vector2):
         similarity_vector = cosine_similarity(vector1, vector2)
         similarity_score = similarity_vector.mean()
         return similarity_score
 
-    # 산책로를 추천해 주는 함수
     def recommend(self):
         id_input = self.user_id
         
+
+        # db읽기 -1 finish table 가져오기
         conn = pymysql.connect(host="localhost", user="root", password="1234", db="naemansan")
         
         cursor = conn.cursor()
-
-        # DB에서 특정 사용자가 이용한 산책로의 id와 완주 여부를 갖고온다.
         query = """
         SELECT course_id, finish_status  
         FROM using_courses 
@@ -66,64 +68,94 @@ class course_recommender():
         results = cursor.fetchall()
         number = len(results)
 
-        # 예외처리, 이용한 산책로가 없으면 아무것도 추천을 하지 않는다.
         if number == 0 :
             return { "courseid" : []}
-        
-        user_vector = np.zeros((1,20)) # 특정 사용자의 vector
-        course_list =[] # 특정 사용자가 이용한 산책로 ID
-        finish_list =[] # 특정 사용자가 이용한 산책로의 완주여부 완주시 1, 아닐시 0
+
+
+    # db읽기 -2 user_id에 담긴 정보로 tag 읽어서 vector 만들기
+        user_vector = np.zeros((1,20))
+        course_list =[]
+        finish_list =[]
         for i in range(number):
             course_list.append(results[i][0])
             finish_list.append(results[i][1])
 
-        # DB에서 사용자가 이용한 산책로의 tag를 읽어와서 word2Vec을 통해 vector로 변환
-        # 변환한 vector를 사용자 vector에 더한 후에 총 더한 숫자로 나눈다.
-        # 해당 산책로를 완주했을 시에는 한번 더 더한다.
+        # 유저 vector 계산
         for idx, co_id in enumerate(course_list) :
             query = """
             SELECT tag 
             FROM course_tags 
-            WHERE course_id = %d""" % (co_id)
+            WHERE course_id = %d""" % (co_id)  # status또한 fetch
             cursor.execute(query)
             results = cursor.fetchall()
 
             raw_tags = results[0][0]
-            token_tags = self.tokenizer(raw_tags) # 산책로의 tag 리스트
-            course_vector = self.course_vector_calculator(token_tags) # word2Vec으로 변환
+            token_tags = self.tokenizer(raw_tags)
+            course_vector = self.course_vector_calculator(token_tags)
             user_vector += course_vector    # status가 1이면 한번 더 더하고 number++
-            if finish_list[idx] == 1 : 
+            if finish_list[idx] == 1 : #
                 user_vector += course_vector
                 number += 1
         user_vector = user_vector / number
 
-        # 사용자 vector와 전체 산책로의 유사도 점수 계산
+        # 유저 vector와 전체 course tag의 유사도 점수 계산
+
         query = """
         SELECT tag, course_id 
         FROM course_tags
         """ 
         cursor.execute(query)
         results = cursor.fetchall()
-        candidates_score = [] # 추천이될 가능성이 있는 산책로의 유사도 점수
-        candidates_id = [] # 추천이될 가능성이 있는 산책로의 ID
+        candidates_score = []
+        candidates_id = []
         for i in range(len(results)) :
             course_id = results[i][1]
             course_tag = results[i][0]
-            if course_id in course_list : # 사용자가 이용했던 산책로라면 추천을 하지 않는다.
+            if course_id in course_list :
                 continue
-            candidates_id.append(course_id) # 추천이될 가능성이 있는 산책로의 ID와 유사도 점수를 list에 넣는다.
+            candidates_id.append(course_id)
             candidates_score.append(self.similarity_calculator(user_vector, self.course_vector_calculator(self.tokenizer(course_tag))))
         
+
         if len(candidates_id) != 0 :
             temp = np.argsort(np.array(candidates_score))[::-1]
-            best_courses = [] # 유사도가 높은 순으로 정렬된 list
+            best_courses = []
             for i in range(len(temp)) :
                 best_courses.append({"id": candidates_id[temp[i]]})
             
-            # 추천하고자 하는 산책로의 수가 정렬된 산책로의 수보다 크다면 추천을 하지 않는다.
-            if len(best_courses) < self.best :
-                return { "courseid" : []}
-            return { "courseid" : best_courses[0:self.best]} # self.best개의 산책로 ID를 유사도가 높은 순으로 반환
+            return { "courseid" : best_courses[0:self.best]}
         
         else :
             return { "courseid" : []}
+
+"""
+ 이부분은 load를 하기 때문에 필요가 없음
+keyword_raw = 힐링 스타벅스 자연 오솔길 도심 출근길 퇴근길 점심시간 스트레스해소
+한강 공원 성수 강아지 바다 해안가 러닝 맛집 카페 영화 문화 사색
+핫플 서울숲 경복궁 한옥마을 문화재 고양이 개울가 계곡 들판 산 동산 야경 노을 숲길
+강서구 양천구 구로구 영등포구 금천구 동작구 관악구 서초구 강남구 송파구 강동구
+은평구 서대문구 마포구 용산구 중구 종로구 도봉구 강북구 성북구 동대문구 성동구 노원구
+중랑구 광진구
+keyword = keyword_raw.replace("\n", " ")
+keyword = keyword.split(" ")
+keyword_list = [[single] for single in keyword]
+model = Word2Vec(sentences = keyword_list, vector_size=20, window=1, min_count=1, workers=4)
+model.save("word2vec.model")
+
+"""
+
+
+"""model = Word2Vec.load("C:\Hoin666\\2023-1-OSSP2-WeAreBility-3\AI\course_recommender\word2vec.model")
+
+example1 = "힐링 스타벅스 자연"
+example1_vector = course_vector_calculator(tokenizer(example1))
+print(example1_vector)
+
+example2 = "스타벅스 힐링 자연"
+example2_vecotr = course_vector_calculator(tokenizer(example2))
+print(example2_vecotr)
+
+vector, score = similarity_calculator(example1_vector, example2_vecotr)
+print("유사도 vector : ", vector)
+print("점수 : ", score)
+"""
