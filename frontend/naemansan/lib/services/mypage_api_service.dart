@@ -72,6 +72,25 @@ class ProfileApiService {
     }
   }
 
+  /*           POST           */
+  Future<http.Response> postRequest(String endpoint, dynamic body) async {
+    try {
+      final accessToken = await getTokens();
+      final response = await http.post(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+      return response;
+    } catch (e) {
+      print('POST 요청 실패 - $e');
+      return http.Response('Error', 00);
+    }
+  }
+
 /*유저정보 가져오기*/
   Future<Map<String, dynamic>?> getUserInfo() async {
     try {

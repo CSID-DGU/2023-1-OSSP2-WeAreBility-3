@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
-import 'package:naemansan/profile_tabs/profile_information_edit.dart';
+import 'package:naemansan/profile_tabs/profile_introduction_edit.dart';
 import 'package:naemansan/profile_tabs/profile_name_edit.dart';
+import 'package:naemansan/profile_tabs/profile_image_edit.dart';
 
 class Editpage extends StatefulWidget {
   const Editpage({Key? key}) : super(key: key);
@@ -71,6 +72,7 @@ class _EditpageState extends State<Editpage> {
                   ],
                 ),
               ),
+              /*
               const Spacer(),
               InkWell(
                 onTap: () {
@@ -85,6 +87,7 @@ class _EditpageState extends State<Editpage> {
                 ),
               ),
               const SizedBox(width: 6),
+             */ //일단 이름, 소개, 사진 각각 완료버튼 누르면 바로 수정되는걸로
             ],
           ),
         ),
@@ -118,7 +121,18 @@ class _EditpageState extends State<Editpage> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // 프로필 사진 수정 활성화
+                              Navigator.of(context)
+                                  .push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ProfileImageEditPage(userInfo: userData),
+                                ),
+                              )
+                                  .then((value) {
+                                if (value == true) {
+                                  setState(() {});
+                                }
+                              });
                             },
                           ),
                         ],
@@ -130,6 +144,7 @@ class _EditpageState extends State<Editpage> {
                           thickness: 1,
                         ),
                       ),
+                      //이름 수정 부분
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -143,12 +158,18 @@ class _EditpageState extends State<Editpage> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              Navigator.of(context).push(
+                              Navigator.of(context)
+                                  .push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      const ProfileNameEditPage(),
+                                      ProfileNameEditPage(userInfo: userData),
                                 ),
-                              );
+                              )
+                                  .then((value) {
+                                if (value == true) {
+                                  setState(() {});
+                                }
+                              });
                             },
                           ),
                         ],
@@ -160,6 +181,7 @@ class _EditpageState extends State<Editpage> {
                           thickness: 1,
                         ),
                       ),
+                      //introduction 수정 부분
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -173,12 +195,18 @@ class _EditpageState extends State<Editpage> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              Navigator.of(context).push(
+                              Navigator.of(context)
+                                  .push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      const ProfileInformationEditPage(),
+                                      ProfileIntroEditPage(userInfo: userData),
                                 ),
-                              );
+                              )
+                                  .then((value) {
+                                if (value == true) {
+                                  setState(() {});
+                                }
+                              });
                             },
                           ),
                         ],
