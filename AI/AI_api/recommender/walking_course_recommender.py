@@ -17,6 +17,7 @@ from gensim.models import Word2Vec
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import pymysql
+from haversine import haversine
 
 
 #d
