@@ -86,7 +86,7 @@ public class JwtProvider implements InitializingBean {
 
         Claims claims = validateToken(refreshToken);
 
-        UserRepository.UserLoginForm user = userRepository.findByIdAndIsLoginAndRefreshToken(Long.valueOf(claims.get("id").toString()), refreshToken)
+        UserRepository.UserLoginForm user = userRepository.findByIdAndRefreshToken(Long.valueOf(claims.get("id").toString()), refreshToken)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         return createToken(user.getId(), user.getUserRoleType(), true);

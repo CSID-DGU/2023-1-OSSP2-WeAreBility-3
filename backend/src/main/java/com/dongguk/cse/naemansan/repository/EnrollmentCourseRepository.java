@@ -19,8 +19,8 @@ import java.util.Optional;
 public interface EnrollmentCourseRepository extends JpaRepository<EnrollmentCourse, Long> {
     Optional<EnrollmentCourse> findByIdNotAndTitleAndStatus(Long courseId, String title, Boolean status);
     Optional<EnrollmentCourse> findByIdAndStatus(Long courseId, Boolean Status);
-    @Query(value = "SELECT c FROM EnrollmentCourse c JOIN FETCH c.courseTags WHERE c.user = :user AND c.status = true")
-    Optional<EnrollmentCourse> findByIdAndStatusForRead(Long courseId, Boolean Status);
+//    @Query(value = "SELECT c FROM EnrollmentCourse c JOIN FETCH c.courseTags WHERE c.user = :user AND c.status = true")
+//    Optional<EnrollmentCourse> findByIdAndStatusForRead(Long courseId, Boolean Status);
     Optional<EnrollmentCourse> findByTitleAndStatus(String title, Boolean status);
     Long countByUser(User user);
     @Query(value = "SELECT c FROM EnrollmentCourse c WHERE c.user = :user AND c.status = true")
