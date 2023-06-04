@@ -59,7 +59,7 @@ class  similarity_Checker():
             row = row.replace(",", " ")
             temp = row.split()
             float_coord = []
-            for i in temp[::-1]:
+            for i in temp[::-1]: 
                 float_coord.append(float(i))
             coordinates_list.append(float_coord)
 
