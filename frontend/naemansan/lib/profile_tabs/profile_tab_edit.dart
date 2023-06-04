@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
+import 'package:naemansan/profile_tabs/profile_information_edit.dart';
+import 'package:naemansan/profile_tabs/profile_name_edit.dart';
 
 class Editpage extends StatefulWidget {
   const Editpage({Key? key}) : super(key: key);
@@ -141,7 +143,12 @@ class _EditpageState extends State<Editpage> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // name을 수정할 수 있는 화면
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const ProfileNameEditPage(),
+                                ),
+                              );
                             },
                           ),
                         ],
@@ -166,7 +173,12 @@ class _EditpageState extends State<Editpage> {
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // introduction을 수정할 수 있는 화면
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const ProfileInformationEditPage(),
+                                ),
+                              );
                             },
                           ),
                         ],

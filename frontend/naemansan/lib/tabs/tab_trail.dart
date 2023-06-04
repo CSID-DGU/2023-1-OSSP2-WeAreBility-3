@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
-//import 'package:naemansan/models/trailmodel.dart';
-import 'package:naemansan/models/traildetailmodel.dart';
+import 'package:naemansan/models/trailmodel.dart';
+//import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -59,7 +59,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  ListView makeList(AsyncSnapshot<List<TraildetailModel>?> snapshot) {
+  ListView makeList(AsyncSnapshot<List<TrailModel>?> snapshot) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: snapshot.data!.length,
@@ -72,7 +72,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           title: trail.title,
           startpoint: trail.startLocationName,
           distance: trail.distance,
-          // CourseKeyWord: trail.tags,
+          CourseKeyWord: trail.tags,
           likeCnt: trail.likeCount,
           userCnt: trail.userCount,
           isLiked: trail.isLiked,
@@ -90,16 +90,16 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
 
     const int page = 0;
     const int num = 10000000;
-    final Future<List<TraildetailModel>?> RecommendTrail =
+    final Future<List<TrailModel>?> RecommendTrail =
         TrailapiService.getRecommendedCourses(page, num);
-    final Future<List<TraildetailModel>?> NearestTrail =
+    final Future<List<TrailModel>?> NearestTrail =
         TrailapiService.getNearestCourses(
             page, num, _latitude, _longitude); //위도 경도 불러와야함
-    final Future<List<TraildetailModel>?> MostLikedTrail =
+    final Future<List<TrailModel>?> MostLikedTrail =
         TrailapiService.getMostLikedTrail(page, num);
-    final Future<List<TraildetailModel>?> MostUsedTrail =
+    final Future<List<TrailModel>?> MostUsedTrail =
         TrailapiService.getMostUsedTrail(page, num);
-    final Future<List<TraildetailModel>?> NewTrail =
+    final Future<List<TrailModel>?> NewTrail =
         TrailapiService.getAllCourses(page, num);
 
     return Scaffold(
@@ -126,7 +126,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
         title: const Text(
           '산책로',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 21,
             fontWeight: FontWeight.w600,
           ),
         ),

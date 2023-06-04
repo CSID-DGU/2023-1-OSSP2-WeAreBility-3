@@ -5,7 +5,7 @@ class TraildetailModel {
   final int id;
   final String title;
   final DateTime createdDate;
-  //final List<String> tags;
+  final List<String> tags;
   final String startLocationName;
   final double distance;
   final int likeCount;
@@ -17,7 +17,7 @@ class TraildetailModel {
     required this.id,
     required this.title,
     required this.createdDate,
-    //required this.tags,
+    required this.tags,
     required this.startLocationName,
     required this.distance,
     required this.likeCount,
@@ -31,7 +31,7 @@ class TraildetailModel {
       id: json['id'],
       title: json['title'],
       createdDate: DateTime.parse(json['created_date']),
-      //tags: List<String>.from(json['tags'].map((tag) => tag['name'])),
+      tags: List<String>.from(json['tags'].map((tag) => tag['name'])),
       startLocationName: json['start_location_name'],
       distance: json['distance'].toDouble(),
       likeCount: json['like_cnt'],
@@ -45,3 +45,8 @@ class TraildetailModel {
     );
   }
 }
+
+/*
+course/enrollment/{id}
+/course/individual/{id}
+*/

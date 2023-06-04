@@ -48,7 +48,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             title: trail.title,
             startpoint: trail.startLocationName,
             distance: trail.distance,
-            // CourseKeyWord: trail.tags,
+            CourseKeyWord: trail.tags,
             likeCnt: trail.likeCount,
             userCnt: trail.userCount,
             isLiked: trail.isLiked,
@@ -117,7 +117,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         title: const Text(
           '나만의 산책로',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 21,
             fontWeight: FontWeight.w600,
           ),
         ),

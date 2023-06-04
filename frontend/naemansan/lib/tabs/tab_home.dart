@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/screens/notification_screen.dart';
@@ -11,16 +12,13 @@ import 'package:naemansan/widgets/horizontal_slider.dart';
 import 'package:naemansan/widgets/main_slider.dart';
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
-}
-
-currentLoginState() {
-  // 로그인 여부 확인
-  // isLogged 확인
 }
 
 class _HomeState extends State<Home> {
@@ -35,10 +33,22 @@ class _HomeState extends State<Home> {
   late double _latitude = 0.0;
   late double _longitude = 0.0;
 
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+
   void handleKeywordSelected(String keyword) {
     setState(() {
       selectedKeyword = keyword;
     });
+  }
+
+  Future<void> deleteTokens() async {
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
+    print("삭제 진행함?");
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', false);
   }
 
   @override
@@ -46,6 +56,26 @@ class _HomeState extends State<Home> {
     super.initState();
     ApiService apiService = ApiService();
     user = apiService.getUserInfo();
+    // user의 값이 null일때 loginScreen으로 이동하고 토큰값 지우기
+    user.then((value) {
+      if (value == null) {
+        goLogin();
+      }
+    });
+    _getCurrentLocation();
+    setState(() {
+      nowLocation = true;
+    });
+  }
+
+  goLogin() async {
+    await deleteTokens();
+    await storage.delete(key: 'login');
+    gogoLogin();
+  }
+
+  gogoLogin() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   // 위도, 경도로 주소 가져오기
@@ -77,9 +107,11 @@ class _HomeState extends State<Home> {
             true; // Update the nowLocation flag after successfully retrieving the address
       });
     } catch (error) {
-      setState(() {
-        nowLocation = false; // Update the nowLocation flag if an error occurs
-      });
+      if (mounted) {
+        setState(() {
+          nowLocation = false; // Update the nowLocation flag if an error occurs
+        });
+      }
       // print('Error fetching location: $error');
     }
   }

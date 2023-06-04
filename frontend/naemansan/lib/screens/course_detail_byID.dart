@@ -48,7 +48,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
   void fetchTrailDetail() {
     final apiService = TrailApiService();
-    apiService.getRequest('api/course/${widget.id}').then((response) {
+    apiService.getRequest('course/individaul/${widget.id}').then((response) {
       setState(() {
         trailDetail = TraildetailModel.fromJson(jsonDecode(response.body));
       });
@@ -66,10 +66,21 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           title: const Text('Course Detail'),
         ),
         body: const Center(
-          child: Text('조회 오류류'),
+          child: CircularProgressIndicator(), // 로딩 중 표시
         ),
       );
-    } // null이라고 나오는데 null일수가 있나
+    }
+
+    if (trailDetail!.id == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Course Detail'),
+        ),
+        body: const Center(
+          child: Text('데이터가 없습니다.'), // 데이터 없음을 알리는 메시지
+        ),
+      );
+    }
 
     final double lengthInKm = trailDetail!.distance / 1000;
     final formattedDate = DateFormat("MM/dd").format(trailDetail!.createdDate);
@@ -185,7 +196,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               const SizedBox(height: 8),
-              /*
+
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -207,7 +218,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                     ),
                   );
                 }).toList(),
-              ),*/
+              ),
               const SizedBox(height: 24),
               // Add your content here
               TextField(
