@@ -45,14 +45,10 @@ public class CourseUtil {
     private static final RestTemplate restTemplate = new RestTemplate();
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
-    private String getStringPoint(PointDto pointDto) {
-        return pointDto.getLatitude().toString()+","+ pointDto.getLongitude().toString();
-    }
-
-    public String getLocationName(PointDto pointDto) {
+    public String getLocationName(PointDto point) {
         StringBuilder sb = new StringBuilder();
         sb.append(GOOGLE_MAP_URL);
-        sb.append("?latlng=" + getStringPoint(pointDto));
+        sb.append("?latlng=" + point.toString());
         sb.append("&key=" + GOOGLE_MAP_API_KEY);
         sb.append("&language=" + "ko");
 
@@ -114,7 +110,7 @@ public class CourseUtil {
         return JsonParser.parseString(response.getBody()).getAsJsonObject().get("success").getAsBoolean();
     }
 
-    public List<Long> getRecommend(Long userId) {
+    public List<Long> getRecommendList(Long userId) {
         HttpHeaders headers=new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject body = new JSONObject();;
@@ -139,7 +135,7 @@ public class CourseUtil {
         return list;
     }
 
-    public double getPointDistance(PointDto pointDtoOne, PointDto pointDtoTwo) {
+    private double getPointDistance(PointDto pointDtoOne, PointDto pointDtoTwo) {
         if (pointDtoOne == null || pointDtoTwo == null) {
             return 0.0;
         }
@@ -155,11 +151,11 @@ public class CourseUtil {
         return distance;
     }
 
-    public static double deg2rad(double deg) {
+    private static double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
-    public static double rad2deg(double rad) {
+    private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
 
@@ -240,7 +236,7 @@ public class CourseUtil {
         return tagList;
     }
 
-    public List<CourseTagDto> getTag2TagDtoForEnrollmentCourse(List<CourseTag> tagList) {
+    public List<CourseTagDto> getTag2TagDtoForCourse(List<CourseTag> tagList) {
         List<CourseTagDto> dtoList = new ArrayList<>();
 
         for (CourseTag courseTag : tagList) {
@@ -281,7 +277,7 @@ public class CourseUtil {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())

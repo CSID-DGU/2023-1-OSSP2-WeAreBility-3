@@ -151,7 +151,7 @@ public class CourseService {
         publisher.publishEvent(new EnrollmentCourseEvent(userId));
 
         // ResponseDto 를 위한 TagDto 생성
-        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(courseTags);
+        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForCourse(courseTags);
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -174,7 +174,7 @@ public class CourseService {
 
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
-        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags());
+        List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags());
 
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
@@ -231,7 +231,7 @@ public class CourseService {
                 .title(enrollmentCourse.getTitle())
                 .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(courseTagList))
+                .tags(courseUtil.getTag2TagDtoForCourse(courseTagList))
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
                 .distance(enrollmentCourse.getDistance()).build();
@@ -326,7 +326,7 @@ public class CourseService {
     // 산책로 Tap - 해당 유저의 성향에 따라 추천 산책로 조회용
     public List<EnrollmentCourseListDto> getEnrollmentCourseListByRecommend(Long userId, Long pageNum, Long Num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        List<Long> recommends = courseUtil.getRecommend(userId);
+        List<Long> recommends = courseUtil.getRecommendList(userId);
 
         if (recommends.size() == 0) {
             return new ArrayList<>();
@@ -368,7 +368,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -395,7 +395,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -422,7 +422,7 @@ public class CourseService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
