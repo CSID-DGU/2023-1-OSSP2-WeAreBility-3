@@ -185,6 +185,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               const SizedBox(height: 8),
+              /*
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -206,7 +207,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                     ),
                   );
                 }).toList(),
-              ),
+              ),*/
               const SizedBox(height: 24),
               // Add your content here
               TextField(

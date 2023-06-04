@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
 
 class TrailApiService {
@@ -67,7 +68,8 @@ class TrailApiService {
 
   /* ---------------- 산책로 탭 ---------------- */
   // 산책로 tap 추천순 전체 산책로 조회
-  Future<List<TrailModel>?> getRecommendedCourses(int page, int num) async {
+  Future<List<TraildetailModel>?> getRecommendedCourses(
+      int page, int num) async {
     try {
       final response =
           await getRequest('course/list/recommend?page=$page&num=$num');
@@ -76,9 +78,9 @@ class TrailApiService {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TraildetailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TraildetailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
@@ -93,7 +95,7 @@ class TrailApiService {
   }
 
   // 산책로 Tap 거리순 전체 산책로 조회
-  Future<List<TrailModel>?> getNearestCourses(
+  Future<List<TraildetailModel>?> getNearestCourses(
       int page, int num, double latitude, double longitude) async {
     try {
       final response = await getRequest(
@@ -103,9 +105,9 @@ class TrailApiService {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TraildetailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TraildetailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
@@ -120,7 +122,7 @@ class TrailApiService {
   }
 
   // 산책로 Tap - 좋아요수 전체 산책로 조회
-  Future<List<TrailModel>?> getMostLikedTrail(int page, int num) async {
+  Future<List<TraildetailModel>?> getMostLikedTrail(int page, int num) async {
     try {
       final response = await getRequest('course/list/like?page=$page&num=$num');
 
@@ -128,9 +130,9 @@ class TrailApiService {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TraildetailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TraildetailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
@@ -145,7 +147,7 @@ class TrailApiService {
   }
 
   // 산책로 Tap - 이용자순 전체 산책로 조회
-  Future<List<TrailModel>?> getMostUsedTrail(int page, int num) async {
+  Future<List<TraildetailModel>?> getMostUsedTrail(int page, int num) async {
     try {
       final response =
           await getRequest('course/list/using?page=$page&num=$num');
@@ -154,9 +156,9 @@ class TrailApiService {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TraildetailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TraildetailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
@@ -171,7 +173,7 @@ class TrailApiService {
   }
 
   // 산책로 탭 - 등록된 전체 산책 코스 (최신순) 사용
-  Future<List<TrailModel>?> getAllCourses(int page, int num) async {
+  Future<List<TraildetailModel>?> getAllCourses(int page, int num) async {
     try {
       final response = await getRequest('course/list/all?page=$page&num=$num');
 
@@ -179,9 +181,9 @@ class TrailApiService {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<TraildetailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = TraildetailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
-import 'package:naemansan/models/trailmodel.dart';
+//import 'package:naemansan/models/trailmodel.dart';
+import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -58,7 +59,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  ListView makeList(AsyncSnapshot<List<TrailModel>?> snapshot) {
+  ListView makeList(AsyncSnapshot<List<TraildetailModel>?> snapshot) {
     return ListView.separated(
       scrollDirection: Axis.vertical,
       itemCount: snapshot.data!.length,
@@ -71,7 +72,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           title: trail.title,
           startpoint: trail.startLocationName,
           distance: trail.distance,
-          CourseKeyWord: trail.tags,
+          // CourseKeyWord: trail.tags,
           likeCnt: trail.likeCount,
           userCnt: trail.userCount,
           isLiked: trail.isLiked,
@@ -89,16 +90,16 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
 
     const int page = 0;
     const int num = 10000000;
-    final Future<List<TrailModel>?> RecommendTrail =
+    final Future<List<TraildetailModel>?> RecommendTrail =
         TrailapiService.getRecommendedCourses(page, num);
-    final Future<List<TrailModel>?> NearestTrail =
+    final Future<List<TraildetailModel>?> NearestTrail =
         TrailapiService.getNearestCourses(
             page, num, _latitude, _longitude); //위도 경도 불러와야함
-    final Future<List<TrailModel>?> MostLikedTrail =
+    final Future<List<TraildetailModel>?> MostLikedTrail =
         TrailapiService.getMostLikedTrail(page, num);
-    final Future<List<TrailModel>?> MostUsedTrail =
+    final Future<List<TraildetailModel>?> MostUsedTrail =
         TrailapiService.getMostUsedTrail(page, num);
-    final Future<List<TrailModel>?> NewTrail =
+    final Future<List<TraildetailModel>?> NewTrail =
         TrailapiService.getAllCourses(page, num);
 
     return Scaffold(

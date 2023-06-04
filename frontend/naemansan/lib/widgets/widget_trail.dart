@@ -11,7 +11,7 @@ class TrailWidget extends StatelessWidget {
   final String title;
   final String startpoint;
   final double distance;
-  final List<String> CourseKeyWord;
+  // final List<String> CourseKeyWord;
   final int likeCnt, userCnt;
   final bool isLiked;
   final int id;
@@ -22,7 +22,7 @@ class TrailWidget extends StatelessWidget {
     required this.title,
     required this.startpoint,
     required this.distance,
-    required this.CourseKeyWord,
+    // required this.CourseKeyWord,
     required this.likeCnt,
     required this.userCnt,
     required this.isLiked,
@@ -88,6 +88,7 @@ class TrailWidget extends StatelessWidget {
                       fontSize: 12.0,
                     ),
                   ),
+                  /*
                   if (CourseKeyWord != null)
                     Wrap(
                       children: CourseKeyWord.map((word) => Text(
@@ -98,6 +99,7 @@ class TrailWidget extends StatelessWidget {
                             ),
                           )).toList(),
                     ),
+                    */
                 ],
               ),
             ),
