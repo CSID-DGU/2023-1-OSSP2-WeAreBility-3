@@ -163,12 +163,14 @@ public class CourseService {
                 .tags(courseTagDtoList)
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(courseUtil.getPoint2PointDto(enrollmentCourse.getLocations()))
-                .distance(enrollmentCourse.getDistance()).build();
+                .distance(enrollmentCourse.getDistance())
+                .is_like(false).build();
     }
 
     // Course Read
-    public EnrollmentCourseDetailDto readEnrollmentCourse(Long courseId) {
+    public EnrollmentCourseDetailDto readEnrollmentCourse(Long userId, Long courseId) {
         // Course 존재유무 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
@@ -186,7 +188,8 @@ public class CourseService {
                 .tags(courseTagDtoList)
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
-                .distance(enrollmentCourse.getDistance()).build();
+                .distance(enrollmentCourse.getDistance())
+                .is_like(courseUtil.existLike(user, enrollmentCourse)).build();
     }
 
     public EnrollmentCourseDetailDto updateEnrollmentCourse(Long userId, Long courseId, EnrollmentCourseRequestDto enrollmentCourseRequestDto) {
@@ -234,7 +237,8 @@ public class CourseService {
                 .tags(courseUtil.getTag2TagDtoForCourse(courseTagList))
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
-                .distance(enrollmentCourse.getDistance()).build();
+                .distance(enrollmentCourse.getDistance())
+                .is_like(courseUtil.existLike(user, enrollmentCourse)).build();
     }
 
     public Boolean deleteEnrollmentCourse(Long userId, Long courseId) {
