@@ -2,7 +2,7 @@ import pymysql
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-
+from haversine import haversine
 
 
 class  similarity_Checker():
@@ -26,6 +26,7 @@ class  similarity_Checker():
         for i in temp:
             user_input = np.append(user_input, float(i))
         user_input = user_input.reshape(-1, 2)
+        user_XY = tuple(np.mean(user_input, axis=0))
 
         # 위에서 얻은 좌표형식의 gps값을 정규화
         user_frame = pd.DataFrame(user_input)
@@ -81,6 +82,11 @@ class  similarity_Checker():
 
             # 유사도 벡터와 점수
             walking_std = temp_frame.values
+            DB_XY = np.mean(walking_std, axis=0)
+            DB_X = DB_XY[0] * X_std + X_mean
+            DB_Y = DB_XY[1] * Y_std + Y_mean
+            DB_coord = (DB_X, DB_Y)
+            distance = haversine(user_XY, DB_coord)
             similarity_vector = cosine_similarity(walking_std, user_std)
             similarity_score = np.mean(np.max(similarity_vector, axis=0))
 
@@ -90,9 +96,9 @@ class  similarity_Checker():
             # 유사도가 높으면 반복문 멈추고 등록 불가
             # 산책로의 좌표가 길면 유사도 벡터가 점점 희소해지는 문제를 벡터 열의 max값만 사용
             # 벡터 열의 max값을 이용한다는 것의 의미는 A 산책로의 한 좌표와 제일 가까운 B 산책로의 한 좌표와의 유사도를 의미
-            if (np.any(np.isclose(similarity_vector, 1.0)) and (
+            if ((np.any(np.isclose(similarity_vector, 1.0)) and (
                 similarity_score > threshold or similarity_score < -threshold
-            )) or np.all(np.isclose(np.diag(similarity_vector), 1.0)) :
+            )) or np.all(np.isclose(np.diag(similarity_vector), 1.0))) and distance < 0.3 :
                 return token_false
 
         return token_true
