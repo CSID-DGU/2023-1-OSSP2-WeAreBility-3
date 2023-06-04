@@ -1,7 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.common.ResponseDto;
-import com.dongguk.cse.naemansan.dto.GetTokenResponse;
 import com.dongguk.cse.naemansan.dto.response.JwtResponseDto;
 import com.dongguk.cse.naemansan.domain.type.LoginProviderType;
 import com.dongguk.cse.naemansan.dto.response.TokenDto;
@@ -9,7 +8,6 @@ import com.dongguk.cse.naemansan.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 

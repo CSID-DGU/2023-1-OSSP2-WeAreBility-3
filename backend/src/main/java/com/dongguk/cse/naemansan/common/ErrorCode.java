@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.common;
 
+import com.google.api.Http;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,15 +18,16 @@ public enum ErrorCode {
     NOT_FOUND_NOTIFICATION("4046", HttpStatus.NOT_FOUND, "Not Exist Notification"),
     NOT_FOUND_SHOP("4047", HttpStatus.NOT_FOUND, "Not Exist Shop"),
     NOT_FOUND_ADVERTISEMENT("4048", HttpStatus.NOT_FOUND, "Not Exist Advertisement"),
-    NOT_FOUND_NOTICE("4046", HttpStatus.NOT_FOUND, "Not Exist Notice"),
+    NOT_FOUND_NOTICE("4049", HttpStatus.NOT_FOUND, "Not Exist Notice"),
 
     // Bad Request Error
-    NOT_EQUAL("4000", HttpStatus.BAD_REQUEST , "Not Equal Error"),
-    DUPLICATION_LOCATIONS("4001", HttpStatus.BAD_REQUEST, "Duplication Enrollment Course Locations"),
-    DUPLICATION_TITLE("4002", HttpStatus.BAD_REQUEST, "Duplication Title"),
-    DUPLICATION_NAME("4003", HttpStatus.BAD_REQUEST, "Duplication Name"),
-    EXIST_ENTITY_REQUEST("4004", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
-    NOT_EXIST_ENTITY_REQUEST("4005", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
+    NOT_END_POINT("4000",HttpStatus.BAD_REQUEST , "Not Exist End Point Error"),
+    NOT_EQUAL("4001", HttpStatus.BAD_REQUEST , "Not Equal Error"),
+    DUPLICATION_LOCATIONS("4002", HttpStatus.BAD_REQUEST, "Duplication Enrollment Course Locations"),
+    DUPLICATION_TITLE("4003", HttpStatus.BAD_REQUEST, "Duplication Title"),
+    DUPLICATION_NAME("4004", HttpStatus.BAD_REQUEST, "Duplication Name"),
+    EXIST_ENTITY_REQUEST("4005", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
+    NOT_EXIST_ENTITY_REQUEST("4006", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
 
     // Server, File Up/DownLoad Error
     SERVER_ERROR("5000", HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),

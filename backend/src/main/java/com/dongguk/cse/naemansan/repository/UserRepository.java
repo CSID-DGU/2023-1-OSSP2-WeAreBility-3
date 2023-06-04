@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-//    @Query("SELECT u FROM User u WHERE u.id = :userId")
-//    Optional<User> findUserId(@Param("userId") Long userId);
+//    @Query("SELECT u FROM User u JOIN FETCH ALL WHERE u.id = :userId")
+//    Optional<User> findByIdForUser(@Param("userId") Long userId);
     Optional<User> findBySocialIdAndLoginProviderType(String socialId, LoginProviderType loginProviderType);
 
     @Query("SELECT u.id, u.userRoleType FROM User u WHERE u.id = :userId")

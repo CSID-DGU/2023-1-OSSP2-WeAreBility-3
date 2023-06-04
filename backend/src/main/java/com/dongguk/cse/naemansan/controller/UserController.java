@@ -49,8 +49,8 @@ public class UserController {
     }
 
     @GetMapping("/comment")
-    public ResponseDto<List<CommentDto>> readCommentList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
-        return new ResponseDto<List<CommentDto>>(userService.readCommentList(Long.valueOf(authentication.getName()), page, num));
+    public ResponseDto<List<CommentListDto>> readCommentList(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
+        return new ResponseDto<List<CommentListDto>>(userService.readCommentList(Long.valueOf(authentication.getName()), page, num));
     }
 
     // User가 팔로우한 사람들의 List를 얻음 - Follow Read#1
