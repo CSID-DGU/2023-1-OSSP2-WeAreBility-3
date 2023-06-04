@@ -20,8 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.id, u.userRoleType FROM User u WHERE u.id = :userId")
     Optional<Object[]> findUserForAuthentication(@Param("userId") Long userId);
 
-    @Query("SELECT u.id, u.userRoleType FROM User u WHERE u.id = :userId AND u.isLogin = true AND u.refreshToken = :refreshToken")
-    Optional<UserLoginForm> findByIdAndIsLoginAndRefreshToken(@Param("userId") Long userId, @Param("refreshToken") String refreshToken);
+    @Query("SELECT u.id AS id, u.userRoleType AS userRoleType FROM User u WHERE u.id = :userId AND u.isLogin = true AND u.refreshToken = :refreshToken")
+    Optional<UserLoginForm> findByIdAndRefreshToken(@Param("userId") Long userId, @Param("refreshToken") String refreshToken);
 
     Optional<User> findByIdAndIsLoginAndRefreshTokenIsNotNull(Long userId, Boolean isLogin);
 
