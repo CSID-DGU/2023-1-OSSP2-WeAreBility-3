@@ -1,40 +1,63 @@
-//이름은 수정되고 소개는 수정 안되는 상태, editpage에 수정 반영은 됨, 상태코드 500
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ProfileIntroEditPage extends StatefulWidget {
+class ProfileImageEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
+  final Function(Map<String, dynamic> updatedUserInfo)? onProfileUpdated;
 
-  const ProfileIntroEditPage({Key? key, required this.userInfo})
-      : super(key: key);
+  const ProfileImageEditPage({
+    Key? key,
+    required this.userInfo,
+    this.onProfileUpdated,
+  }) : super(key: key);
 
   @override
-  _ProfileIntroEditPageState createState() => _ProfileIntroEditPageState();
+  _ProfileImageEditPageState createState() => _ProfileImageEditPageState();
 }
 
-class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
+class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
   late Future<Map<String, dynamic>?> user;
-  String newIntro = '';
+  String newImage = '';
 
   @override
   void initState() {
     super.initState();
-    newIntro = widget.userInfo?['introduction'] ?? '';
+    newImage = widget.userInfo?['image_path'] ?? '';
   }
 
-  Future<void> saveIntroChanges() async {
-    // Put 요청 보내기
+  Future<void> pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      final File imageFile = File(pickedImage.path);
+      final String imagePath = imageFile.path;
+
+      setState(() {
+        newImage = imagePath;
+      });
+    }
+  }
+
+  Future<void> saveImageChanges() async {
     final profileApiService = ProfileApiService();
     final response = await profileApiService.putRequest('user', {
-      'introduction': newIntro,
+      'image_path': newImage,
     });
 
     if (response.statusCode == 200) {
-      print('프로필 introduction 수정 성공');
-      // 프로필 수정 완료 후 다른 작업 수행
+      print('프로필 수정 성공');
+
+      if (widget.onProfileUpdated != null) {
+        final updatedUserInfo = widget.userInfo ?? {};
+        updatedUserInfo['image_path'] = newImage;
+        widget.onProfileUpdated!(updatedUserInfo);
+      }
     } else {
-      print('프로필 introduction 수정 실패 - 상태 코드: ${response.statusCode}');
+      print('프로필 수정 실패 - 상태 코드: ${response.statusCode}');
       // 실패 시 에러 처리
     }
   }
@@ -67,30 +90,20 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                decoration: const InputDecoration(
-                  hintText: '소개 메시지를 입력하세요',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    newIntro = value;
-                  });
-                },
+            GestureDetector(
+              onTap: pickImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    newImage.isNotEmpty ? FileImage(File(newImage)) : null,
+                child: newImage.isEmpty ? const Icon(Icons.add_a_photo) : null,
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                saveIntroChanges();
-                setState(() {
-                  {
-                    widget.userInfo!['introduction'] = newIntro;
-                  }
-                });
-
-                Navigator.of(context).pop(true);
+                saveImageChanges();
+                Navigator.of(context).pop({'image_path': newImage});
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
@@ -104,7 +117,7 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
               child: const Text(
                 '완료',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),

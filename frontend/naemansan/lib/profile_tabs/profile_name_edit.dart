@@ -83,7 +83,6 @@ class _ProfileNameEditPageState extends State<ProfileNameEditPage> {
               onPressed: () {
                 saveNameChanges();
                 setState(() {
-                  // 마이페이지 프로필 수정 페이지의 상태를 갱신하여 새로운 이름을 적용
                   if (widget.userInfo != null) {
                     widget.userInfo!['name'] = newName;
                   }

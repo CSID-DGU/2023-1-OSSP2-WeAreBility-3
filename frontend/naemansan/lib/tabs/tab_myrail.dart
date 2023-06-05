@@ -9,7 +9,8 @@ import 'package:naemansan/widgets/widget_trailcomment.dart';
 import 'package:naemansan/screens/create_course_screen.dart';
 
 class Myrail extends StatefulWidget {
-  const Myrail({Key? key}) : super(key: key);
+  final int initialTabIndex;
+  const Myrail({Key? key, this.initialTabIndex = 0}) : super(key: key);
 
   @override
   _MyrailState createState() => _MyrailState();
@@ -18,13 +19,18 @@ class Myrail extends StatefulWidget {
 class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService;
-  int selectedIndex = 0;
+
+  int selectedIndex = 0; // 키워드별 보기에서 사용하는 인덱스 !!
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
     TrailapiService = TrailApiService();
+    _tabController = TabController(
+      length: 5,
+      initialIndex: widget.initialTabIndex,
+      vsync: this,
+    );
   }
 
   @override

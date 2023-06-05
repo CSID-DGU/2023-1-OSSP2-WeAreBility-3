@@ -3,8 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
 import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
+import 'package:naemansan/tabs/tab_myrail.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
@@ -108,7 +108,7 @@ class _MypageState extends State<Mypage> {
             Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                padding: const EdgeInsets.only(top: 10, right: 2.5),
+                padding: const EdgeInsets.only(top: 0, right: 2.5),
                 icon: const Icon(Icons.edit, color: Colors.black),
                 onPressed: () {
                   // 프로필 수정 페이지로 이동
@@ -122,8 +122,7 @@ class _MypageState extends State<Mypage> {
               ),
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 100),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
               child: FutureBuilder<Map<String, dynamic>?>(
                 future: user,
                 builder: (BuildContext context,
@@ -223,7 +222,15 @@ class _MypageState extends State<Mypage> {
                                   ),
                                   const SizedBox(height: 8),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Myrail(initialTabIndex: 1),
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       '${userData?['like_cnt'] ?? 0}',
                                       style: const TextStyle(
@@ -243,7 +250,15 @@ class _MypageState extends State<Mypage> {
                                   ),
                                   const SizedBox(height: 8),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Myrail(initialTabIndex: 3),
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       '${userData?['comment_cnt'] ?? 0}',
                                       style: const TextStyle(
@@ -267,7 +282,7 @@ class _MypageState extends State<Mypage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const Badges(),
+                                          builder: (context) => const Badge(),
                                         ),
                                       );
                                     },
