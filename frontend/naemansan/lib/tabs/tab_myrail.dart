@@ -3,6 +3,8 @@ import 'package:naemansan/screens/map/naver_map_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
+//세부 페이지 이동 시 사용
+//import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
 import 'package:naemansan/widgets/widget_trailcomment.dart';
@@ -62,11 +64,14 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             created_date: trail.createdDate.toString(),
           );
         } else if (data is TrailCommentModel) {
-          var comment = data;
+          var trail = data;
 
           return CommentTrailWidget(
-            icon: Icons.ac_unit, // 아이콘을 원하는 아이콘으로 변경해주세요.
-            content: comment.content,
+            id: trail.id,
+            courseId: trail.courseId,
+            title: trail.title,
+            tags: trail.tags,
+            content: trail.content,
           );
         }
 
@@ -83,7 +88,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     const int num = 100000000;
     List<String> keywords = [
       '한강',
-      '마포구',
+      '마포구', //왜 아무것도 안뜰까
       '퇴근길',
       '중구',
       '사색',

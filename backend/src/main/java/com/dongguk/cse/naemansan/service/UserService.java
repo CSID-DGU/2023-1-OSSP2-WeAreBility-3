@@ -5,7 +5,7 @@ import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
-import com.dongguk.cse.naemansan.dto.response.CommentDto;
+import com.dongguk.cse.naemansan.dto.response.CommentListDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
 import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
@@ -123,26 +123,25 @@ public class UserService {
         return courseUtil.getTag2TagDtoForUser(userTags);
     }
 
-    public List<CommentDto> readCommentList(Long userId, Long pageNum, Long num) {
+    public List<CommentListDto> readCommentList(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Comment> comments = commentRepository.findListByUser(user, paging);
 
-        List<CommentDto> commentDtoList = new ArrayList<>();
+        List<CommentListDto> list = new ArrayList<>();
 
         for (Comment comment: comments.getContent()) {
-            commentDtoList.add(CommentDto.builder()
+            EnrollmentCourse course = comment.getEnrollmentCourse();
+            list.add(CommentListDto.builder()
                     .id(comment.getId())
-                    .user_id(comment.getUser().getId())
-                    .course_id(comment.getEnrollmentCourse().getId())
-                    .user_name(comment.getUser().getName())
+                    .course_id(course.getId())
+                    .course_title(course.getTitle())
                     .content(comment.getContent())
-                    .created_date(comment.getCreatedDate())
-                    .is_edit(comment.getIsEdit()).build());
+                    .tags(courseUtil.getTag2TagDtoForCourse(course.getCourseTags().subList(0, 2))).build());
         }
 
-        return commentDtoList;
+        return list;
     }
 
     public List<EnrollmentCourseListDto> readLikeCourseList(Long userId, Long pageNum, Long num) {
@@ -157,7 +156,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -179,7 +178,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())
@@ -206,7 +205,7 @@ public class UserService {
                     .id(enrollmentCourse.getId())
                     .title(enrollmentCourse.getTitle())
                     .created_date(enrollmentCourse.getCreatedDate())
-                    .tags(courseUtil.getTag2TagDtoForEnrollmentCourse(enrollmentCourse.getCourseTags()))
+                    .tags(courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags()))
                     .start_location_name(enrollmentCourse.getStartLocationName())
                     .distance(enrollmentCourse.getDistance())
                     .like_cnt((long) enrollmentCourse.getLikes().size())

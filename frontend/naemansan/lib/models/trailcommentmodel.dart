@@ -1,31 +1,26 @@
+//댓글단 산책로 위젯에서 정보 불러올 때 사용하는 모델
 class TrailCommentModel {
   final int id;
-  final int userId;
   final int courseId;
-  final String userName;
+  final String title;
   final String content;
-  final DateTime createdDate;
-  final bool isEdit;
+  final List<String> tags;
 
   TrailCommentModel({
     required this.id,
-    required this.userId,
     required this.courseId,
-    required this.userName,
+    required this.title,
     required this.content,
-    required this.createdDate,
-    required this.isEdit,
+    required this.tags,
   });
 
   factory TrailCommentModel.fromJson(Map<String, dynamic> json) {
     return TrailCommentModel(
       id: json['id'],
-      userId: json['user_id'],
       courseId: json['course_id'],
-      userName: json['user_name'],
+      title: json['course_title'],
       content: json['content'],
-      createdDate: DateTime.parse(json['created_date']),
-      isEdit: json['is_edit'],
+      tags: List<String>.from(json['tags'].map((tag) => tag['name'])),
     );
   }
 }

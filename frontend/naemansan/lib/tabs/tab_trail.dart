@@ -181,7 +181,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: Text('추천 산책로가 없습니다'), //gma
+                  child: Text('추천 산책로가 없습니다'),
                 );
               },
             ),
@@ -197,7 +197,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: Text('가까운 위치에 산책로가 없습니다'), //gma
+                  child: Text('가까운 위치에 산책로가 없습니다'),
                 );
               },
             ),
@@ -213,7 +213,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
@@ -229,7 +229,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: Text('사용된 산책로 정보가 없습니다'), //gma
+                  child: Text('사용된 산책로 정보가 없습니다'),
                 );
               },
             ),
@@ -245,7 +245,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: Text('최근 등록된된 산책로가 없습니다'), //gma
+                  child: Text('최근 등록된 산책로가 없습니다'),
                 );
               },
             ),

@@ -1,6 +1,7 @@
 // traildetailmodel.dart
 // 위치 값도 불러오게 - trailmodel.dart에 locations만 추가
 // 아이디 값
+// 산책로 세부 페이지 볼 때 사용하는 모델
 class TraildetailModel {
   final int id;
   final String title;
