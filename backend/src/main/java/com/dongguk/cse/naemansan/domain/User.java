@@ -33,7 +33,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private LoginProviderType loginProviderType;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "introduction")

@@ -205,6 +205,11 @@ public class CourseService {
             throw new RestApiException(ErrorCode.NOT_EQUAL);
         }
 
+        // Comment 수정
+        if ((enrollmentCourseRequestDto.getTitle() == null) || (enrollmentCourseRequestDto.getTitle().length() == 0)) {
+            throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
+        }
+
         // Course Data Update
         enrollmentCourse.updateCourse(enrollmentCourseRequestDto.getTitle(), enrollmentCourseRequestDto.getIntroduction());
 
