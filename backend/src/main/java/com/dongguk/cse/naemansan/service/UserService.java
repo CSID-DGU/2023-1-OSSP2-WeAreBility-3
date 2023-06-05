@@ -50,6 +50,11 @@ public class UserService {
     @Transactional
     public UserDto updateUserProfile(Long userId, UserRequestDto userRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        userRepository.findByIdNotAndName(userId, userRequestDto.getName()).ifPresent(u -> { throw new RestApiException(ErrorCode.DUPLICATION_NAME); });
+
+        if ((userRequestDto.getName() == null) || (userRequestDto.getName().length() == 0)) {
+            throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
+        }
 
         user.updateUser(userRequestDto.getName(), userRequestDto.getInformation());
 
