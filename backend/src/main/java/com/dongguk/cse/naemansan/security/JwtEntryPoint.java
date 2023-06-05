@@ -28,7 +28,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         ErrorCode errorCode = (ErrorCode) request.getAttribute("exception");
 
         if (errorCode == null) {
-            setErrorResponse(response, ErrorCode.TOKEN_INVALID_ERROR);
+            setErrorResponse(response, ErrorCode.NOT_END_POINT);
         } else {
             switch (errorCode) {
                 case NOT_FOUND_USER -> { setErrorResponse(response, ErrorCode.NOT_FOUND_USER); }

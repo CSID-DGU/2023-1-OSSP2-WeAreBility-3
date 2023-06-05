@@ -52,8 +52,8 @@ public class CourseController {
 
     // Course Read
     @GetMapping("/enrollment/{courseId}")
-    public ResponseDto<EnrollmentCourseDetailDto> readCourse(@PathVariable Long courseId) {
-        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.readEnrollmentCourse(Long.valueOf(courseId)));
+    public ResponseDto<EnrollmentCourseDetailDto> readCourse(Authentication authentication, @PathVariable Long courseId) {
+        return new ResponseDto<EnrollmentCourseDetailDto>(courseService.readEnrollmentCourse(Long.valueOf(authentication.getName()), Long.valueOf(courseId)));
     }
 
     // Course Update

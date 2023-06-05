@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class PointDto {
     private Double latitude;
     private Double longitude;
+
+    public String toString() {
+        return latitude.toString()+","+ longitude.toString();
+    }
 }

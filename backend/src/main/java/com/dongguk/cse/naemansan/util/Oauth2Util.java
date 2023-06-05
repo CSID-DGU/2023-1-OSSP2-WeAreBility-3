@@ -115,7 +115,7 @@ public class Oauth2Util {
         String url = APPLE_AUTHORIZATION_URL
                 + "?client_id=" + APPLE_CLIENT_ID
                 + "&redirect_uri=" + APPLE_REDIRECT_URL
-                + "&response_type=code id_token&scope=name email&response_mode=form_post";
+                + "&response_type=code%20id_token&scope=name%20email&response_mode=form_post";
         return url;
     }
 

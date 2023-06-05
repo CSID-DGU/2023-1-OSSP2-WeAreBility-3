@@ -9,19 +9,30 @@ DROP TABLE IF EXISTS `individual_courses`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `advertisements`;
 DROP TABLE IF EXISTS `shops`;
-DROP TABLE IF EXISTS `tokens`;
 DROP TABLE IF EXISTS `follows`;
 DROP TABLE IF EXISTS `user_tags`;
 DROP TABLE IF EXISTS `subscribes`;
 DROP TABLE IF EXISTS `notifications`;
 DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `notices`;
+
+CREATE TABLE `notices` (
+                           `id` integer AUTO_INCREMENT,
+                           `title` varchar(30),
+                           `content` varchar(200),
+                           `is_edit` boolean,
+                           `created_date` timestamp NOT NULL,
+                           `status` boolean NOT NULL,
+                           `read_cnt` integer,
+                           CONSTRAINT NOTICES_PK PRIMARY KEY (`id`)
+);
 
 CREATE TABLE `users` (
                          `id` integer AUTO_INCREMENT,
-                         `social_id` varchar(255) NOT NULL,
+                         `social_id` varchar(100) NOT NULL,
                          `provider` enum('KAKAO', 'GOOGLE', 'APPLE') NOT NULL,
-                         `name` varchar(255) NOT NULL,
-                         `introduction` varchar(255),
+                         `name` varchar(20) NOT NULL,
+                         `introduction` varchar(300),
                          `role` enum('USER', 'ADMIN') NOT NULL,
                          `created_date` timestamp NOT NULL,
                          `is_login` boolean NOT NULL,
@@ -34,8 +45,8 @@ CREATE TABLE `users` (
 CREATE TABLE `notifications` (
                                  `id` integer AUTO_INCREMENT,
                                  `user_id` integer NOT NULL,
-                                 `title` varchar(255),
-                                 `content` varchar(300),
+                                 `title` varchar(30),
+                                 `content` varchar(100),
                                  `create_date` timestamp NOT NULL,
                                  `is_read_status` boolean NOT NULL,
                                  CONSTRAINT NOTIFICATIONS_PK PRIMARY KEY (`id`),
@@ -45,7 +56,7 @@ CREATE TABLE `notifications` (
 CREATE TABLE `subscribes` (
                               `id` integer AUTO_INCREMENT,
                               `user_id` integer NOT NULL,
-                              `pay_type` varchar(255),
+                              `pay_type` enum('KAKAOPAY') NOT NULL,
                               `created_at` time,
                               `successed_at` time,
                               `expiration_date` date,
@@ -59,7 +70,7 @@ CREATE TABLE `subscribes` (
 CREATE TABLE `user_tags` (
                              `id` integer AUTO_INCREMENT,
                              `user_id` integer NOT NULL,
-                             `tag` varchar(255) NOT NULL,
+                             `tag` varchar(100) NOT NULL,
                              CONSTRAINT USER_TAGS_PK PRIMARY KEY (`id`),
                              CONSTRAINT USER_TAGS_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 );
@@ -77,8 +88,8 @@ CREATE TABLE `follows` (
 
 CREATE TABLE `shops` (
                          `id` integer AUTO_INCREMENT,
-                         `shop_name` varchar(255) NOT NULL,
-                         `shop_introduction` varchar(255) NOT NULL,
+                         `shop_name` varchar(30) NOT NULL,
+                         `shop_introduction` varchar(100) NOT NULL,
                          `shop_location` point NOT NULL,
 
                          CONSTRAINT SHOPS_PK PRIMARY KEY (`id`)
@@ -86,8 +97,8 @@ CREATE TABLE `shops` (
 
 CREATE TABLE `advertisements` (
                                   `id` integer AUTO_INCREMENT,
-                                  `enterprise_name` varchar(255) NOT NULL,
-                                  `enterprise_url` varchar(255) NOT NULL,
+                                  `enterprise_name` varchar(30) NOT NULL,
+                                  `enterprise_url` varchar(300) NOT NULL,
 
                                   CONSTRAINT ADVERTISEMENTS_PK PRIMARY KEY (`id`)
 );
@@ -110,9 +121,10 @@ CREATE TABLE `images` (
 CREATE TABLE `individual_courses` (
                                       `id` integer AUTO_INCREMENT,
                                       `user_id` integer NOT NULL,
-                                      `title` varchar(255),
+                                      `title` varchar(30),
                                       `locations` multipoint NOT NULL,
                                       `created_date` timestamp NOT NULL,
+                                      `distance` double NOT NULL,
                                       `status` boolean NOT NULL,
                                       CONSTRAINT INDIVIDUAL_COURSES_PK PRIMARY KEY (`id`),
                                       CONSTRAINT INDIVIDUAL_COURSES_USER_FK  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -121,9 +133,9 @@ CREATE TABLE `individual_courses` (
 CREATE TABLE `enrollment_courses` (
                                       `id` integer AUTO_INCREMENT,
                                       `user_id` integer DEFAULT 1,
-                                      `title` varchar(255),
-                                      `introduction` varchar(255),
-                                      `start_location_name` varchar(255) NOT NULL,
+                                      `title` varchar(30),
+                                      `introduction` varchar(200),
+                                      `start_location_name` varchar(100) NOT NULL,
                                       `start_location` point NOT NULL,
                                       `locations` multipoint NOT NULL,
                                       `distance` double NOT NULL,
@@ -147,7 +159,7 @@ CREATE TABLE `using_courses` (
 CREATE TABLE `course_tags` (
                                `id` integer AUTO_INCREMENT,
                                `course_id` integer NOT NULL,
-                               `tag` varchar(255) NOT NULL,
+                               `tag` varchar(100) NOT NULL,
 
                                CONSTRAINT COURSE_TYPES_PK PRIMARY KEY (`id`),
                                CONSTRAINT COURSE_TYPES_COURSE_FK FOREIGN KEY (`course_id`) REFERENCES `enrollment_courses` (`id`) ON DELETE CASCADE
@@ -178,7 +190,7 @@ CREATE TABLE `comments` (
 
 CREATE TABLE `badge_names` (
                                `id` integer AUTO_INCREMENT,
-                               `name` varchar(255) NOT NULL,
+                               `name` varchar(50) NOT NULL,
                                `type` ENUM('INDIVIDUAL','ENROLLMENT', 'USING', 'COMMENT') NOT NULL,
                                `condition_num` int NOT NULL,
                                CONSTRAINT BADGE_NAMES_PK PRIMARY KEY (`id`)
