@@ -275,7 +275,6 @@ class TrailApiService {
     }
   }
 
-  //사용자 댓글 조회 /user/comment?page={}&num={} //여기 get 요청 실패 ...
   Future<List<TrailCommentModel>?> getCommentedCourses(
       //위젯 디자인이 달라 여기만 다른 위젯 사용
       int page,
