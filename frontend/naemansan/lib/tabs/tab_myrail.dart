@@ -128,6 +128,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  //산책로 등록
                   builder: (context) => const NaverMapScreen(),
                   // builder: (context) => const CreateCourseScreen(),
                 ),
