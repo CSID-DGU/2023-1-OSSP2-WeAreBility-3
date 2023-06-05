@@ -87,6 +87,10 @@ public class CommentService {
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_COMMENT));
 
         // Comment 수정
+        if ((commentRequestDto.getContent() == null) || (commentRequestDto.getContent().length() == 0)) {
+            throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
+        }
+
         comment.setContent(commentRequestDto.getContent());
         comment.setIsEdit(true);
 

@@ -28,6 +28,7 @@ public enum ErrorCode {
     DUPLICATION_NAME("4004", HttpStatus.BAD_REQUEST, "Duplication Name"),
     EXIST_ENTITY_REQUEST("4005", HttpStatus.BAD_REQUEST, "Exist Entity Request"),
     NOT_EXIST_ENTITY_REQUEST("4006", HttpStatus.BAD_REQUEST, "Not Exist Entity Request"),
+    NOT_EXIST_PARAMETER("4007", HttpStatus.BAD_REQUEST, "Not Exist Parameter Request"),
 
     // Server, File Up/DownLoad Error
     SERVER_ERROR("5000", HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
