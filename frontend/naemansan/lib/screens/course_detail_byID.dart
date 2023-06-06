@@ -6,10 +6,12 @@ import 'package:naemansan/services/login_api_service.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
+  final int likeCnt;
 
   const CourseDetailbyID({
     Key? key,
     required this.id,
+    required this.likeCnt,
   }) : super(key: key);
 
   @override
