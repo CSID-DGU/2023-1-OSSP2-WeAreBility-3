@@ -13,7 +13,7 @@ class OtherUserModel {
   OtherUserModel({
     required this.name,
     required this.imagePath,
-    required this.introduction,
+    this.introduction,
     required this.isPremium,
     required this.likeCnt,
     required this.cmtCnt,
