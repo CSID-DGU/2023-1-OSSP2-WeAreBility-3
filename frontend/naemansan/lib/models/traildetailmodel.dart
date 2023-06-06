@@ -13,7 +13,7 @@ class TraildetailModel {
   final String startLocationName;
   final List<Map<String, dynamic>> locations;
   final double distance;
-  //final int likeCount;
+  final int likeCnt;
   //final int userCount;
   final bool isLiked;
 
@@ -28,7 +28,7 @@ class TraildetailModel {
     required this.startLocationName,
     required this.locations,
     required this.distance,
-    //required this.likeCount,
+    required this.likeCnt,
     //required this.userCount,
     required this.isLiked,
   });
@@ -43,7 +43,7 @@ class TraildetailModel {
       introduction: json['introduction'],
       tags: List<String>.from(json['tags'].map((tag) => tag['name'])),
       startLocationName: json['start_location_name'],
-      //likeCount: json['like_cnt'],
+      likeCnt: json['like_cnt'],
       //userCount: json['using_unt'],
 
       locations:

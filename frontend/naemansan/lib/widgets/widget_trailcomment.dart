@@ -84,6 +84,7 @@ class CommentTrailWidget extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => CourseDetailbyID(
+                      likeCnt: 0, // 임시방편 0
                       id: id, // 산책로 세부 페이지로 이동 -> ID 값 전달
                     ),
                   ),

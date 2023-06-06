@@ -19,9 +19,7 @@ class CourseDetailbyID extends StatefulWidget {
 }
 
 class _CourseDetailbyIDState extends State<CourseDetailbyID> {
-  int likes = 0;
   List<String> comments = [];
-  bool _isLiked = false;
   TraildetailModel? trailDetail;
   OtherUserModel? otherUser;
   String imageUrl = "";
@@ -29,18 +27,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   void addComment(String comment) {
     setState(() {
       comments.add(comment);
-    });
-  }
-
-  void toggleLike() {
-    setState(() {
-      if (_isLiked) {
-        likes--;
-        _isLiked = false;
-      } else {
-        likes++;
-        _isLiked = true;
-      }
     });
   }
 
@@ -80,6 +66,30 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       imageUrl =
           'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
     });
+  }
+
+  // 좋아요 POST보내기
+  Future<void> postLike() async {
+    ApiService apiService = ApiService();
+    bool data;
+
+    data = await apiService.likeCourse(widget.id);
+    if (data) {
+      print("좋아요 하기");
+      setState(() {});
+    }
+  }
+
+  // 좋아요 Delete 보내기
+  Future<void> deleteLike() async {
+    ApiService apiService = ApiService();
+    bool data;
+
+    data = await apiService.unlikeCourse(widget.id);
+    if (data) {
+      print("좋아요 삭제");
+      setState(() {});
+    }
   }
 
   @override
@@ -162,10 +172,15 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   ),
                   IconButton(
                     icon: Icon(
-                      _isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: _isLiked ? Colors.red : null,
+                      trailDetail!.isLiked
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: trailDetail!.isLiked ? Colors.red : null,
                     ),
-                    onPressed: toggleLike,
+                    onPressed: () => {
+                      // 좋아요 POST보내기
+                      trailDetail!.isLiked ? deleteLike() : postLike(),
+                    },
                   ),
                 ],
               ),
@@ -176,7 +191,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               Text(
-                '좋아요: $likes',
+                '좋아요: ${widget.likeCnt}',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
