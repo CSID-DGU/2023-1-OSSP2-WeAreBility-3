@@ -2,7 +2,7 @@
 class OtherUserModel {
   final String name;
   final String imagePath;
-  final String introduction;
+  final String? introduction;
   final bool isPremium;
   final int likeCnt;
   final int cmtCnt;

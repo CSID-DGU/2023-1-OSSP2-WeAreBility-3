@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:naemansan/screens/course_detail_byID.dart';
+import 'package:naemansan/screens/indiv_course_detail_byID.dart';
 
 //산책로 목록 조회에 사용
 //산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
@@ -114,7 +114,7 @@ class TrailWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             //-------------------------------------------------------------------------------------------------------------
-                            builder: (context) => CourseDetailbyID(
+                            builder: (context) => IndivCourseDetailbyID(
                               id: id,
                               // 산책로 세부 페이지로 이동 -> ID 값 전달
                             ),
