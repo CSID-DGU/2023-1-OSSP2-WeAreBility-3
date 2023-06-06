@@ -20,24 +20,6 @@ class _ProfileNameEditPageState extends State<ProfileNameEditPage> {
     newName = widget.userInfo?['name'] ?? '';
   }
 
-  /* 이 탭에서 name을 직접 저장하지 않도록 변경함
-  Future<void> saveNameChanges() async {
-    // Put 요청 보내기
-    final profileApiService = ProfileApiService();
-    final response = await profileApiService.putRequest('user', {
-      'name': newName,
-    });
-
-    if (response.statusCode == 200) {
-      print('프로필 수정 성공');
-      // 프로필 수정 완료 후 다른 작업 수행
-    } else {
-      print('프로필 수정 실패 - 상태 코드: ${response.statusCode}');
-      // 실패 시 에러 처리
-    }
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

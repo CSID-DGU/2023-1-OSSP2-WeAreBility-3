@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
+import 'package:naemansan/tabs/tab_mypage.dart';
 
 class ProfileImageEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
@@ -31,13 +32,14 @@ class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
   }
 
   Future<void> saveImageChanges() async {
-    pickImage();
     if (_image == null) {
       print('이미지를 선택하세요.');
       return;
     }
-    //선택한 이미지 저장
-    await ProfileApiService().updateProfilePicture(_image!);
+    setState(() {
+      // 이미지 선택 후 상태 업데이트 (선택한 이미지를 수정 화면에 표시)
+    });
+    await ProfileApiService().updateProfilePicture(_image!); //post
   }
 
   @override
@@ -80,7 +82,13 @@ class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
             ElevatedButton(
               onPressed: () {
                 saveImageChanges(); //완료 버튼 클릭 시 이미지 저장
-                Navigator.of(context).pop(true);
+                // Navigator.of(context).pop(true);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        const Mypage(), // glm ....
+                  ),
+                ); // 프로필 사진은 한번에 저장하는 구조라 바로 마이페이지로 연결함
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,

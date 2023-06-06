@@ -12,7 +12,7 @@ class ProfileIntroEditPage extends StatefulWidget {
 
 class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
   late Future<Map<String, dynamic>?> user;
-  String newIntro = '';
+  String? newIntro = '';
 
   @override
   void initState() {
@@ -20,23 +20,6 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
     newIntro = widget.userInfo?['introduction'] ?? '';
   }
 
-  /* 이 탭에서 소개글을 직접 저장하지 않도록 수정함함
-  Future<void> saveIntroChanges() async {
-    // Put 요청 보내기
-    final profileApiService = ProfileApiService();
-    final response = await profileApiService.putRequest('user', {
-      'introduction': newIntro,
-    });
-
-    if (response.statusCode == 200) {
-      print('프로필 introduction 수정 성공');
-      // 프로필 수정 완료 후 다른 작업 수행
-    } else {
-      print('프로필 introduction 수정 실패 - 상태 코드: ${response.statusCode}');
-      // 실패 시 에러 처리
-    }
-  }
-  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,10 +64,9 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                //saveIntroChanges();
                 setState(() {
                   {
-                    widget.userInfo!['introduction'] = newIntro;
+                    widget.userInfo?['introduction'] = newIntro;
                   }
                 });
 

@@ -18,6 +18,7 @@ class _EditpageState extends State<Editpage> {
   dynamic userInfo = '';
   late String newIntro;
   late String newName;
+
   // Fetch user info
   Future<Map<String, dynamic>?> fetchUserInfo() async {
     ProfileApiService apiService = ProfileApiService();
@@ -37,8 +38,14 @@ class _EditpageState extends State<Editpage> {
   void initState() {
     super.initState();
     user = fetchUserInfo();
-    newIntro = '';
-    newName = '';
+
+    user.then((userInfo) {
+      if (userInfo != null) {
+        newIntro = userInfo['introduction'] ?? '';
+        newName = userInfo['name'] ?? '';
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -133,22 +140,18 @@ class _EditpageState extends State<Editpage> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            // 프로필 사진 수정 활성화
-                            Navigator.of(context)
-                                .push(
+                          onPressed: () async {
+                            final result = await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     ProfileImageEditPage(userInfo: userData),
                               ),
-                            )
-                                .then((value) {
-                              if (value == true) {
-                                setState(() {
-                                  user = fetchUserInfo(); // 사용자 정보 다시 불러오기
-                                });
-                              }
-                            });
+                            );
+                            if (result == true) {
+                              setState(() {
+                                user = fetchUserInfo(); // 사용자 정보 다시 불러오기
+                              });
+                            }
                           },
                         ),
                       ],
@@ -160,7 +163,6 @@ class _EditpageState extends State<Editpage> {
                         thickness: 1,
                       ),
                     ),
-                    //이름 수정 부분
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -174,7 +176,7 @@ class _EditpageState extends State<Editpage> {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            // name을 수정할 수 있는 화면
+                            //이름 수정 부분
                             Navigator.of(context)
                                 .push(
                               MaterialPageRoute(
@@ -199,7 +201,6 @@ class _EditpageState extends State<Editpage> {
                         thickness: 1,
                       ),
                     ),
-                    //introduction 수정 부분
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -213,7 +214,7 @@ class _EditpageState extends State<Editpage> {
                         IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            // introduction을 수정할 수 있는 화면
+                            //introduction 수정 부분
                             Navigator.of(context)
                                 .push(
                               MaterialPageRoute(
