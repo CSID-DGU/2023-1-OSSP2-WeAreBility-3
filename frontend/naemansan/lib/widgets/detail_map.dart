@@ -14,7 +14,10 @@ class DetailMap extends StatefulWidget {
 
 class _DetailMapState extends State<DetailMap> {
   Completer<NaverMapController> _controller = Completer();
-
+  late double startLat;
+  late double startLng;
+  late double lastLat;
+  late double lastLng;
   @override
   void initState() {
     print(widget.locations);
@@ -51,6 +54,10 @@ class _DetailMapState extends State<DetailMap> {
 
     setState(() {
       _pathOverlays.add(pathOverlay);
+      startLat = coordinates.first.latitude;
+      startLng = coordinates.first.longitude;
+      lastLat = coordinates.last.latitude;
+      lastLng = coordinates.last.longitude;
     });
   }
 
@@ -63,9 +70,26 @@ class _DetailMapState extends State<DetailMap> {
         onMapCreated: onMapCreated,
         mapType: _mapType,
         initLocationTrackingMode: LocationTrackingMode.None,
+        markers: [
+          Marker(
+            markerId: "0",
+            position: LatLng(startLat, startLng),
+            captionText: "출발",
+            captionTextSize: 13,
+            iconTintColor: Colors.blue,
+          ),
+          Marker(
+            markerId: "1",
+            position: LatLng(lastLat, lastLng),
+            captionText: "종료",
+            captionTextSize: 13,
+            iconTintColor: Colors.green,
+          ),
+        ],
         initialCameraPosition: CameraPosition(
-          target: LatLng(widget.locations[0]['latitude'] as double,
-              widget.locations[1]['longitude'] as double),
+          // target: LatLng(widget.locations[0]['latitude'] as double,
+          //     widget.locations[1]['longitude'] as double),
+          target: LatLng(startLat, startLng),
           zoom: 15,
         ),
         locationButtonEnable: false,
