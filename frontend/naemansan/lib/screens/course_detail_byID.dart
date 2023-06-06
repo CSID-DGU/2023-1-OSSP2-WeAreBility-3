@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/widgets/detail_map.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -160,13 +161,11 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 300, // Adjust the height as needed
-                child: Image.network(
-                  'https://velog.velcdn.com/images/seochan99/post/41b2700b-2789-46a3-b232-011624a4cec3/image.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
+
+              DetailMap(locations: trailDetail!.locations),
+
+              Text(trailDetail!.locations.toString()),
+
               const SizedBox(height: 16),
 
               Row(
@@ -202,7 +201,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ],
               ),
               Text(
-                '생성날짜: $formattedDate',
+                '생성 날짜: ${DateFormat('yy.MM.dd').format(trailDetail!.createdDate)}',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
@@ -221,7 +220,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               Text(
                 '길이: ${lengthInKm.toStringAsFixed(2)} km',
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                 ),
               ),
               const SizedBox(height: 8),
