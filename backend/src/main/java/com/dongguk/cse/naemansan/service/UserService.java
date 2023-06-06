@@ -56,7 +56,7 @@ public class UserService {
             throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
         }
 
-        user.updateUser(userRequestDto.getName(), userRequestDto.getInformation());
+        user.updateUser(userRequestDto.getName(), userRequestDto.getIntroduction());
 
         return UserDto.builder()
                 .user(user)

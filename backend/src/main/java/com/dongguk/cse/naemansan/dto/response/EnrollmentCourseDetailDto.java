@@ -19,11 +19,13 @@ public class EnrollmentCourseDetailDto {
     private String start_location_name;
     private List<PointDto> locations;
     private Double distance;
+    private Long like_cnt;
     private Boolean is_like;
 
     @Builder
     public EnrollmentCourseDetailDto(Long id, Long user_id, String user_name, String title, Timestamp created_date, String introduction,
-                                     List<CourseTagDto> tags, String start_location_name, List<PointDto> locations, Double distance, Boolean is_like) {
+                                     List<CourseTagDto> tags, String start_location_name, List<PointDto> locations, Double distance,
+                                     Long like_cnt, Boolean is_like) {
         this.id = id;
         this.user_id = user_id;
         this.user_name = user_name;
@@ -34,6 +36,7 @@ public class EnrollmentCourseDetailDto {
         this.start_location_name = start_location_name;
         this.locations = locations;
         this.distance = distance;
+        this.like_cnt = like_cnt;
         this.is_like = is_like;
     }
 }
