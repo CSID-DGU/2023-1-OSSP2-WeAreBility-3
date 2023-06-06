@@ -74,12 +74,6 @@
       "languageVersion": "2.18"
     },
     {
-      "name": "cross_file",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.3+4",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
-    },
-    {
       "name": "crypto",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.3",
       "packageUri": "lib/",
@@ -390,36 +384,6 @@
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.0.17",
       "packageUri": "lib/",
       "languageVersion": "2.15"
-    },
-    {
-      "name": "image_picker",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker-0.8.7+5",
-      "packageUri": "lib/",
-      "languageVersion": "2.18"
-    },
-    {
-      "name": "image_picker_android",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_android-0.8.6+19",
-      "packageUri": "lib/",
-      "languageVersion": "2.18"
-    },
-    {
-      "name": "image_picker_for_web",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_for_web-2.1.12",
-      "packageUri": "lib/",
-      "languageVersion": "2.17"
-    },
-    {
-      "name": "image_picker_ios",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_ios-0.8.7+4",
-      "packageUri": "lib/",
-      "languageVersion": "2.18"
-    },
-    {
-      "name": "image_picker_platform_interface",
-      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_platform_interface-2.6.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "intl",
@@ -878,7 +842,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-05T17:38:20.959631Z",
+  "generated": "2023-06-06T01:21:42.375081Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }
