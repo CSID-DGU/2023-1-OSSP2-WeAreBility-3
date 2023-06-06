@@ -22,6 +22,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   bool _isLiked = false;
   TraildetailModel? trailDetail;
   OtherUserModel? otherUser;
+  String imageUrl = "";
 
   void addComment(String comment) {
     setState(() {
@@ -73,7 +74,10 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         otherUser = OtherUserModel.fromJson(data!);
       });
     }
-    print(otherUser);
+    setState(() {
+      imageUrl =
+          'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
+    });
   }
 
   @override
@@ -124,11 +128,9 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(
-                        'https://avatars.githubusercontent.com/u/78739194?v=4',
-                      ),
+                      backgroundImage: NetworkImage(imageUrl),
                     ),
                     const SizedBox(width: 15),
                     Text(trailDetail!.username,

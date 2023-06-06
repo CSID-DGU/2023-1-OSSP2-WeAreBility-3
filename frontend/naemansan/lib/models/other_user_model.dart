@@ -10,29 +10,29 @@ class OtherUserModel {
   final int followingCnt;
   final int followerCnt;
 
-  OtherUserModel(
-    this.name,
-    this.imagePath,
-    this.introduction,
-    this.isPremium,
-    this.likeCnt,
-    this.cmtCnt,
-    this.badgeCnt,
-    this.followingCnt,
-    this.followerCnt,
-  );
+  OtherUserModel({
+    required this.name,
+    required this.imagePath,
+    required this.introduction,
+    required this.isPremium,
+    required this.likeCnt,
+    required this.cmtCnt,
+    required this.badgeCnt,
+    required this.followingCnt,
+    required this.followerCnt,
+  });
 
   factory OtherUserModel.fromJson(Map<String, dynamic> json) {
     return OtherUserModel(
-      json['name'],
-      json['image_path'],
-      json['introduction'],
-      json['is_premium'],
-      json['like_cnt'],
-      json['comment_cnt'],
-      json['badge_cnt'],
-      json['following_cnt'],
-      json['follower_cnt'],
+      name: json['name'],
+      imagePath: json['image_path'],
+      introduction: json['introduction'],
+      isPremium: json['is_premium'],
+      likeCnt: json['like_cnt'],
+      cmtCnt: json['comment_cnt'],
+      badgeCnt: json['badge_cnt'],
+      followingCnt: json['following_cnt'],
+      followerCnt: json['follower_cnt'],
     );
   }
 }
