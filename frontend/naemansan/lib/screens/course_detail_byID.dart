@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
 
@@ -20,6 +21,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   List<String> comments = [];
   bool _isLiked = false;
   TraildetailModel? trailDetail;
+  OtherUserModel? otherUser;
 
   void addComment(String comment) {
     setState(() {
@@ -66,10 +68,12 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     Map<String, dynamic>? data;
 
     data = await apiService.getOtherUserProfile(trailDetail!.userid);
-    print(data);
     if (data != null) {
-      setState(() {});
+      setState(() {
+        otherUser = OtherUserModel.fromJson(data!);
+      });
     }
+    print(otherUser);
   }
 
   @override
