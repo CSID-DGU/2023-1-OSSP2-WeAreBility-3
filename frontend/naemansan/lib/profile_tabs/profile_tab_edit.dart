@@ -57,10 +57,10 @@ class _EditpageState extends State<Editpage> {
                   );
                 },
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 5.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text(
                       '프로필 수정',
                       style: TextStyle(
@@ -96,7 +96,9 @@ class _EditpageState extends State<Editpage> {
           builder: (BuildContext context,
               AsyncSnapshot<Map<String, dynamic>?> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const CircularProgressIndicator(
+                color: Colors.black,
+              );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {

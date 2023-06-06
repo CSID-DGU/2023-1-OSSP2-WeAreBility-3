@@ -83,7 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: isLoading
-              ? const CircularProgressIndicator() // 로딩 중에 표시될 위젯
+              ? const CircularProgressIndicator(
+                  color: Colors.black,
+                ) // 로딩 중에 표시될 위젯
               : _buildLoginButtons(), // 로딩이 완료된 후에 표시될 위젯
         ),
       ),

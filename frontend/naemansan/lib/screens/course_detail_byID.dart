@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
+import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
-import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/widgets/detail_map.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -17,10 +18,12 @@ class CourseDetailbyID extends StatefulWidget {
 }
 
 class _CourseDetailbyIDState extends State<CourseDetailbyID> {
-  int likes = 0;
   List<String> comments = [];
-  bool _isLiked = false;
   TraildetailModel? trailDetail;
+  OtherUserModel? otherUser;
+  String imageUrl = "";
+  bool isLikeNow = false;
+  int likeCnt = 0;
 
   void addComment(String comment) {
     setState(() {
@@ -28,56 +31,87 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     });
   }
 
-  void toggleLike() {
-    setState(() {
-      if (_isLiked) {
-        likes--;
-        _isLiked = false;
-      } else {
-        likes++;
-        _isLiked = true;
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+    print(widget.id);
     fetchTrailDetail();
   }
 
-  void fetchTrailDetail() {
-    final apiService = TrailApiService();
-    apiService.getRequest('course/individaul/${widget.id}').then((response) {
+  Future<void> fetchTrailDetail() async {
+    ApiService apiService = ApiService();
+    Map<String, dynamic>? data;
+
+    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    print(data);
+
+    if (data != null) {
       setState(() {
-        trailDetail = TraildetailModel.fromJson(jsonDecode(response.body));
+        trailDetail = TraildetailModel.fromJson(data!);
+        isLikeNow = trailDetail!.isLiked;
       });
-    }).catchError((error) {
-      // 오류 처리
-      print('오류 발생: $error');
+      fetchWriterProfile();
+    }
+  }
+
+  // 상대프로필 조회
+  Future<void> fetchWriterProfile() async {
+    ApiService apiService = ApiService();
+    Map<String, dynamic>? data;
+
+    data = await apiService.getOtherUserProfile(trailDetail!.userid);
+    if (data != null) {
+      setState(() {
+        otherUser = OtherUserModel.fromJson(data!);
+      });
+    }
+    setState(() {
+      imageUrl =
+          'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
     });
+  }
+
+  // 좋아요 POST보내기
+  Future<void> postLike() async {
+    print("POST");
+    ApiService apiService = ApiService();
+    bool data;
+
+    data = await apiService.likeCourse(widget.id);
+    if (data) {
+      print("좋아요 성공");
+      setState(() {
+        isLikeNow = true;
+        trailDetail!.likeCnt++;
+      });
+    }
+  }
+
+  // 좋아요 Delete 보내기
+  Future<void> deleteLike() async {
+    print("삭제!");
+    ApiService apiService = ApiService();
+    bool data;
+
+    data = await apiService.unlikeCourse(widget.id);
+    if (data) {
+      print("좋아요 삭제");
+      setState(() {
+        isLikeNow = false;
+        trailDetail!.likeCnt--;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(trailDetail);
     if (trailDetail == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Course Detail'),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(), // 로딩 중 표시
-        ),
-      );
-    }
-
-    if (trailDetail!.id == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Course Detail'),
-        ),
-        body: const Center(
-          child: Text('데이터가 없습니다.'), // 데이터 없음을 알리는 메시지
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.black,
+          ),
         ),
       );
     }
@@ -115,27 +149,21 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(
-                        'https://avatars.githubusercontent.com/u/78739194?v=4',
-                      ),
+                      backgroundImage: NetworkImage(imageUrl),
                     ),
-                    SizedBox(width: 15),
-                    Text("KAKAO-014107960443",
-                        style: TextStyle(
+                    const SizedBox(width: 15),
+                    Text(trailDetail!.username,
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.w500)),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 300, // Adjust the height as needed
-                child: Image.network(
-                  'https://velog.velcdn.com/images/seochan99/post/41b2700b-2789-46a3-b232-011624a4cec3/image.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
+
+              DetailMap(locations: trailDetail!.locations),
+
               const SizedBox(height: 16),
 
               Row(
@@ -148,27 +176,35 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      _isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: _isLiked ? Colors.red : null,
-                    ),
-                    onPressed: toggleLike,
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isLikeNow ? Icons.favorite : Icons.favorite_border,
+                          color: isLikeNow ? Colors.red : null,
+                        ),
+                        onPressed: () => {
+                          // 좋아요 POST보내기
+                          isLikeNow ? deleteLike() : postLike(),
+                        },
+                      ),
+                      Text(
+                        '${trailDetail!.likeCnt}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
               Text(
-                '생성날짜: $formattedDate',
+                '생성 날짜: ${DateFormat('yy.MM.dd').format(trailDetail!.createdDate)}',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
-              Text(
-                '좋아요: $likes',
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+
               const SizedBox(height: 8),
 
               const SizedBox(height: 16),
@@ -182,7 +218,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               Text(
                 '길이: ${lengthInKm.toStringAsFixed(2)} km',
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                 ),
               ),
               const SizedBox(height: 8),
