@@ -6,12 +6,10 @@ import 'package:naemansan/services/login_api_service.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
-  final int likeCnt;
 
   const CourseDetailbyID({
     Key? key,
     required this.id,
-    required this.likeCnt,
   }) : super(key: key);
 
   @override
@@ -23,6 +21,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   TraildetailModel? trailDetail;
   OtherUserModel? otherUser;
   String imageUrl = "";
+  bool isLikeNow = false;
 
   void addComment(String comment) {
     setState(() {
@@ -46,6 +45,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     if (data != null) {
       setState(() {
         trailDetail = TraildetailModel.fromJson(data!);
+        isLikeNow = trailDetail!.isLiked;
       });
       fetchWriterProfile();
     }
@@ -70,25 +70,33 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
   // 좋아요 POST보내기
   Future<void> postLike() async {
+    print("POST");
     ApiService apiService = ApiService();
     bool data;
 
     data = await apiService.likeCourse(widget.id);
     if (data) {
-      print("좋아요 하기");
-      setState(() {});
+      print("좋아요 성공");
+      setState(() {
+        isLikeNow = true;
+        trailDetail!.likeCnt;
+      });
     }
   }
 
   // 좋아요 Delete 보내기
   Future<void> deleteLike() async {
+    print("삭제!");
     ApiService apiService = ApiService();
     bool data;
 
     data = await apiService.unlikeCourse(widget.id);
     if (data) {
       print("좋아요 삭제");
-      setState(() {});
+      setState(() {
+        isLikeNow = false;
+        trailDetail!.likeCnt;
+      });
     }
   }
 
@@ -170,17 +178,25 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      trailDetail!.isLiked
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color: trailDetail!.isLiked ? Colors.red : null,
-                    ),
-                    onPressed: () => {
-                      // 좋아요 POST보내기
-                      trailDetail!.isLiked ? deleteLike() : postLike(),
-                    },
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isLikeNow ? Icons.favorite : Icons.favorite_border,
+                          color: isLikeNow ? Colors.red : null,
+                        ),
+                        onPressed: () => {
+                          // 좋아요 POST보내기
+                          isLikeNow ? deleteLike() : postLike(),
+                        },
+                      ),
+                      Text(
+                        '${trailDetail!.likeCnt}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -190,12 +206,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   fontSize: 16,
                 ),
               ),
-              Text(
-                '좋아요: ${trailDetail!.likeCnt}',
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+
               const SizedBox(height: 8),
 
               const SizedBox(height: 16),

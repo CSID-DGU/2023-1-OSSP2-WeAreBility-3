@@ -47,7 +47,8 @@ class ApiService {
 /*           POST           */
   Future<http.Response> postRequest(String endpoint, dynamic body) async {
     try {
-      final accessToken = await getTokens();
+      final tokens = await getTokens();
+      final accessToken = tokens['accessToken'];
       final response = await http.post(
         Uri.parse('$baseUrl/$endpoint'),
         headers: {
