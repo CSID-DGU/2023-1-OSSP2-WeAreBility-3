@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
 import 'package:naemansan/models/traildetailmodel.dart';
-import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/services/login_api_service.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -43,41 +42,46 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   @override
   void initState() {
     super.initState();
+    print(widget.id);
     fetchTrailDetail();
   }
 
-  void fetchTrailDetail() {
-    final apiService = TrailApiService();
-    apiService.getRequest('course/individaul/${widget.id}').then((response) {
+  Future<void> fetchTrailDetail() async {
+    ApiService apiService = ApiService();
+    Map<String, dynamic>? data;
+
+    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    print(data);
+    if (data != null) {
       setState(() {
-        trailDetail = TraildetailModel.fromJson(jsonDecode(response.body));
+        trailDetail = TraildetailModel.fromJson(data!);
       });
-    }).catchError((error) {
-      // 오류 처리
-      print('오류 발생: $error');
-    });
+      fetchWriterProfile();
+    }
+  }
+
+  // 상대프로필 조회
+  Future<void> fetchWriterProfile() async {
+    ApiService apiService = ApiService();
+    Map<String, dynamic>? data;
+
+    data = await apiService.getOtherUserProfile(trailDetail!.userid);
+    print(data);
+    if (data != null) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(trailDetail);
     if (trailDetail == null) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Course Detail'),
         ),
         body: const Center(
-          child: CircularProgressIndicator(), // 로딩 중 표시
-        ),
-      );
-    }
-
-    if (trailDetail!.id == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Course Detail'),
-        ),
-        body: const Center(
-          child: Text('데이터가 없습니다.'), // 데이터 없음을 알리는 메시지
+          child: CircularProgressIndicator(),
         ),
       );
     }
@@ -115,16 +119,16 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
-                  children: const [
-                    CircleAvatar(
+                  children: [
+                    const CircleAvatar(
                       radius: 20,
                       backgroundImage: NetworkImage(
                         'https://avatars.githubusercontent.com/u/78739194?v=4',
                       ),
                     ),
-                    SizedBox(width: 15),
-                    Text("KAKAO-014107960443",
-                        style: TextStyle(
+                    const SizedBox(width: 15),
+                    Text(trailDetail!.username,
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.w500)),
                   ],
                 ),

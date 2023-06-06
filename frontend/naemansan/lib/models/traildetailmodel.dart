@@ -11,7 +11,7 @@ class TraildetailModel {
   final String introduction;
   final List<String> tags;
   final String startLocationName;
-  final List<Map<String, double>> locations;
+  final List<Map<String, dynamic>> locations;
   final double distance;
   //final int likeCount;
   //final int userCount;
@@ -47,10 +47,12 @@ class TraildetailModel {
       //userCount: json['using_unt'],
 
       locations:
-          List<Map<String, double>>.from(json['locations'].map((location) => {
-                'latitude': location['latitude'].toDouble(),
-                'longitude': location['longitude'].toDouble(),
-              })),
+          List<Map<String, dynamic>>.from(json['locations'].map((location) {
+        return {
+          'latitude': location['latitude'],
+          'longitude': location['longitude']
+        };
+      })),
       distance: json['distance'].toDouble(),
       isLiked: json['is_like'],
     );

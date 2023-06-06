@@ -125,7 +125,25 @@ class ApiService {
       final response = await getRequest('user');
       if (response.statusCode == 200) {
         final parsedResponse = jsonDecode(response.body);
-        print(parsedResponse['data']);
+        // print(parsedResponse['data']);
+        return parsedResponse['data'];
+      } else {
+        print('유저 정보 가져오기 실패 - ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('유저 정보 가져오기 실패 - $e');
+      return null;
+    }
+  }
+
+  // 상대 프로필 조회 GET 요청
+  Future<Map<String, dynamic>?> getOtherUserProfile(int otherUserId) async {
+    try {
+      final response = await getRequest('user/$otherUserId');
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        // print(parsedResponse['data']);
         return parsedResponse['data'];
       } else {
         print('유저 정보 가져오기 실패 - ${response.statusCode}');
@@ -195,22 +213,6 @@ class ApiService {
       return parsedResponse['data'];
     } else {
       return null;
-    }
-  }
-
-  // 상대 프로필 조회 GET 요청
-  Future<http.Response> getOtherUserProfile(String otherUserId) async {
-    try {
-      final response = await getRequest('user/$otherUserId');
-      if (response.statusCode == 200) {
-        print('상대 프로필 조회 GET 요청 성공');
-      } else {
-        print('상대 프로필 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
-      }
-      return response;
-    } catch (e) {
-      print('상대 프로필 조회 GET 요청 실패 - $e');
-      return http.Response('Error', 500);
     }
   }
 
@@ -454,6 +456,43 @@ class ApiService {
       final parsedResponse = jsonDecode(response.body);
       return parsedResponse['data'];
     } else {
+      return null;
+    }
+  }
+
+  /* -------- 산책로 디테일 관련 기능 -------- */
+
+  Future<Map<String, dynamic>?> getEnrollmentCourseDetailById(int id) async {
+    try {
+      final response = await getRequest('course/enrollment/$id');
+
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        return parsedResponse['data'];
+      } else {
+        print('GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('GET 요청 실패 - $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getIndividualmentCourseDetailById(
+      int id) async {
+    try {
+      final response = await getRequest('course/individual/$id');
+
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        return parsedResponse['data'];
+      } else {
+        print('GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('GET 요청 실패 - $e');
       return null;
     }
   }

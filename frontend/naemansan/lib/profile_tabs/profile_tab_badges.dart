@@ -31,10 +31,10 @@ class Badges extends StatelessWidget {
                 );
               },
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 5.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
                     '뱃지',
                     style: TextStyle(
