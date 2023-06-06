@@ -5,12 +5,10 @@ import 'package:naemansan/services/mypage_api_service.dart';
 
 class ProfileImageEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
-  final Function(Map<String, dynamic> updatedUserInfo)? onProfileUpdated;
 
   const ProfileImageEditPage({
     Key? key,
     required this.userInfo,
-    this.onProfileUpdated,
   }) : super(key: key);
 
   @override
@@ -25,7 +23,6 @@ class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
     final imagePicker = ImagePicker();
     final pickedImage =
         await imagePicker.pickImage(source: ImageSource.gallery);
-
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
@@ -34,31 +31,13 @@ class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
   }
 
   Future<void> saveImageChanges() async {
+    pickImage();
     if (_image == null) {
       print('이미지를 선택하세요.');
       return;
     }
-
-    final profileApiService = ProfileApiService();
-
-    // postRequest 호출
-    final response = await profileApiService
-        .postRequest('image/user', {'image': _image!.path});
-
-    if (response.statusCode == 200) {
-      print('프로필 수정 성공');
-      // 프로필 수정 완료 후 다른 작업 수행
-
-      // 변경된 프로필 정보를 이전 페이지로 전달
-      if (widget.onProfileUpdated != null) {
-        final updatedUserInfo = widget.userInfo ?? {};
-        updatedUserInfo['image'] = _image!.path;
-        widget.onProfileUpdated!(updatedUserInfo);
-      }
-    } else {
-      print('프로필 수정 실패 - 상태 코드: ${response.statusCode}');
-      // 실패 시 에러 처리
-    }
+    //선택한 이미지 저장
+    await ProfileApiService().updateProfilePicture(_image!);
   }
 
   @override
@@ -100,7 +79,7 @@ class _ProfileImageEditPageState extends State<ProfileImageEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                saveImageChanges();
+                saveImageChanges(); //완료 버튼 클릭 시 이미지 저장
                 Navigator.of(context).pop(true);
               },
               style: ElevatedButton.styleFrom(

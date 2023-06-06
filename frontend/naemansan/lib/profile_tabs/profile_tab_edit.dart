@@ -30,6 +30,7 @@ class _EditpageState extends State<Editpage> {
       'name': newName,
       'introduction': newIntro,
     });
+    fetchUserInfo(); // 사용자 정보 다시 불러오기
   }
 
   @override
@@ -82,10 +83,15 @@ class _EditpageState extends State<Editpage> {
             ),
             const Spacer(),
             TextButton(
-              // ----------------------------------------------------- 수정해
               onPressed: () {
                 saveChanges();
-                Navigator.of(context).pop();
+
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        const Mypage(), // glm ....
+                  ),
+                );
               },
               child: const Text(
                 '완료',
@@ -96,7 +102,6 @@ class _EditpageState extends State<Editpage> {
               ),
             ),
             const SizedBox(width: 6),
-            //일단 이름, 소개, 사진 각각 완료버튼 누르면 바로 수정되는걸로 -> 이름이랑 소개 동시에 저장되게 수정중
           ],
         ),
       ),
