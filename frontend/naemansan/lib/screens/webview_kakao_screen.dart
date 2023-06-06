@@ -62,7 +62,9 @@ class _WebViewScreenKakaoState extends State<WebViewScreenKakao> {
   Widget build(BuildContext context) {
     if (widget.loginUrl == null) {
       // Display a loading indicator or handle the case where loginUrl is null
-      return const CircularProgressIndicator();
+      return const CircularProgressIndicator(
+        color: Colors.black,
+      );
     }
     return WebviewScaffold(
       url: widget.loginUrl,

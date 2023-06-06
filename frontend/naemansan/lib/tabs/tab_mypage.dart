@@ -132,7 +132,9 @@ class _MypageState extends State<Mypage> {
                 builder: (BuildContext context,
                     AsyncSnapshot<Map<String, dynamic>?> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const CircularProgressIndicator(
+                      color: Colors.black,
+                    );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {

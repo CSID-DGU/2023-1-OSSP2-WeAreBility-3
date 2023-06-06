@@ -264,9 +264,31 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                       },
                     );
                   }
+                } else if (!snapshot.hasData) {
+                  // 등록된 데이터가 없습니다.
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CreateCourseScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      // 산책로 추가하러 가기
+                      const Text('산책로 등록하러 가기'),
+                    ],
+                  );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -290,7 +312,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -313,7 +337,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -336,7 +362,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -429,7 +457,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                       }
                     }
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
                     );
                   },
                 ),
