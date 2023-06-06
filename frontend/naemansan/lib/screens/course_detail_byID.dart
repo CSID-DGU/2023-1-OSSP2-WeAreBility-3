@@ -114,7 +114,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           ),
         ),
       );
-    }*/
+    }
 
     final double lengthInKm = trailDetail!.distance / 1000;
     final formattedDate = DateFormat("MM/dd").format(trailDetail!.createdDate);
