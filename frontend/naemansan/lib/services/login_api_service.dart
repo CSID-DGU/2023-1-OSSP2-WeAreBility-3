@@ -98,11 +98,13 @@ class ApiService {
       final tokens = await getTokens();
       final accessToken = tokens['accessToken'];
       final refreshToken = tokens['refreshToken'];
+      print('accessToken: $accessToken');
 
       final response = await http.delete(
         Uri.parse('$baseUrl/$endpoint'),
         headers: {
           'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
         },
       );
 
@@ -581,12 +583,13 @@ class ApiService {
   }
 
   Future<bool> likeCourse(int courseId) async {
-    final response = await postRequest('course/like/$courseId', {});
+    final response = await postRequest('course/$courseId/like', {});
     return response.statusCode == 200;
   }
 
   Future<bool> unlikeCourse(int courseId) async {
-    final response = await deleteRequest('course/like/$courseId');
+    final response = await deleteRequest('course/$courseId/like');
+    print(response);
     return response.statusCode == 200;
   }
 }

@@ -191,7 +191,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               Text(
-                '좋아요: ${widget.likeCnt}',
+                '좋아요: ${trailDetail!.likeCnt}',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
