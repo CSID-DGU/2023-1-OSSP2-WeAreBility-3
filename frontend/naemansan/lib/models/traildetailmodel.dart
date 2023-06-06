@@ -13,9 +13,17 @@ class TraildetailModel {
   final String startLocationName;
   final List<Map<String, dynamic>> locations;
   final double distance;
-  final int likeCnt;
+  // final int likeCnt;
   //final int userCount;
   final bool isLiked;
+
+  int _likeCnt;
+
+  int get likeCnt => _likeCnt;
+
+  set likeCnt(int value) {
+    _likeCnt = value;
+  }
 
   TraildetailModel({
     required this.id,
@@ -28,10 +36,11 @@ class TraildetailModel {
     required this.startLocationName,
     required this.locations,
     required this.distance,
-    required this.likeCnt,
+    required int likeCnt,
+
     //required this.userCount,
     required this.isLiked,
-  });
+  }) : _likeCnt = likeCnt;
 
   factory TraildetailModel.fromJson(Map<String, dynamic> json) {
     return TraildetailModel(

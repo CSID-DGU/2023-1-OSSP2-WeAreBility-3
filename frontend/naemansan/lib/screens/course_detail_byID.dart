@@ -22,6 +22,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   OtherUserModel? otherUser;
   String imageUrl = "";
   bool isLikeNow = false;
+  int likeCnt = 0;
 
   void addComment(String comment) {
     setState(() {
@@ -79,7 +80,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       print("좋아요 성공");
       setState(() {
         isLikeNow = true;
-        trailDetail!.likeCnt;
+        trailDetail!.likeCnt++;
       });
     }
   }
@@ -95,7 +96,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       print("좋아요 삭제");
       setState(() {
         isLikeNow = false;
-        trailDetail!.likeCnt;
+        trailDetail!.likeCnt--;
       });
     }
   }
