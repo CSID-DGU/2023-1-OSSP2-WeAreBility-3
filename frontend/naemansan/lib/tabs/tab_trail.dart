@@ -213,7 +213,9 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),

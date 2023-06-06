@@ -266,7 +266,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -290,7 +292,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -313,7 +317,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -336,7 +342,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                   }
                 }
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
                 );
               },
             ),
@@ -429,7 +437,9 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                       }
                     }
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Colors.black,
+                      ),
                     );
                   },
                 ),

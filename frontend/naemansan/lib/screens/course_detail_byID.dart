@@ -44,6 +44,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
     data = await apiService.getEnrollmentCourseDetailById(widget.id);
     print(data);
+
     if (data != null) {
       setState(() {
         trailDetail = TraildetailModel.fromJson(data!);
@@ -106,12 +107,11 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   Widget build(BuildContext context) {
     print(trailDetail);
     if (trailDetail == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Course Detail'),
-        ),
-        body: const Center(
-          child: CircularProgressIndicator(),
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.black,
+          ),
         ),
       );
     }
@@ -163,8 +163,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               ),
 
               DetailMap(locations: trailDetail!.locations),
-
-              Text(trailDetail!.locations.toString()),
 
               const SizedBox(height: 16),
 
