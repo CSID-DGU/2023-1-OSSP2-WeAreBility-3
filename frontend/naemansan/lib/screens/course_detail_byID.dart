@@ -17,7 +17,7 @@ class CourseDetailbyID extends StatefulWidget {
 }
 
 class _CourseDetailbyIDState extends State<CourseDetailbyID> {
-  int likes = 0;
+  //int likes = 0;
   List<String> comments = [];
   bool _isLiked = false;
   TraildetailModel? trailDetail;
@@ -31,10 +31,10 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   void toggleLike() {
     setState(() {
       if (_isLiked) {
-        likes--;
+        //likes--;
         _isLiked = false;
       } else {
-        likes++;
+        //likes++;
         _isLiked = true;
       }
     });
@@ -48,30 +48,40 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
   void fetchTrailDetail() {
     final apiService = TrailApiService();
-    apiService.getRequest('course/individaul/${widget.id}').then((response) {
+    print('전달받은 아이디= ${widget.id}'); // 확인용
+    apiService.getRequest('course/enrollment/${widget.id}').then((response) {
+      print('Response: ${response.body}'); // response 출력
       setState(() {
-        trailDetail = TraildetailModel.fromJson(jsonDecode(response.body));
+        trailDetail =
+            TraildetailModel.fromJson(jsonDecode(response.body)); //<-여기가 문제
       });
     }).catchError((error) {
       // 오류 처리
-      print('오류 발생: $error');
+      print('trailDetail을 불러오지 못함 - 오류: $error');
+      // 확인용
     });
   }
 
   @override
   Widget build(BuildContext context) {
     if (trailDetail == null) {
+      // 있는 산책로의 id를 전달했는데 왜 null ...
+      print('trailDetail == null');
       return Scaffold(
         appBar: AppBar(
           title: const Text('Course Detail'),
         ),
         body: const Center(
-          child: CircularProgressIndicator(), // 로딩 중 표시
+          child: Text('산책로 정보를 불러오는데 실패했습니다'),
         ),
       );
     }
+    // null 체크 이후에 .id에 접근
 
+/*
     if (trailDetail!.id == null) {
+      print(trailDetail!.id);
+      print('trailDetail!.id == null');
       return Scaffold(
         appBar: AppBar(
           title: const Text('Course Detail'),
@@ -80,7 +90,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           child: Text('데이터가 없습니다.'), // 데이터 없음을 알리는 메시지
         ),
       );
-    }
+    }*/
 
     final double lengthInKm = trailDetail!.distance / 1000;
     final formattedDate = DateFormat("MM/dd").format(trailDetail!.createdDate);
@@ -115,16 +125,16 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
-                  children: const [
-                    CircleAvatar(
+                  children: [
+                    const CircleAvatar(
                       radius: 20,
                       backgroundImage: NetworkImage(
                         'https://avatars.githubusercontent.com/u/78739194?v=4',
                       ),
                     ),
-                    SizedBox(width: 15),
-                    Text("KAKAO-014107960443",
-                        style: TextStyle(
+                    const SizedBox(width: 15),
+                    Text('$trailDetail!.id',
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.w500)),
                   ],
                 ),
@@ -163,9 +173,10 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   fontSize: 16,
                 ),
               ),
-              Text(
-                '좋아요: $likes',
-                style: const TextStyle(
+              const Text(
+                '좋아요',
+                //'좋아요: $likes',
+                style: TextStyle(
                   fontSize: 16,
                 ),
               ),

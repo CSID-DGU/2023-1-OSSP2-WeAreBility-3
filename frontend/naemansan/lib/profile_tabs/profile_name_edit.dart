@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:naemansan/services/mypage_api_service.dart';
 
 class ProfileNameEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
@@ -21,6 +20,7 @@ class _ProfileNameEditPageState extends State<ProfileNameEditPage> {
     newName = widget.userInfo?['name'] ?? '';
   }
 
+  /* 이 탭에서 name을 직접 저장하지 않도록 변경함
   Future<void> saveNameChanges() async {
     // Put 요청 보내기
     final profileApiService = ProfileApiService();
@@ -36,6 +36,7 @@ class _ProfileNameEditPageState extends State<ProfileNameEditPage> {
       // 실패 시 에러 처리
     }
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +82,14 @@ class _ProfileNameEditPageState extends State<ProfileNameEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                saveNameChanges();
+                //saveNameChanges();
                 setState(() {
                   if (widget.userInfo != null) {
                     widget.userInfo!['name'] = newName;
                   }
                 });
 
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop(newName);
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,

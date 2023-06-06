@@ -4,8 +4,8 @@
 // 산책로 세부 페이지 볼 때 사용하는 모델
 class TraildetailModel {
   final int id;
-  final int userid;
-  final String username;
+  final int userId;
+  final String userName;
   final String title;
   final DateTime createdDate;
   final String introduction;
@@ -19,8 +19,8 @@ class TraildetailModel {
 
   TraildetailModel({
     required this.id,
-    required this.userid,
-    required this.username,
+    required this.userId,
+    required this.userName,
     required this.title,
     required this.createdDate,
     required this.introduction,
@@ -36,8 +36,8 @@ class TraildetailModel {
   factory TraildetailModel.fromJson(Map<String, dynamic> json) {
     return TraildetailModel(
       id: json['id'],
-      userid: json['user_id'],
-      username: json['user_name'],
+      userId: json['user_id'],
+      userName: json['user_name'],
       title: json['title'],
       createdDate: DateTime.parse(json['created_date']),
       introduction: json['introduction'],
@@ -45,7 +45,6 @@ class TraildetailModel {
       startLocationName: json['start_location_name'],
       //likeCount: json['like_cnt'],
       //userCount: json['using_unt'],
-
       locations:
           List<Map<String, double>>.from(json['locations'].map((location) => {
                 'latitude': location['latitude'].toDouble(),

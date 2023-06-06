@@ -1,7 +1,4 @@
-//이름은 수정되고 소개는 수정 안되는 상태, editpage에 수정 반영은 됨, 상태코드 500
-
 import 'package:flutter/material.dart';
-import 'package:naemansan/services/mypage_api_service.dart';
 
 class ProfileIntroEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
@@ -23,6 +20,7 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
     newIntro = widget.userInfo?['introduction'] ?? '';
   }
 
+  /* 이 탭에서 소개글을 직접 저장하지 않도록 수정함함
   Future<void> saveIntroChanges() async {
     // Put 요청 보내기
     final profileApiService = ProfileApiService();
@@ -38,7 +36,7 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
       // 실패 시 에러 처리
     }
   }
-
+  */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,14 +81,14 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                saveIntroChanges();
+                //saveIntroChanges();
                 setState(() {
                   {
                     widget.userInfo!['introduction'] = newIntro;
                   }
                 });
 
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop(newIntro);
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
