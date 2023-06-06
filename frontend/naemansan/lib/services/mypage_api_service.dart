@@ -16,6 +16,24 @@ class ProfileApiService {
     };
   }
 
+/*유저정보 가져오기*/
+  Future<Map<String, dynamic>?> getUserInfo() async {
+    try {
+      final response = await getRequest('user');
+      if (response.statusCode == 200) {
+        final parsedResponse = jsonDecode(response.body);
+        print(parsedResponse['data']);
+        return parsedResponse['data'];
+      } else {
+        print('유저 정보 가져오기 실패 - ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('유저 정보 가져오기 실패 - $e');
+      return null;
+    }
+  }
+
 /*           GET           */
   Future<http.Response> getRequest(String endpoint) async {
     try {
@@ -72,21 +90,22 @@ class ProfileApiService {
     }
   }
 
-/*유저정보 가져오기*/
-  Future<Map<String, dynamic>?> getUserInfo() async {
+  /*           POST           */
+  Future<http.Response> postRequest(String endpoint, dynamic body) async {
     try {
-      final response = await getRequest('user');
-      if (response.statusCode == 200) {
-        final parsedResponse = jsonDecode(response.body);
-        print(parsedResponse['data']);
-        return parsedResponse['data'];
-      } else {
-        print('유저 정보 가져오기 실패 - ${response.statusCode}');
-        return null;
-      }
+      final accessToken = await getTokens();
+      final response = await http.post(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+      return response;
     } catch (e) {
-      print('유저 정보 가져오기 실패 - $e');
-      return null;
+      print('POST 요청 실패 - $e');
+      return http.Response('Error', 00);
     }
   }
 }

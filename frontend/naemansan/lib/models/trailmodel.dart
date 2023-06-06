@@ -1,4 +1,5 @@
 //trailmodel.dart
+//산책로 목록으로 볼 때 사용하는 모델
 class TrailModel {
   final int id;
   final String title;

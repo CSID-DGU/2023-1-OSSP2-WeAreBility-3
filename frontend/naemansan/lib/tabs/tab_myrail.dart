@@ -3,13 +3,16 @@ import 'package:naemansan/screens/map/naver_map_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
+//세부 페이지 이동 시 사용
+//import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
 import 'package:naemansan/widgets/widget_trailcomment.dart';
 import 'package:naemansan/screens/create_course_screen.dart';
 
 class Myrail extends StatefulWidget {
-  const Myrail({Key? key}) : super(key: key);
+  final int initialTabIndex;
+  const Myrail({Key? key, this.initialTabIndex = 0}) : super(key: key);
 
   @override
   _MyrailState createState() => _MyrailState();
@@ -18,13 +21,18 @@ class Myrail extends StatefulWidget {
 class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService;
-  int selectedIndex = 0;
+
+  int selectedIndex = 0; // 키워드별 보기에서 사용하는 인덱스 !!
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
     TrailapiService = TrailApiService();
+    _tabController = TabController(
+      length: 5,
+      initialIndex: widget.initialTabIndex,
+      vsync: this,
+    );
   }
 
   @override
@@ -56,11 +64,14 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             created_date: trail.createdDate.toString(),
           );
         } else if (data is TrailCommentModel) {
-          var comment = data;
+          var trail = data;
 
           return CommentTrailWidget(
-            icon: Icons.ac_unit, // 아이콘을 원하는 아이콘으로 변경해주세요.
-            content: comment.content,
+            id: trail.id,
+            courseId: trail.courseId,
+            title: trail.title,
+            tags: trail.tags,
+            content: trail.content,
           );
         }
 
@@ -76,13 +87,66 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     const int page = 0;
     const int num = 100000000;
     List<String> keywords = [
-      '한강',
-      '마포구',
+      '힐링',
+      '스타벅스',
+      '자연',
+      '오솔길',
+      '도심',
+      '출근길',
       '퇴근길',
-      '중구',
+      '점심시간',
+      '스트레스해소',
+      '한강',
+      '공원',
+      '성수',
+      '강아지',
+      '바다',
+      '해안가',
+      '러닝',
+      '맛집',
+      '카페',
+      '영화',
+      '문화',
       '사색',
+      '핫플',
+      '서울숲',
+      '경복궁',
+      '한옥마을',
+      '문화재',
+      '고양이',
+      '개울가',
+      '계곡',
+      '들판',
+      '산',
+      '동산',
       '야경',
-      '공원'
+      '노을',
+      '숲길',
+      '강서구',
+      '양천구',
+      '구로구',
+      '영등포구',
+      '금천구',
+      '동작구',
+      '관악구',
+      '서초구',
+      '강남구',
+      '송파구',
+      '강동구',
+      '은평구',
+      '서대문구',
+      '마포구',
+      '용산구',
+      '중구',
+      '종로구',
+      '도봉구',
+      '강북구',
+      '성북구',
+      '동대문구',
+      '성동구',
+      '노원구',
+      '중랑구',
+      '광진구'
     ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
     final Future<List<TrailModel>?> EnrolledTrail =
@@ -128,6 +192,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               Navigator.push(
                 context,
                 MaterialPageRoute(
+                  //산책로 등록
                   builder: (context) => const NaverMapScreen(),
                   // builder: (context) => const CreateCourseScreen(),
                 ),

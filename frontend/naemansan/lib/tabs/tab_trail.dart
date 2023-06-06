@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
+//import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -180,7 +181,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: Text('추천 산책로가 없습니다'),
                 );
               },
             ),
@@ -196,7 +197,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: Text('가까운 위치에 산책로가 없습니다'),
                 );
               },
             ),
@@ -212,7 +213,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: CircularProgressIndicator(),
                 );
               },
             ),
@@ -228,7 +229,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: Text('사용된 산책로 정보가 없습니다'),
                 );
               },
             ),
@@ -244,7 +245,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   );
                 }
                 return const Center(
-                  child: CircularProgressIndicator(), //gma
+                  child: Text('최근 등록된 산책로가 없습니다'),
                 );
               },
             ),

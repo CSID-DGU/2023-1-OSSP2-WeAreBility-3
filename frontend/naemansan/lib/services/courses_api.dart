@@ -1,3 +1,4 @@
+//courses_api.dart
 //산책로 탭, 나만의 산책로 탭에서 산책로 목록을 불러올 때 사용
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -274,7 +275,6 @@ class TrailApiService {
     }
   }
 
-  //사용자 댓글 조회 /user/comment?page={}&num={} //여기 get 요청 실패 ...
   Future<List<TrailCommentModel>?> getCommentedCourses(
       //위젯 디자인이 달라 여기만 다른 위젯 사용
       int page,

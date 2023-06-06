@@ -1,7 +1,12 @@
+//widget_trail.dart
+
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:naemansan/screens/course_detail.dart';
+import 'package:naemansan/screens/course_detail_byID.dart';
 
+//산책로 목록 조회에 사용
+//산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
+//나만의 산책로 탭 - 등록한, 좋아요한, 이용한, 키워드
 class TrailWidget extends StatelessWidget {
   final String title;
   final String startpoint;
@@ -107,19 +112,12 @@ class TrailWidget extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CourseDetail(
-                              id: id,
-                              title: title,
-                              location: startpoint,
-                              //length: length,
-                              length: distance,
-                              likes: likeCnt,
-                              keywords: CourseKeyWord,
-                              created_date: created_date,
+                            builder: (context) => CourseDetailbyID(
+                              id: id, // 산책로 세부 페이지로 이동 -> ID 값 전달
                             ),
                           ),
                         );
-                      }, // 산책로 세부 페이지로 이동
+                      },
                     ),
                   ],
                 ),
