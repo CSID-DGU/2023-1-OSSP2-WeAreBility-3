@@ -2,7 +2,7 @@
 class OtherUserModel {
   final String name;
   final String imagePath;
-  final String introduction;
+  final String? introduction;
   final bool isPremium;
   final int likeCnt;
   final int cmtCnt;
@@ -13,7 +13,7 @@ class OtherUserModel {
   OtherUserModel({
     required this.name,
     required this.imagePath,
-    required this.introduction,
+    this.introduction,
     required this.isPremium,
     required this.likeCnt,
     required this.cmtCnt,

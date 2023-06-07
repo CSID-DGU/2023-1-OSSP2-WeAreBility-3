@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
-//홈,산책로, 나만의 산책로, 마이페이지 상단바에 사용된 구조를 변형해 사용
 class Badges extends StatelessWidget {
   const Badges({super.key});
 
@@ -31,10 +30,10 @@ class Badges extends StatelessWidget {
                 );
               },
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 5.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
               child: Row(
-                children: [
+                children: const [
                   Text(
                     '뱃지',
                     style: TextStyle(

@@ -81,10 +81,10 @@ class _CourseDetailState extends State<CourseDetail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(10.0),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
-                  children: [
+                  children: const [
                     CircleAvatar(
                       radius: 20,
                       backgroundImage: NetworkImage(

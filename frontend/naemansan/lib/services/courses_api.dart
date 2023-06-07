@@ -34,16 +34,17 @@ class TrailApiService {
         },
       );
 
+/*
       if (response.statusCode == 200) {
         print('GET 요청 성공');
       } else {
         print('GET 요청 실패 - 상태 코드: ${response.statusCode}');
       }
-
+*/
       return response;
     } catch (e) {
-      print('GET 요청 실패 - $e');
-      return http.Response('Error', 500);
+      print('GET 요청 실패(getRequest함수) - $e');
+      return http.Response('Error', 0);
     }
   }
 

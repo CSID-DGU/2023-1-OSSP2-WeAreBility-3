@@ -69,6 +69,5 @@ class TraildetailModel {
 }
 
 /*
-course/enrollment/{id}
-/course/individual/{id}
+course/enrollment/{id}s
 */
