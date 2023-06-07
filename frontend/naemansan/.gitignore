@@ -22,7 +22,8 @@
 .project
 .settings/
 .vscode/*
-
+/assets/config/.env
+.env
 # Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat
