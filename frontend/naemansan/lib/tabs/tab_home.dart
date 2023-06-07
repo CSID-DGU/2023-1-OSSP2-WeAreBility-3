@@ -57,6 +57,7 @@ class _HomeState extends State<Home> {
     ApiService apiService = ApiService();
     user = apiService.getUserInfo();
     // user의 값이 null일때 loginScreen으로 이동하고 토큰값 지우기
+    // print(user);
     user.then((value) {
       if (value == null) {
         goLogin();
