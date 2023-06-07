@@ -110,14 +110,18 @@ class _MypageState extends State<Mypage> {
               child: IconButton(
                 padding: const EdgeInsets.only(top: 0, right: 2.5),
                 icon: const Icon(Icons.edit, color: Colors.black),
-                onPressed: () {
+                onPressed: () async {
                   // 프로필 수정 페이지로 이동
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const Editpage(),
                     ),
                   );
+                  // 정보 수정 후 다시 가져오기
+                  setState(() {
+                    user = fetchUserInfo();
+                  });
                 },
               ),
             ),

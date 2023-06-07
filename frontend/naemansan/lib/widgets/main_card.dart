@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:naemansan/screens/course_detail.dart';
+import 'package:naemansan/screens/course_detail_byID.dart';
 
 class SlideItem {
   final int id;
@@ -59,14 +59,18 @@ class CardWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseDetail(
+            //------------------------------------- 수정 중인 곳
+            // builder: (context) => CourseDetail(
+            //   id: id,
+            //   title: title,
+            //   location: location,
+            //   length: length,
+            //   likes: likes,
+            //   keywords: keywords,
+            //   created_date: created_date,
+            // ),
+            builder: (context) => CourseDetailbyID(
               id: id,
-              title: title,
-              location: location,
-              length: length,
-              likes: likes,
-              keywords: keywords,
-              created_date: created_date,
             ),
           ),
         );

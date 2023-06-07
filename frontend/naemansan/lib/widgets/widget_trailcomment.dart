@@ -80,11 +80,14 @@ class CommentTrailWidget extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.arrow_forward_ios_outlined),
               onPressed: () {
+                print('id: $id');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+                    //-------------------------------------------------------------------------------------------------------------
                     builder: (context) => CourseDetailbyID(
-                      id: id, // 산책로 세부 페이지로 이동 -> ID 값 전달
+                      id: id,
+                      // 산책로 세부 페이지로 이동 -> ID 값 전달
                     ),
                   ),
                 );

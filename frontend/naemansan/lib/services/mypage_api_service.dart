@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class ProfileApiService {
   final String baseUrl = 'https://ossp.dcs-hyungjoon.com';
@@ -108,14 +109,50 @@ class ProfileApiService {
       return http.Response('Error', 00);
     }
   }
+
+// 본인 프로필 이미지 수정
+  Future<http.Response> updateProfilePicture(File imageFile) async {
+    try {
+      final tokens = await getTokens();
+      final accessToken = tokens['accessToken'];
+      final uri = Uri.parse('https://ossp.dcs-hyungjoon.com/image/user');
+
+      final request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = 'Bearer $accessToken';
+
+      final fileStream = http.ByteStream(imageFile.openRead());
+      final fileLength = await imageFile.length();
+
+      final multipartFile = http.MultipartFile(
+        'image',
+        fileStream,
+        fileLength,
+        filename: 'image.png', //jpg랑 png둘 다 받게 바꾸기
+      );
+
+      request.files.add(multipartFile);
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('프로필 사진 수정 POST 요청 성공');
+      } else {
+        print('프로필 사진 수정 POST 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+
+      return http.Response.fromStream(response);
+    } catch (e) {
+      print('프로필 사진 수정 POST 요청 실패 - $e');
+      return http.Response('Error', 0);
+    }
+  }
 }
 
-// 프로필 : 이미지, 닉네임, 자기소개 
+// 프로필 : 이미지, 닉네임, 자기소개
 // 본인 프로필 조회 (get) user
 // 본인 프로필 수정 (put) user
-// 본인 프로필 사진 수정 (post) image/user 
+// 본인 프로필 사진 수정 (post) image/user
 // 본인 회원 탈퇴 (delete) user
 
 // 팔로워 목록 조회 (get) user/follower?page={}&num={}
 // 팔로잉 목록 조회 (get) user/following?page={}&num={}
-

@@ -1,7 +1,4 @@
-//이름은 수정되고 소개는 수정 안되는 상태, editpage에 수정 반영은 됨, 상태코드 500
-
 import 'package:flutter/material.dart';
-import 'package:naemansan/services/mypage_api_service.dart';
 
 class ProfileIntroEditPage extends StatefulWidget {
   final Map<String, dynamic>? userInfo;
@@ -15,28 +12,12 @@ class ProfileIntroEditPage extends StatefulWidget {
 
 class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
   late Future<Map<String, dynamic>?> user;
-  String newIntro = '';
+  String? newIntro = '';
 
   @override
   void initState() {
     super.initState();
     newIntro = widget.userInfo?['introduction'] ?? '';
-  }
-
-  Future<void> saveIntroChanges() async {
-    // Put 요청 보내기
-    final profileApiService = ProfileApiService();
-    final response = await profileApiService.putRequest('user', {
-      'introduction': newIntro,
-    });
-
-    if (response.statusCode == 200) {
-      print('프로필 introduction 수정 성공');
-      // 프로필 수정 완료 후 다른 작업 수행
-    } else {
-      print('프로필 introduction 수정 실패 - 상태 코드: ${response.statusCode}');
-      // 실패 시 에러 처리
-    }
   }
 
   @override
@@ -83,14 +64,13 @@ class _ProfileIntroEditPageState extends State<ProfileIntroEditPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                saveIntroChanges();
                 setState(() {
                   {
-                    widget.userInfo!['introduction'] = newIntro;
+                    widget.userInfo?['introduction'] = newIntro;
                   }
                 });
 
-                Navigator.of(context).pop(true);
+                Navigator.of(context).pop(newIntro);
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,

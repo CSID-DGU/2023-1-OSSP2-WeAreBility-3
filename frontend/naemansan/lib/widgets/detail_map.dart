@@ -63,43 +63,45 @@ class _DetailMapState extends State<DetailMap> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // 크기
-      height: 300,
-      child: NaverMap(
-        onMapCreated: onMapCreated,
-        mapType: _mapType,
-        minZoom: 7, //지도의 최소 줌 레벨
-        zoomGestureEnable: true,
-        scrollGestureEnable: true,
-        initLocationTrackingMode: LocationTrackingMode.None,
+    return GestureDetector(
+      child: SizedBox(
+        // 크기
+        height: 300,
+        child: NaverMap(
+          onMapCreated: onMapCreated,
+          mapType: _mapType,
+          minZoom: 7, //지도의 최소 줌 레벨
+          zoomGestureEnable: true,
+          scrollGestureEnable: true,
+          initLocationTrackingMode: LocationTrackingMode.None,
 
-        markers: [
-          Marker(
-            markerId: "0",
-            position: LatLng(startLat, startLng),
-            captionText: "출발",
-            captionTextSize: 13,
-            iconTintColor: const Color.fromARGB(255, 78, 221, 0),
-          ),
-          Marker(
-            markerId: "1",
-            position: LatLng(lastLat, lastLng),
-            captionText: "종료",
-            captionTextSize: 13,
-            iconTintColor: const Color.fromARGB(255, 255, 0, 0),
-          ),
-        ],
-        // 카메라 이동 가능
+          markers: [
+            Marker(
+              markerId: "0",
+              position: LatLng(startLat, startLng),
+              captionText: "출발",
+              captionTextSize: 13,
+              iconTintColor: const Color.fromARGB(255, 78, 221, 0),
+            ),
+            Marker(
+              markerId: "1",
+              position: LatLng(lastLat, lastLng),
+              captionText: "종료",
+              captionTextSize: 13,
+              iconTintColor: const Color.fromARGB(255, 255, 0, 0),
+            ),
+          ],
+          // 카메라 이동 가능
 
-        initialCameraPosition: CameraPosition(
-          // target: LatLng(widget.locations[0]['latitude'] as double,
-          //     widget.locations[1]['longitude'] as double),
-          target: LatLng(startLat, startLng),
-          zoom: 15,
+          initialCameraPosition: CameraPosition(
+            // target: LatLng(widget.locations[0]['latitude'] as double,
+            //     widget.locations[1]['longitude'] as double),
+            target: LatLng(startLat, startLng),
+            zoom: 14,
+          ),
+          locationButtonEnable: false,
+          pathOverlays: _pathOverlays,
         ),
-        locationButtonEnable: false,
-        pathOverlays: _pathOverlays,
       ),
     );
   }
