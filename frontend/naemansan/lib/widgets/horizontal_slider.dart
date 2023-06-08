@@ -30,6 +30,16 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
     fetchItems();
   }
 
+  // 키워드가 변경되었을때만 아이템을 다시 가져옵니다.
+  @override
+  void didUpdateWidget(HorizontalSlider oldWidget) {
+    if (widget.keyword != oldWidget.keyword) {
+      print(widget.keyword);
+      fetchItems(); // selectedKeyword 값이 변경되면 아이템을 다시 가져옵니다.
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   // 아이템 Fetch하기
   Future<void> fetchItems() async {
     ApiService apiService = ApiService();
@@ -37,6 +47,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
 
     // 키워드 기반
     if (widget.keyword != null) {
+      print(widget.keyword!);
       data = await apiService.getTagBasedCourseList(widget.keyword!);
     }
     // 위치기반

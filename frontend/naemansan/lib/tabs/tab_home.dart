@@ -28,7 +28,12 @@ class _HomeState extends State<Home> {
   String _street = "";
   bool nowLocation = false;
   String selectedKeyword = "한강"; // 선택한 키워드 초기값
-
+  List<bool> keywordButtonStates = [
+    true,
+    false,
+    false,
+    false,
+  ]; //
 // Set the latitude and longitude values
   late double _latitude = 0.0;
   late double _longitude = 0.0;
@@ -39,17 +44,9 @@ class _HomeState extends State<Home> {
   static const storage = FlutterSecureStorage();
   dynamic userInfo = '';
 
-  void handleKeywordSelected(String keyword) {
-    setState(() {
-      selectedKeyword = keyword;
-    });
-  }
-
   Future<void> deleteTokens() async {
     await storage.delete(key: 'accessToken');
     await storage.delete(key: 'refreshToken');
-    print("삭제 진행함?");
-
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isLogged', false);
   }
@@ -246,6 +243,14 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: nowLocation
                           ? [
+                              const SizedBox(height: 10),
+                              Text(
+                                titleList[0],
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                               MainSlider(
                                 title: titleList[0],
                                 sliderWidget: HorizontalSlider(
@@ -254,11 +259,37 @@ class _HomeState extends State<Home> {
                                   title: titleList[0],
                                 ),
                               ),
+                              Text(
+                                titleList[1],
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  _buildKeywordButton("한강", index: 0),
+                                  _buildKeywordButton("힐링", index: 1),
+                                  _buildKeywordButton("공원", index: 2),
+                                  _buildKeywordButton("중구", index: 3),
+                                  // Add more keyword buttons as needed
+                                ],
+                              ),
                               MainSlider(
                                 title: titleList[1],
                                 sliderWidget: HorizontalSlider(
                                   keyword: selectedKeyword,
                                   title: titleList[1],
+                                ),
+                              ),
+                              Text(
+                                titleList[2],
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                               MainSlider(
@@ -269,7 +300,7 @@ class _HomeState extends State<Home> {
                               ),
                             ]
                           : [
-                              const SizedBox(height: 30),
+                              const SizedBox(height: 10),
                               Text(titleList[0],
                                   style: const TextStyle(
                                       fontSize: 21,
@@ -282,11 +313,25 @@ class _HomeState extends State<Home> {
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black87)),
                               const SizedBox(height: 50),
+                              Text(
+                                titleList[1],
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
                               MainSlider(
                                 title: titleList[1],
                                 sliderWidget: HorizontalSlider(
                                   keyword: selectedKeyword,
                                   title: titleList[1],
+                                ),
+                              ),
+                              Text(
+                                titleList[0],
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                               MainSlider(
@@ -302,6 +347,50 @@ class _HomeState extends State<Home> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _updateSelectedKeyword(String keyword) {
+    setState(() {
+      selectedKeyword = keyword;
+      print("keyword: $selectedKeyword");
+    });
+  }
+
+  Widget _buildKeywordButton(String keyword, {required int index}) {
+    return Container(
+      margin: const EdgeInsets.only(right: 10.0),
+      child: ElevatedButton(
+        onPressed: () {
+          _updateSelectedKeyword(keyword);
+
+          setState(() {
+            // Update the button states based on the index
+            for (int i = 0; i < keywordButtonStates.length; i++) {
+              keywordButtonStates[i] = (i == index);
+            }
+          });
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(
+            keywordButtonStates[index]
+                ? const Color.fromARGB(255, 26, 167, 85)
+                : Colors.white,
+          ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+        child: Text(
+          keyword,
+          style: TextStyle(
+            color: keywordButtonStates[index] ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
