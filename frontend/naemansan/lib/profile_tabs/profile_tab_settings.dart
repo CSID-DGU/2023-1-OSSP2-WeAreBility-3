@@ -1,7 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:naemansan/services/mypage_api_service.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+class Settings extends StatefulWidget {
+  const Settings({Key? key}) : super(key: key);
+
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  bool isNotificationEnabled = true;
+  late Future<Map<String, dynamic>?> user;
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+
+  // Fetch user info
+  Future<Map<String, dynamic>?> fetchUserInfo() async {
+    ProfileApiService apiService = ProfileApiService();
+    return await apiService.getUserInfo();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    user = fetchUserInfo();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkUserState();
+    });
+  }
+
+  Future<void> logout() async {
+    await deleteTokens();
+    await storage.delete(key: 'login');
+    goLogin();
+  }
+
+  checkUserState() async {
+    userInfo = await storage.read(key: 'login');
+    if (userInfo == null) {
+      print('로그인 페이지로 이동');
+      goLogin();
+    } else {
+      print('로그인 중');
+    }
+  }
+
+  goLogin() {
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,20 +95,28 @@ class Settings extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.only(left: 18), //gma
               child: Row(
                 children: [
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    child: const Text('알림 설정'),
-                    // 그냥 여기 옆에 버튼 만들쟈
+                  const Text(
+                    '알림',
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
+                  const Spacer(),
+                  // 이 부분 추가햐
+                  Switch(
+                    value: isNotificationEnabled,
+                    onChanged: (bool value) {
+                      setState(() {
+                        isNotificationEnabled = value;
+                        // 개인정보에 알림 설정 정보 저장
+                      });
+                      // 개인정보에 알림 설정 정보 저장
+                    },
+                    activeColor: const Color.fromARGB(255, 100, 208, 103),
+                    inactiveTrackColor:
+                        const Color.fromARGB(255, 226, 220, 220),
+                  )
                 ],
               ),
             ),
@@ -124,7 +181,9 @@ class Settings extends StatelessWidget {
               child: Row(
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      logout();
+                    },
                     style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
                       textStyle: const TextStyle(
@@ -158,5 +217,14 @@ class Settings extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> deleteTokens() async {
+    await storage.delete(key: 'accessToken');
+    await storage.delete(key: 'refreshToken');
+    print("삭제 진행함?");
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', false);
   }
 }
