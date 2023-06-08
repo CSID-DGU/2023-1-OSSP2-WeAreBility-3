@@ -198,8 +198,34 @@ class TrailApiService {
 
 /* ---------------- TAP 나만의 산책로 가져오기 ----------------course/list/individual/basic?page=$page&num=$num */
 
-  // 나만의 Tap 등록한 산책로 조회 course/list/individual/enrollment?page=$page&num=$num
+  // 나만의 Tap 등록한 공개 산책로 조회 course/list/individual/enrollment?page=$page&num=$num
   Future<List<TrailModel>?> getEnrolledCourses(int page, int num) async {
+    try {
+      final response =
+          await getRequest('course/list/individual/basic?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final trails = parsedResponse['data'] as List<dynamic>;
+        List<TrailModel> courseInstances = [];
+        for (var trail in trails) {
+          final instance = TrailModel.fromJson(trail);
+          courseInstances.add(instance);
+        }
+        return courseInstances;
+      } else {
+        print('등록한 산책로 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
+      return null;
+    }
+  }
+
+  // 나만의 Tap 등록한 미공개 산책로 조회
+  Future<List<TrailModel>?> getIndividualBasicCourses(int page, int num) async {
     try {
       final response =
           await getRequest('course/list/individual/basic?page=$page&num=$num');
