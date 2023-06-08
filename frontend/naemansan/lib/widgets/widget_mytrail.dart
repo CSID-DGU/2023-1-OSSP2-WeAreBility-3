@@ -7,25 +7,17 @@ import 'package:naemansan/screens/course_detail_byID.dart';
 //산책로 목록 조회에 사용
 //산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
 //나만의 산책로 탭 - 등록한, 좋아요한, 이용한, 키워드
-class TrailWidget extends StatelessWidget {
+class MyTrailWidget extends StatelessWidget {
   final String title;
-  final String startpoint;
+
   final double distance;
-  final List<String> CourseKeyWord;
-  final int likeCnt, userCnt;
-  final bool isLiked;
   final int id;
   final String created_date;
 
-  const TrailWidget({
+  const MyTrailWidget({
     Key? key,
     required this.title,
-    required this.startpoint,
     required this.distance,
-    required this.CourseKeyWord,
-    required this.likeCnt,
-    required this.userCnt,
-    required this.isLiked,
     required this.id,
     required this.created_date,
   }) : super(key: key);
@@ -76,9 +68,9 @@ class TrailWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  Text(
-                    startpoint,
-                    style: const TextStyle(
+                  const Text(
+                    "startpoint",
+                    style: TextStyle(
                       fontSize: 12.0,
                     ),
                   ),
@@ -88,16 +80,6 @@ class TrailWidget extends StatelessWidget {
                       fontSize: 12.0,
                     ),
                   ),
-                  if (CourseKeyWord != null)
-                    Wrap(
-                      children: CourseKeyWord.map((word) => Text(
-                            '#$word ',
-                            style: const TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.black,
-                            ),
-                          )).toList(),
-                    ),
                 ],
               ),
             ),
@@ -125,31 +107,6 @@ class TrailWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
-                Row(
-                  children: [
-                    Icon(
-                      isLiked ? Icons.favorite : Icons.favorite_border_outlined,
-                      color: isLiked ? Colors.red : null,
-                    ),
-                    Text(
-                      '$likeCnt',
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Icon(Icons.person_outline),
-                    Text(
-                      '$userCnt',
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
             const SizedBox(width: 4.0),

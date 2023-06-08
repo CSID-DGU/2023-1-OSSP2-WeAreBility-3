@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:naemansan/models/mytap_trail_model.dart';
 import 'package:naemansan/screens/map/naver_map_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/widgets/widget_mytrail.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
 //세부 페이지 이동 시 사용
@@ -55,7 +57,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           return TrailWidget(
             title: trail.title,
             startpoint: trail.startLocationName,
-            distance: trail.distance,
+            distance: trail.distance / 1000,
             CourseKeyWord: trail.tags,
             likeCnt: trail.likeCount,
             userCnt: trail.userCount,
@@ -72,6 +74,15 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             title: trail.title,
             tags: trail.tags,
             content: trail.content,
+          );
+        } else if (data is MytabTrail) {
+          var trail = data;
+
+          return MyTrailWidget(
+            title: trail.title,
+            distance: trail.distance / 1000,
+            id: trail.id,
+            created_date: trail.createdDate.toString(),
           );
         }
 
@@ -149,7 +160,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       '광진구'
     ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
-    final Future<List<TrailModel>?> EnrolledTrail =
+    final Future<List<MytabTrail>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
     final Future<List<TrailModel>?> LikedTrail =
         TrailapiService.getLikedCourses(page, num);
@@ -159,6 +170,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         TrailapiService.getCommentedCourses(page, num);
     final Future<List<TrailModel>?> KeyWordTrail =
         TrailapiService.getKeywordCourse(page, num, keywords[selectedIndex]);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -248,6 +260,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data!.isNotEmpty) {
+                    print(snapshot.data);
                     return Row(
                       children: [Expanded(child: makeList(snapshot))],
                     );
