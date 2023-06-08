@@ -7,12 +7,14 @@ class HorizontalSlider extends StatefulWidget {
   final double? latitude;
   final double? longitude;
   final String? keyword;
+  final String? title;
 
   const HorizontalSlider({
     Key? key,
     this.latitude,
     this.longitude,
     this.keyword,
+    this.title,
   }) : super(key: key);
 
   @override
@@ -28,19 +30,22 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
     fetchItems();
   }
 
+  // 아이템 Fetch하기
   Future<void> fetchItems() async {
     ApiService apiService = ApiService();
     List<dynamic>? data;
 
+    // 키워드 기반
     if (widget.keyword != null) {
       data = await apiService.getTagBasedCourseList(widget.keyword!);
-    } else if (widget.latitude != null && widget.longitude != null) {
+    }
+    // 위치기반
+    else if (widget.latitude != null && widget.longitude != null) {
       data = await apiService.getLocationBasedCourseList(
           widget.latitude!, widget.longitude!);
     }
 
-    // print(data);
-
+    // 데이터가 있을때
     if (data != null) {
       final items = data
           .map((item) => SlideItem(
@@ -60,9 +65,6 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
           slideItems = items;
         });
       }
-    } else {
-      print(Error());
-      // Handle error when data is null
     }
   }
 
@@ -86,48 +88,58 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
             },
           )
         : Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Text(
-                  '현재 위치에 등록된 산책로가 없습니다!',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NaverMapScreen()),
-                    )
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Colors.black87),
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.black87,
-                  ),
-                  label: const Text(
-                    '산책로 등록하러 가기',
+            child: widget.title == "🍽️ 상권"
+                ? const Text(
+                    '등록된 산책로가 없습니다!',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
-                  ),
-                ),
-              ],
-            ),
-          );
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        widget.title == "🌿 위치별"
+                            ? '현재 위치에 등록된 산책로가 없습니다!'
+                            : "'해당하는 키워드의 산책로가 없습니다!'",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NaverMapScreen()),
+                          )
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Colors.black87),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.black87,
+                        ),
+                        label: const Text(
+                          '산책로 등록하러 가기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ));
   }
 }

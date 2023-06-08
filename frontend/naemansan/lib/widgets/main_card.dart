@@ -59,16 +59,6 @@ class CardWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            //------------------------------------- 수정 중인 곳
-            // builder: (context) => CourseDetail(
-            //   id: id,
-            //   title: title,
-            //   location: location,
-            //   length: length,
-            //   likes: likes,
-            //   keywords: keywords,
-            //   created_date: created_date,
-            // ),
             builder: (context) => CourseDetailbyID(
               id: id,
             ),

@@ -33,6 +33,9 @@ class _HomeState extends State<Home> {
   late double _latitude = 0.0;
   late double _longitude = 0.0;
 
+  // list of keywords
+  List<String> titleList = ["🌿 위치별", "🎋 키워드별", "🍽️ 상권"];
+
   static const storage = FlutterSecureStorage();
   dynamic userInfo = '';
 
@@ -244,27 +247,31 @@ class _HomeState extends State<Home> {
                       children: nowLocation
                           ? [
                               MainSlider(
-                                title: "🌿 위치별",
+                                title: titleList[0],
                                 sliderWidget: HorizontalSlider(
                                   latitude: _latitude,
                                   longitude: _longitude,
+                                  title: titleList[0],
                                 ),
                               ),
                               MainSlider(
-                                title: "🎋 키워드별",
+                                title: titleList[1],
                                 sliderWidget: HorizontalSlider(
                                   keyword: selectedKeyword,
+                                  title: titleList[1],
                                 ),
                               ),
-                              const MainSlider(
-                                title: "🍽️ 상권",
-                                sliderWidget: HorizontalSlider(),
+                              MainSlider(
+                                title: titleList[2],
+                                sliderWidget: HorizontalSlider(
+                                  title: titleList[2],
+                                ),
                               ),
                             ]
                           : [
                               const SizedBox(height: 30),
-                              const Text('🌿 위치별',
-                                  style: TextStyle(
+                              Text(titleList[0],
+                                  style: const TextStyle(
                                       fontSize: 21,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black87)),
@@ -276,14 +283,17 @@ class _HomeState extends State<Home> {
                                       color: Colors.black87)),
                               const SizedBox(height: 50),
                               MainSlider(
-                                title: "🎋 키워드별",
+                                title: titleList[1],
                                 sliderWidget: HorizontalSlider(
                                   keyword: selectedKeyword,
+                                  title: titleList[1],
                                 ),
                               ),
-                              const MainSlider(
-                                title: "🍽️ 상권",
-                                sliderWidget: HorizontalSlider(),
+                              MainSlider(
+                                title: titleList[2],
+                                sliderWidget: HorizontalSlider(
+                                  title: titleList[2],
+                                ),
                               ),
                             ],
                     ),
