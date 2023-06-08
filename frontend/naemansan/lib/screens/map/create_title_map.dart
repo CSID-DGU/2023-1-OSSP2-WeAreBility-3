@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/tabs/tab_myrail.dart';
 
 class CreateTitleScreen extends StatefulWidget {
   const CreateTitleScreen({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _CreateTitleScreenState extends State<CreateTitleScreen> {
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
-        title: const Text('산책로 제목을 입력해주세요!'),
+        title: const Text('산책로 이름을 입력해주세요!'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -71,16 +72,28 @@ class _CreateTitleScreenState extends State<CreateTitleScreen> {
             children: [
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: '산책로 이름'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
+                    return '산책로 이름을 입력해주세요!';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
               // 제출 버튼
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    sendCourseData();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Myrail()),
+                    );
+                  }
+                },
+                child: const Text('산책로 만들기'),
+              ),
             ],
           ),
         ),
