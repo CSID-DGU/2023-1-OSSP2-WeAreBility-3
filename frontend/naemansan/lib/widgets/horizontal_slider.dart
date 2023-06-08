@@ -101,7 +101,7 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
         : Center(
             child: widget.title == "🍽️ 상권"
                 ? const Text(
-                    '등록된 산책로가 없습니다!',
+                    '등록된 상권이 없습니다!',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
