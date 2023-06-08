@@ -75,7 +75,7 @@ class MyTrailWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$distance km',
+                    '${distance.toStringAsFixed(2)} km',
                     style: const TextStyle(
                       fontSize: 12.0,
                     ),

@@ -80,7 +80,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
 
           return MyTrailWidget(
             title: trail.title,
-            distance: trail.distance,
+            distance: trail.distance / 1000,
             id: trail.id,
             created_date: trail.createdDate.toString(),
           );
