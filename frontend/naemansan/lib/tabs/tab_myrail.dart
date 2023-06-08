@@ -57,7 +57,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           return TrailWidget(
             title: trail.title,
             startpoint: trail.startLocationName,
-            distance: trail.distance,
+            distance: trail.distance / 1000,
             CourseKeyWord: trail.tags,
             likeCnt: trail.likeCount,
             userCnt: trail.userCount,
