@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/providers/location.dart';
 import 'package:naemansan/screens/login_screen.dart';
+import 'package:naemansan/screens/map/create_title_map.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -98,6 +99,7 @@ class _AppState extends State<App> {
             routes: {
               '/index': (context) => const IndexScreen(),
               '/login': (context) => const LoginScreen(),
+              "/createTitle": (context) => const CreateTitleScreen(),
             },
           );
         }
