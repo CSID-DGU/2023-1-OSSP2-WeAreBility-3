@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:naemansan/screens/map/create_title_map.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 
 class NaverMapScreen extends StatefulWidget {
@@ -18,6 +17,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
   LatLng? _currentLocation;
 
   Timer? _timer;
+  Timer? _timer2;
   bool _isTracking = false;
   DateTime? _startTime;
   DateTime? _endTime;
@@ -156,7 +156,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       _startTime = DateTime.now();
     });
 
-    Timer.periodic(const Duration(seconds: 3), (_) {
+    _timer2 = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) {
         _getCurrentLocation();
       }
@@ -188,22 +188,18 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         actions: [
           TextButton(
             onPressed: () async {
-              Navigator.pop(context);
-              final walkingPath = {
-                'title': await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CreateTitleScreen(),
-                  ),
-                ),
-                'locations': _pathOverlays
+              // 이동할 화면으로부터 데이터를 받기 위해 `pushNamed` 메소드를 사용합니다.
+
+              await Navigator.pushNamed(
+                context,
+                '/createTitle',
+                arguments: _pathOverlays
                     .map((pathOverlay) => {
                           'latitude': pathOverlay.coords[0].latitude,
                           'longitude': pathOverlay.coords[0].longitude,
                         })
                     .toList(),
-              };
-              print(walkingPath);
+              );
             },
             child: const Text('확인'),
           ),
@@ -221,12 +217,14 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       final seconds = duration.inSeconds.remainder(60);
       return '산책 시간: $hours시간 $minutes분 $seconds초';
     } else {
-      return '✨산책을 시작해보세요!';
+      return '산책을 시작해보세요!';
     }
   }
 
   void _stopTimer() {
     _timer?.cancel();
+    _timer2?.cancel();
     _timer = null;
+    _timer2 = null;
   }
 }

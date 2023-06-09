@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:naemansan/models/mytap_trail_model.dart';
 import 'package:naemansan/models/trailmodel.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
 
@@ -198,19 +199,21 @@ class TrailApiService {
 
 /* ---------------- TAP 나만의 산책로 가져오기 ----------------course/list/individual/basic?page=$page&num=$num */
 
-  // 나만의 Tap 등록한 공개 산책로 조회 course/list/individual/enrollment?page=$page&num=$num
-  Future<List<TrailModel>?> getEnrolledCourses(int page, int num) async {
+  // 나만의 Tap 등록한 산책로 조회 course/list/individual/enrollment?page=$page&num=$num4
+  // 등록한 미공개 산책로 조회   getIndividualBasicCourses
+  Future<List<MytabTrail>?> getIndividualBasicCourses(int page, int num) async {
     try {
       final response =
           await getRequest('course/list/individual/basic?page=$page&num=$num');
-
-      if (response.statusCode == 200) {
+      print(response.statusCode == 200);
+      if (response.body.isNotEmpty) {
         final parsedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
+        print("parsedResponse['data'] : ${parsedResponse['data']}");
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<TrailModel> courseInstances = [];
+        List<MytabTrail> courseInstances = [];
         for (var trail in trails) {
-          final instance = TrailModel.fromJson(trail);
+          final instance = MytabTrail.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;
@@ -224,8 +227,8 @@ class TrailApiService {
     }
   }
 
-  // 나만의 Tap 등록한 미공개 산책로 조회
-  Future<List<TrailModel>?> getIndividualBasicCourses(int page, int num) async {
+  // 나만의 Tap 등록한 공개 산책로 조회
+  Future<List<TrailModel>?> getEnrolledCourses(int page, int num) async {
     try {
       final response =
           await getRequest('course/list/individual/basic?page=$page&num=$num');

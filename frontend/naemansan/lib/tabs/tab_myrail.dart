@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:naemansan/models/mytap_trail_model.dart';
 import 'package:naemansan/screens/map/naver_map_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
+import 'package:naemansan/widgets/widget_mytrail.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
 //세부 페이지 이동 시 사용
@@ -57,7 +59,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           return TrailWidget(
             title: trail.title,
             startpoint: trail.startLocationName,
-            distance: trail.distance,
+            distance: trail.distance / 1000,
             CourseKeyWord: trail.tags,
             likeCnt: trail.likeCount,
             userCnt: trail.userCount,
@@ -74,6 +76,15 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             title: trail.title,
             tags: trail.tags,
             content: trail.content,
+          );
+        } else if (data is MytabTrail) {
+          var trail = data;
+
+          return MyTrailWidget(
+            title: trail.title,
+            distance: trail.distance / 1000,
+            id: trail.id,
+            created_date: trail.createdDate.toString(),
           );
         }
 
@@ -153,7 +164,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
 
     final Future<List<TrailModel>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
-    final Future<List<TrailModel>?> IndivTrail =
+    final Future<List<MytabTrail>?> IndivTrail =
         TrailapiService.getIndividualBasicCourses(page, num);
     final Future<List<TrailModel>?> LikedTrail =
         TrailapiService.getLikedCourses(page, num);
@@ -163,6 +174,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         TrailapiService.getCommentedCourses(page, num);
     final Future<List<TrailModel>?> KeyWordTrail =
         TrailapiService.getKeywordCourse(page, num, keywords[selectedIndex]);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -273,6 +285,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                             fontSize: 12.5,
                           ),
                         ),
+                        //공개 산책로 listview
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -289,12 +302,19 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         ),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12.0, vertical: 8.0),
-                        child: Text(
-                          '나만의', //IndivTrail
-                          style: TextStyle(
-                            color: openIndex == 0 ? Colors.white : Colors.black,
-                            fontSize: 12.5,
-                          ),
+                        child: Column(
+                          children: [
+                            Text(
+                              '나만의', //IndivTrail
+                              style: TextStyle(
+                                color: openIndex == 0
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 12.5,
+                              ),
+                              //미공개 산책로 listView
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -309,7 +329,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         if (snapshot.data!.isNotEmpty) {
                           return makeList(snapshot);
                         } else {
-                          // 등록한 산책로 없을 때만 여기서도 등록 버튼
+                          // 등록한 산책로 없을 때만 여기서도 등록 버튼 (있을때는 상단바에 있는 버튼으로 등록 가능)
                           return Center(
                             child: IconButton(
                               icon: const Icon(Icons.add),
@@ -356,6 +376,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
+
           // 두 번째 탭
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
