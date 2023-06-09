@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 //이벤트 처리하고 삭제 예정
+/*
 @RestController
 @RequiredArgsConstructor
 public class MainController {
@@ -29,8 +30,9 @@ public class MainController {
                 requestDto.getTitle(),
                 requestDto.getBody());
 
- */
+
         notificationService.createNotification(Long.valueOf(authentication.getName()),notificationRequestDto);
         return ResponseEntity.ok().build();
     }
 }
+*/
