@@ -54,7 +54,7 @@ class LoginBtn extends StatelessWidget {
     // login function
     void login(logo) async {
       var response = await http.get(
-        Uri.parse("https://ossp.dcs-hyungjoon.com/auth/$logo"),
+        Uri.parse("http://ossp.dcs-hyungjoon.com/auth/$logo"),
       );
       // print(response.body);
       var parsedResponse = jsonDecode(response.body);
