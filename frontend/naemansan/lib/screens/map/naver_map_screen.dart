@@ -59,7 +59,6 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
 
   void _updateCurrentLocation(double latitude, double longitude) {
     _currentLocation = LatLng(latitude, longitude);
-    print('현재 위치: $_currentLocation');
     _drawPath();
   }
 

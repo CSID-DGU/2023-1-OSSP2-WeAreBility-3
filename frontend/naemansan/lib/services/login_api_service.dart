@@ -588,6 +588,12 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+  Future<bool> serverLogout() async {
+    final response = await postRequest('auth/logout', {});
+    print("SERVER LOGOUT 결과 : ${response.body}");
+    return response.statusCode == 200;
+  }
+
   Future<bool> unlikeCourse(int courseId) async {
     final response = await deleteRequest('course/$courseId/like');
     print(response);

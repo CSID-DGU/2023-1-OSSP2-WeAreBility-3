@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:naemansan/services/login_api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
@@ -33,8 +34,12 @@ class _SettingsState extends State<Settings> {
   }
 
   Future<void> logout() async {
+    ApiService apiService = ApiService();
+    // 서버 로그아웃 처리
+    await apiService.serverLogout();
     await deleteTokens();
     await storage.delete(key: 'login');
+
     goLogin();
   }
 
@@ -72,10 +77,10 @@ class _SettingsState extends State<Settings> {
                 Navigator.of(context).pop();
               },
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
+            const Padding(
+              padding: EdgeInsets.only(left: 5.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
                     '설정',
                     style: TextStyle(
@@ -134,9 +139,9 @@ class _SettingsState extends State<Settings> {
                         fontSize: 18,
                       ),
                     ),
-                    child: Column(
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           '버전 정보',
                           style: TextStyle(
