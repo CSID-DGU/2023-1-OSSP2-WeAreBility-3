@@ -1,3 +1,5 @@
+// 나만의 산책로 - 등록된 - 나만의 에서만 사용
+// 레이아웃은 widget_trail과 동일하고 iconbutton 연결부만 다름
 //widget_trail.dart
 
 import 'package:flutter/material.dart';
@@ -7,17 +9,25 @@ import 'package:naemansan/screens/indiv_course_detail_byID.dart';
 //산책로 목록 조회에 사용
 //산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
 //나만의 산책로 탭 - 등록한, 좋아요한, 이용한, 키워드
-class MyTrailWidget extends StatelessWidget {
+class TrailWidget extends StatelessWidget {
   final String title;
-
+  final String startpoint;
   final double distance;
+  final List<String> CourseKeyWord;
+  final int likeCnt, userCnt;
+  final bool isLiked;
   final int id;
   final String created_date;
 
-  const MyTrailWidget({
+  const TrailWidget({
     Key? key,
     required this.title,
+    required this.startpoint,
     required this.distance,
+    required this.CourseKeyWord,
+    required this.likeCnt,
+    required this.userCnt,
+    required this.isLiked,
     required this.id,
     required this.created_date,
   }) : super(key: key);
@@ -68,18 +78,28 @@ class MyTrailWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  const Text(
-                    "startpoint",
-                    style: TextStyle(
-                      fontSize: 12.0,
-                    ),
-                  ),
                   Text(
-                    '${distance.toStringAsFixed(2)} km',
+                    startpoint,
                     style: const TextStyle(
                       fontSize: 12.0,
                     ),
                   ),
+                  Text(
+                    '$distance km',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  if (CourseKeyWord != null)
+                    Wrap(
+                      children: CourseKeyWord.map((word) => Text(
+                            '#$word ',
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black,
+                            ),
+                          )).toList(),
+                    ),
                 ],
               ),
             ),
@@ -97,7 +117,7 @@ class MyTrailWidget extends StatelessWidget {
                           MaterialPageRoute(
                             //-------------------------------------------------------------------------------------------------------------
                             builder: (context) => IndivCourseDetailbyID(
-                              id: id, // 개인 산책로의 디테일 페이지
+                              id: id,
                               // 산책로 세부 페이지로 이동 -> ID 값 전달
                             ),
                           ),
@@ -107,6 +127,31 @@ class MyTrailWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: isLiked ? Colors.red : null,
+                    ),
+                    Text(
+                      '$likeCnt',
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.person_outline),
+                    Text(
+                      '$userCnt',
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
             const SizedBox(width: 4.0),

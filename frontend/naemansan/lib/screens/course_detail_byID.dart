@@ -4,6 +4,7 @@ import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/detail_map.dart';
+import 'package:naemansan/profile_tabs/view_profile.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -150,9 +151,24 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(imageUrl),
+                    GestureDetector(
+                      onTap: () {
+                        // 상대방 프로필로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            //-------------------------------------------------------------------------------------------------------------
+                            builder: (context) => ViewProfile(
+                              userId: trailDetail!.userid,
+                              // 상대방 프로필 조회
+                            ),
+                          ),
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(imageUrl),
+                      ),
                     ),
                     const SizedBox(width: 15),
                     Text(trailDetail!.username,

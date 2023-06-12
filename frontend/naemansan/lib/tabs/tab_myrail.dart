@@ -24,6 +24,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late TrailApiService TrailapiService;
 
+  int openIndex = 1; // 나만의, 공개 산책로 등록시 사용하는 인덱스
   int selectedIndex = 0; // 키워드별 보기에서 사용하는 인덱스 !!
 
   @override
@@ -35,6 +36,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       initialIndex: widget.initialTabIndex,
       vsync: this,
     );
+    openIndex = 1;
   }
 
   @override
@@ -160,8 +162,10 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       '광진구'
     ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
-    final Future<List<MytabTrail>?> EnrolledTrail =
+    final Future<List<TrailModel>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
+    final Future<List<MytabTrail>?> IndivTrail =
+        TrailapiService.getIndividualBasicCourses(page, num);
     final Future<List<TrailModel>?> LikedTrail =
         TrailapiService.getLikedCourses(page, num);
     final Future<List<TrailModel>?> UsedTrail =
@@ -253,57 +257,123 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: [
+          //첫번째 탭
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: FutureBuilder(
-              future: EnrolledTrail,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data!.isNotEmpty) {
-                    print(snapshot.data);
-                    return Row(
-                      children: [Expanded(child: makeList(snapshot))],
-                    );
-                  } else {
-                    return IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateCourseScreen(),
-                          ),
-                        );
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          openIndex = 1;
+                        });
                       },
-                    );
-                  }
-                } else if (!snapshot.hasData) {
-                  // 등록된 데이터가 없습니다.
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CreateCourseScreen(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: openIndex == 1 ? Colors.green : Colors.white,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8.0),
+                        child: Text(
+                          '등록된', //EnrolledTrail
+                          style: TextStyle(
+                            color: openIndex == 1 ? Colors.white : Colors.black,
+                            fontSize: 12.5,
+                          ),
+                        ),
+                        //공개 산책로 listview
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          openIndex = 0;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: openIndex == 0 ? Colors.green : Colors.white,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              '나만의', //IndivTrail
+                              style: TextStyle(
+                                color: openIndex == 0
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontSize: 12.5,
+                              ),
+                              //미공개 산책로 listView
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: FutureBuilder(
+                    future: openIndex == 1 ? EnrolledTrail : IndivTrail,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
+                          return makeList(snapshot);
+                        } else {
+                          // 등록한 산책로 없을 때만 여기서도 등록 버튼 (있을때는 상단바에 있는 버튼으로 등록 가능)
+                          return Center(
+                            child: IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateCourseScreen(),
+                                  ),
+                                );
+                              },
                             ),
                           );
-                        },
-                      ),
-                      // 산책로 추가하러 가기
-                      const Text('산책로 등록하러 가기'),
-                    ],
-                  );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.black,
+                        }
+                      } else if (!snapshot.hasData) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CreateCourseScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Text('산책로 등록하러 가기'), // 산책로 추가하러 가기
+                          ],
+                        );
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
 
