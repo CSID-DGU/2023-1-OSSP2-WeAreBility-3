@@ -189,6 +189,7 @@ public class CourseService {
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
                 .distance(enrollmentCourse.getDistance())
+                .like_cnt((long) enrollmentCourse.getLikes().size())
                 .is_like(courseUtil.existLike(user, enrollmentCourse)).build();
     }
 

@@ -7,5 +7,5 @@ import lombok.*;
 @NoArgsConstructor
 public class UserRequestDto {
     private String name;
-    private String information;
+    private String introduction;
 }
