@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/profile_tabs/profile_tab_settings.dart';
@@ -35,11 +34,11 @@ class _MypageState extends State<Mypage> {
     });
   }
 
-  Future<void> logout() async {
-    await deleteTokens();
-    await storage.delete(key: 'login');
-    goLogin();
-  }
+  // Future<void> logout() async {
+  //   await deleteTokens();
+  //   await storage.delete(key: 'login');
+  //   goLogin();
+  // }
 
   checkUserState() async {
     userInfo = await storage.read(key: 'login');
@@ -326,16 +325,16 @@ class _MypageState extends State<Mypage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: const BottomAppBar(
         child: SizedBox(
           height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: logout,
-                child: const Text('Logout'),
-              ),
+              // ElevatedButton(
+              //   onPressed: logout,
+              //   child: const Text('Logout'),
+              // ),
             ],
           ),
         ),
@@ -344,12 +343,12 @@ class _MypageState extends State<Mypage> {
   }
 
   // Delete tokens on logout
-  Future<void> deleteTokens() async {
-    await storage.delete(key: 'accessToken');
-    await storage.delete(key: 'refreshToken');
-    print("삭제 진행함?");
+  // Future<void> deleteTokens() async {
+  //   await storage.delete(key: 'accessToken');
+  //   await storage.delete(key: 'refreshToken');
+  //   print("삭제 진행함?");
 
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLogged', false);
-  }
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool('isLogged', false);
+  // }
 }

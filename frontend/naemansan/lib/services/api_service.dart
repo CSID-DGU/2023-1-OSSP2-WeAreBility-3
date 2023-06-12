@@ -40,6 +40,8 @@ class ApiService {
     throw Error();
   }
 
+  // deviceToekn 보내기
+
 //---------------------------------------좋아요순 리스트 불러오기------------------------------------------------------------------------------
   static Future<List<TrailModel>> getMostLikedTrail() async {
     List<TrailModel> MostLikedTrailInstances = [];
