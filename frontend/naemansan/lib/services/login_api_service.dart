@@ -589,8 +589,8 @@ class ApiService {
   }
 
   Future<bool> serverLogout() async {
-    final response = await postRequest('auth/logout', {});
-    print("SERVER LOGOUT 결과 : ${response.body}");
+    final response = await getRequest('auth/logout');
+    // print("SERVER LOGOUT 결과 : ${response.body}");
     return response.statusCode == 200;
   }
 

@@ -55,6 +55,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    init();
     super.initState();
     ApiService apiService = ApiService();
     user = apiService.getUserInfo();
@@ -72,7 +73,6 @@ class _HomeState extends State<Home> {
   }
 
   goLogin() async {
-    init();
     await deleteTokens();
     await storage.delete(key: 'login');
     gogoLogin();
@@ -442,6 +442,7 @@ class _HomeState extends State<Home> {
     bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
     // deviceToekn, apple iOS여부 보내기
     // await apiService.sendDeviceToken(deviceToken, isIos);
+    print("??");
     print("iOS,Android여부 : $isIos");
     return (deviceToken == null) ? "" : deviceToken;
   }
