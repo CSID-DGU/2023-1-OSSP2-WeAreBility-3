@@ -9,12 +9,19 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-// 알림
+// firebase
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   // 환경변수
   await dotenv.load(fileName: 'assets/config/.env');
   // await dotenv.load(fileName: '.env'); c
+
+// firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // spalsh 시간 조절하기
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

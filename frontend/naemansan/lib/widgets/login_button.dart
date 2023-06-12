@@ -54,9 +54,11 @@ class LoginBtn extends StatelessWidget {
     // login function
     void login(logo) async {
       var response = await http.get(
-        Uri.parse("http://ossp.dcs-hyungjoon.com/auth/$logo"),
+        Uri.parse("https://ossp.dcs-hyungjoon.com/auth/$logo"),
       );
+      // print(response.body);
       var parsedResponse = jsonDecode(response.body);
+
       // print("1️⃣ login_button.dart 에서 response.body : $parsedResponse");
 
       String loginUrl = parsedResponse['data']['url'];

@@ -57,6 +57,7 @@ dependencies:
     naver_map_plugin:
         git: https://github.com/LBSTECH/naver_map_plugin
     get: ^4.6.5
+    firebase_core: ^2.13.1
 
 dev_dependencies:
     flutter_test:
