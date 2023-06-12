@@ -1,7 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:naemansan/widgets/login_button.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
+    init();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _asyncMethod();
@@ -37,6 +40,37 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {}
     setState(() {
       isLoading = false; // 로딩 상태 갱신
+    });
+  }
+
+  init() async {
+    String deviceToken = await getDeviceToken();
+    print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFCIATION ######");
+    print(deviceToken);
+    print("############################################################");
+
+    // listen for user to click on notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
+      String? title = remoteMessage.notification!.title;
+      String? description = remoteMessage.notification!.body;
+
+      //im gonna have an alertdialog when clicking from push notification
+      Alert(
+        context: context,
+        type: AlertType.error,
+        title: title, // title from push notification data
+        desc: description, // description from push notifcation data
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+            child: const Text(
+              "내가 만든 산책로, 내만산",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ],
+      ).show();
     });
   }
 
@@ -90,5 +124,15 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  //get device token to use for push notification
+  Future getDeviceToken() async {
+    //request user permission for push notification
+    FirebaseMessaging.instance.requestPermission();
+    FirebaseMessaging firebaseMessage = FirebaseMessaging.instance;
+    String? deviceToken = await firebaseMessage.getToken();
+    print(deviceToken);
+    return (deviceToken == null) ? "" : deviceToken;
   }
 }
