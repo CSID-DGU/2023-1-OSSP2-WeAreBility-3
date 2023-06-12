@@ -55,6 +55,9 @@ public class User {
     @Column(name = "device_Token")
     private String deviceToken;
 
+    @Column(name = "isIOS", columnDefinition = "TINYINT(1)")
+    private Boolean isIos;
+
     // ------------------------------------------------------------
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
@@ -98,7 +101,7 @@ public class User {
 
     @Builder
     public User(String socialId, LoginProviderType loginProviderType, String name, UserRoleType userRoleType,
-                String refreshToken, String deviceToken) {
+                String refreshToken) {
         this.socialId = socialId;
         this.loginProviderType = loginProviderType;
         this.userRoleType = userRoleType;
@@ -107,12 +110,19 @@ public class User {
         this.createdDate = Timestamp.valueOf(LocalDateTime.now());
         this.isLogin = true;
         this.refreshToken = refreshToken;
-        this.deviceToken = deviceToken;
+        this.deviceToken = null;
+        this.isIos = null;
+
     }
 
     public void updateUser(String name, String introduction) {
         setName(name);
         setIntroduction(introduction);
+    }
+
+    public void updateDevice(String deviceToken, Boolean isIos) {
+        setDeviceToken(deviceToken);
+        setIsIos(isIos);
     }
 
     public void logoutUser() {
