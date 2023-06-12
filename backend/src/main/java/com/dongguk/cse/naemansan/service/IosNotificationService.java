@@ -14,8 +14,10 @@ import javapns.notification.PushedNotification;
 import javapns.notification.ResponsePacket;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ import java.util.List;
 public class IosNotificationService {
     private final UserRepository userRepository;
 
-    public String sendApnFcmtoken(FCMNotificationRequestDto requestDto) {
+    public String sendApnFcmtoken(FCMNotificationRequestDto requestDto) throws Exception{
         User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         if (user.getDeviceToken() != null) {
             try {
@@ -34,6 +36,8 @@ public class IosNotificationService {
                 payload.addCustomDictionary("id", "1");
                 System.out.println(payload.toString());
                 Object obj = user.getDeviceToken();
+                InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
+
                 List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "경로", "비밀번호", false, obj);
                 for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
                     if (NOTIFICATION.isSuccessful()) {
