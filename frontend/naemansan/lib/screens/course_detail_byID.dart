@@ -274,7 +274,12 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               const SizedBox(height: 8),
-
+              Text(
+                trailDetail!.introduction,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
               const SizedBox(height: 15),
               const Text(
                 '🎯 키워드',
