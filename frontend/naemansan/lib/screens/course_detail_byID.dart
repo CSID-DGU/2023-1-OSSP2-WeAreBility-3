@@ -168,9 +168,10 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         title: Text(trailDetail!.title),
         actions: [
           IconButton(
+            // ---------------------------수정 및 삭제 버튼 -------------
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              // Handle URL sharing functionality
+              _showPopupMenu(context);
             },
           ),
         ],
@@ -333,6 +334,62 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showPopupMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('수정'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  // 수정 페이지로 이동
+                },
+              ),
+              ListTile(
+                title: const Text('삭제'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showDeleteConfirmationDialog(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제 확인'),
+          content: const Text('정말 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('삭제'),
+              onPressed: () {
+                // 삭제 로직을 처리하는 코드 작성
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,3 +1,5 @@
+// 개인 산책로 조회 - 내가 등록한 (나만의) 산책로 /course/individual/{id}
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:naemansan/models/indivtraildetailmodel.dart';
