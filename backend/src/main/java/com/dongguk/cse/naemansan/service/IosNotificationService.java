@@ -25,9 +25,9 @@ import java.util.List;
 public class IosNotificationService {
     private final UserRepository userRepository;
 
-    public String sendApnFcmtoken(FCMNotificationRequestDto requestDto) throws Exception{
-        User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        if (user.getDeviceToken() != null) {
+    public void/*8tring*/ sendApnFcmtoken(/*FCMNotificationRequestDto requestDto*/String token) throws Exception{
+        //User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        //if (user.getDeviceToken() != null) {
             try {
                 PushNotificationPayload payload = PushNotificationPayload.complex();
                 payload.addAlert("푸시알림 테스트");
@@ -35,10 +35,11 @@ public class IosNotificationService {
                 payload.addSound("default");
                 payload.addCustomDictionary("id", "1");
                 System.out.println(payload.toString());
-                Object obj = user.getDeviceToken();
-                InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
+                //Object obj = user.getDeviceToken();
+                Object obj = token;
+                //InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
 
-                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "경로", "비밀번호", false, obj);
+                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Certificates.p12", "naemansan@", false, obj);
                 for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
                     if (NOTIFICATION.isSuccessful()) {
                         System.out.println("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());
@@ -59,9 +60,8 @@ public class IosNotificationService {
             } catch (CommunicationException e) {
                 e.printStackTrace();
             }
-            return "알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId();
-        } else {
-            return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId();
+            //return "알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId();
+        //} else {
+       //     return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId();
         }
-    }
 }
