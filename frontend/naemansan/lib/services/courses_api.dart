@@ -384,4 +384,23 @@ class TrailApiService {
       print('실패 - $e');
       return null;
     } */
+
+  // 산책로 댓글 달기 (post) course/{courseId}/comment
+  Future<http.Response> postComment(String endpoint, dynamic body) async {
+    try {
+      final accessToken = await getTokens();
+      final response = await http.post(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+      return response;
+    } catch (e) {
+      print('POST 요청 실패 - $e');
+      return http.Response('Error', 00);
+    }
+  }
 }

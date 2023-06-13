@@ -325,12 +325,12 @@ class _MypageState extends State<Mypage> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         child: SizedBox(
           height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               // ElevatedButton(
               //   onPressed: logout,
               //   child: const Text('Logout'),

@@ -77,10 +77,10 @@ class _SettingsState extends State<Settings> {
                 Navigator.of(context).pop();
               },
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 5.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0),
               child: Row(
-                children: [
+                children: const [
                   Text(
                     '설정',
                     style: TextStyle(
@@ -139,9 +139,9 @@ class _SettingsState extends State<Settings> {
                         fontSize: 18,
                       ),
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                           '버전 정보',
                           style: TextStyle(
