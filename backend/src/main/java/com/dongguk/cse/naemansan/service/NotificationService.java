@@ -6,6 +6,7 @@ import com.dongguk.cse.naemansan.domain.Comment;
 import com.dongguk.cse.naemansan.domain.Notification;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.NotificationDto;
+import com.dongguk.cse.naemansan.dto.request.FCMNotificationRequestDto;
 import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.repository.NotificationRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -33,22 +34,27 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final FCMNotificationService fcmNotificationService;
 
     //NotificationDto 삭제
-    public ResponseEntity createNotification(Long userId, NotificationRequestDto notificationRequestDto) throws IOException {
+    public /*ResponseEntity*/String createNotification(Long userId, FCMNotificationRequestDto requestDto /*NotificationRequestDto notificationRequestDto*/) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         notificationRepository.save(Notification.builder()
                 .user(user)
-                .title(notificationRequestDto.getTitle())
-                .content(notificationRequestDto.getContent())
+                .title(requestDto.getTitle())
+                .content(requestDto.getBody())
                 .build());
 
+        return fcmNotificationService.sendNotificationByToken(requestDto);
+/*
         firebaseCloudMessageService.sendMessageTo(
                 notificationRequestDto.getTargetToken(),
                 notificationRequestDto.getTitle(),
                 notificationRequestDto.getContent());
         return ResponseEntity.ok().build();
+        */
+
     }
 
     public List<NotificationDto> readNotification(Long userId, Long pageNum, Long num) {
@@ -58,7 +64,7 @@ public class NotificationService {
         Page<Notification> notifications = notificationRepository.findByUser(user, paging);
 
         List<NotificationDto> notificationDtoList = new ArrayList<>();
-        for(Notification notification : notifications){
+        for (Notification notification : notifications) {
             notificationDtoList.add(NotificationDto.builder()
                     .id(notification.getId())
                     .title(notification.getTitle())
