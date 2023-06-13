@@ -62,160 +62,141 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        titleSpacing: 0,
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_outlined,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
-              child: Row(
-                children: const [
-                  Text(
-                    '설정',
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                ],
-              ),
-            ),
-          ],
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_outlined,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: const Text(
+          '설정',
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 18), //gma
-              child: Row(
-                children: [
-                  const Text(
-                    '알림',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                  const Spacer(),
-                  // 이 부분 추가햐
-                  Switch(
-                    value: isNotificationEnabled,
-                    onChanged: (bool value) {
-                      setState(() {
-                        isNotificationEnabled = value;
-                        // 개인정보에 알림 설정 정보 저장
-                      });
-                      // 개인정보에 알림 설정 정보 저장
-                    },
-                    activeColor: const Color.fromARGB(255, 100, 208, 103),
-                    inactiveTrackColor:
-                        const Color.fromARGB(255, 226, 220, 220),
-                  )
-                ],
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap: () {
+                  // 스토어 연결
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              '버전 정보',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '1.0.0', // 현재 버전 표시
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const Divider(),
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  TextButton(
-                    // 스토어 연결
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          '버전 정보',
+              padding: const EdgeInsets.all(13.0),
+              child: InkWell(
+                onTap: () {
+                  // 고객센터 문의하기
+                },
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          '문의하기',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
                           ),
                         ),
-                        Text(
-                          '1.0.0', // 현재 버전 표시
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(13.0),
+              child: InkWell(
+                onTap: () {
+                  logout();
+                },
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          '로그아웃',
                           style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
+                            color: Colors.black,
+                            fontSize: 18,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const Divider(),
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
+              padding: const EdgeInsets.all(13.0),
+              child: InkWell(
+                onTap: () {
+                  // 내만산 탈퇴하기
+                },
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          '내만산 탈퇴하기',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
-                    child: const Text('문의하기'), //고객센터 ? 이메일 ? 연결
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      logout();
-                    },
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    child: const Text('로그아웃'), // 마이페이지에 있는거 여기로 옮겨
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      textStyle: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    child: const Text('내만산 탈퇴하기'),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
