@@ -201,7 +201,8 @@ class TrailApiService {
 
   // 나만의 Tap 등록한 산책로 조회 course/list/individual/enrollment?page=$page&num=$num4
   // 등록한 미공개 산책로 조회   getIndividualBasicCourses
-  Future<List<MytabTrail>?> getIndividualBasicCourses(int page, int num) async {
+  Future<List<MytabTrailModel>?> getIndividualBasicCourses(
+      int page, int num) async {
     try {
       final response =
           await getRequest('course/list/individual/basic?page=$page&num=$num');
@@ -211,9 +212,9 @@ class TrailApiService {
             jsonDecode(response.body) as Map<String, dynamic>;
         print("parsedResponse['data'] : ${parsedResponse['data']}");
         final trails = parsedResponse['data'] as List<dynamic>;
-        List<MytabTrail> courseInstances = [];
+        List<MytabTrailModel> courseInstances = [];
         for (var trail in trails) {
-          final instance = MytabTrail.fromJson(trail);
+          final instance = MytabTrailModel.fromJson(trail);
           courseInstances.add(instance);
         }
         return courseInstances;

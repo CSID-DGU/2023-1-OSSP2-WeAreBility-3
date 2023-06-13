@@ -38,7 +38,7 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
     ApiService apiService = ApiService();
     Map<String, dynamic>? data;
 
-    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    data = await apiService.getIndividualmentCourseDetailById(widget.id);
     print(data);
 
     if (data != null) {

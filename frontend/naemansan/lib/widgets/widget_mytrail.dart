@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:naemansan/screens/indiv_course_detail_byID.dart';
+//import 'package:naemansan/screens/course_detail_byID.dart';
 
 //산책로 목록 조회에 사용
 //산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
@@ -91,7 +92,7 @@ class MyTrailWidget extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.arrow_forward_ios_outlined),
                       onPressed: () {
-                        print('id: $id');
+                        print('id: $id, $title로 이동중');
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -5,7 +5,6 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_mytrail.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
-//세부 페이지 이동 시 사용
 //import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
@@ -52,7 +51,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var data = snapshot.data![index];
-
+// --------------------------------------- 탭별 위젯 디자인 선택
         if (data is TrailModel) {
           var trail = data;
 
@@ -77,7 +76,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             tags: trail.tags,
             content: trail.content,
           );
-        } else if (data is MytabTrail) {
+        } else if (data is MytabTrailModel) {
           var trail = data;
 
           return MyTrailWidget(
@@ -108,7 +107,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
 
     final Future<List<TrailModel>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
-    final Future<List<MytabTrail>?> IndivTrail =
+    final Future<List<MytabTrailModel>?> IndivTrail =
         TrailapiService.getIndividualBasicCourses(page, num);
     final Future<List<TrailModel>?> LikedTrail =
         TrailapiService.getLikedCourses(page, num);
@@ -240,7 +239,6 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      //공개 산책로 listview
                     ),
                     const SizedBox(width: 8),
                     TextButton(
@@ -274,12 +272,12 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      //공개 산책로 listview
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Expanded(
+                  //---------------------------산책로 정보 조회 --------------------
                   child: FutureBuilder(
                     future: openIndex == 1 ? EnrolledTrail : IndivTrail,
                     builder: (context, snapshot) {
@@ -287,7 +285,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         if (snapshot.data!.isNotEmpty) {
                           return makeList(snapshot);
                         } else {
-                          // 등록한 산책로 없을 때만 여기서도 등록 버튼 (있을때는 상단바에 있는 버튼으로 등록 가능)
+                          // 산책로 없을 때 추가 ---
                           return Center(
                             child: IconButton(
                               icon: const Icon(Icons.add),
@@ -335,7 +333,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // 두 번째 탭
+          // 두 번째 탭--------------------------------------------------------------------------------
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(

@@ -9,7 +9,7 @@ import 'package:naemansan/screens/indiv_course_detail_byID.dart';
 //산책로 목록 조회에 사용
 //산책로 탭 전체 - 추천순, 거리순, 좋아요순, 이용자순, 최신순
 //나만의 산책로 탭 - 등록한, 좋아요한, 이용한, 키워드
-class TrailWidget extends StatelessWidget {
+class MyTrailWidget extends StatelessWidget {
   final String title;
   final String startpoint;
   final double distance;
@@ -19,7 +19,7 @@ class TrailWidget extends StatelessWidget {
   final int id;
   final String created_date;
 
-  const TrailWidget({
+  const MyTrailWidget({
     Key? key,
     required this.title,
     required this.startpoint,
