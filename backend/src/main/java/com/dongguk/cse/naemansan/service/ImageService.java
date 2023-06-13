@@ -84,7 +84,6 @@ public class ImageService {
         } else {
             image = imageRepository.findByUuidName(UuidName).orElseThrow(() -> new RestApiException(ErrorCode.FILE_DOWNLOAD));
             filePath = image.getPath();
-
         }
 
         byte[] images = Files.readAllBytes(new File(filePath).toPath());
