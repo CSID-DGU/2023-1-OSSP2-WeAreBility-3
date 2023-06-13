@@ -141,6 +141,14 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     }
   }
 
+  //산책로 Delete
+  Future<void> deleteTrail() async {
+    print("${trailDetail!.title} 삭제");
+    ApiService apiService = ApiService();
+
+    apiService.deleteEnrollmentCourse(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     print(trailDetail);
@@ -383,7 +391,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
             TextButton(
               child: const Text('삭제'),
               onPressed: () {
-                // 삭제 로직을 처리하는 코드 작성
+                deleteTrail();
                 Navigator.of(context).pop();
               },
             ),
