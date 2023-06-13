@@ -599,4 +599,11 @@ class ApiService {
     print(response);
     return response.statusCode == 200;
   }
+
+  Future<bool> addComment(
+      int courseId, Map<String, dynamic> commentData) async {
+    print("add 할때 는 $commentData");
+    final response = await postRequest('course/$courseId/comment', commentData);
+    return response.statusCode == 200;
+  }
 }
