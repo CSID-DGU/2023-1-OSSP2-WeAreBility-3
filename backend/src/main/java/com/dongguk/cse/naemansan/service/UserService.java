@@ -4,6 +4,7 @@ import com.dongguk.cse.naemansan.common.ErrorCode;
 import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
+import com.dongguk.cse.naemansan.dto.request.UserDeviceRequestDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CommentListDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
@@ -56,7 +57,7 @@ public class UserService {
             throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
         }
 
-        user.updateUser(userRequestDto.getName(), userRequestDto.getInformation());
+        user.updateUser(userRequestDto.getName(), userRequestDto.getIntroduction());
 
         return UserDto.builder()
                 .user(user)
@@ -219,5 +220,12 @@ public class UserService {
         }
 
         return enrollmentCourseListDtoList;
+    }
+
+    public Boolean updateUserDevice(Long userId, UserDeviceRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        user.updateDevice(requestDto.getDevice_token(), requestDto.getIs_ios());
+        return Boolean.TRUE;
     }
 }

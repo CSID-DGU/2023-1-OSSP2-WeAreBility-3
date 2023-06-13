@@ -1,6 +1,7 @@
 package com.dongguk.cse.naemansan.config;
 
 import com.dongguk.cse.naemansan.security.CustomUserDetailService;
+import com.dongguk.cse.naemansan.security.JwtAccessDeniedHandler;
 import com.dongguk.cse.naemansan.security.JwtEntryPoint;
 import com.dongguk.cse.naemansan.security.filter.JwtAuthenticationFilter;
 import com.dongguk.cse.naemansan.security.filter.JwtExceptionFilter;
@@ -23,6 +24,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final CustomUserDetailService customUserDetailService;
     private final JwtEntryPoint jwtEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
@@ -39,6 +41,7 @@ public class SecurityConfig {
                 .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(jwtEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, customUserDetailService), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);

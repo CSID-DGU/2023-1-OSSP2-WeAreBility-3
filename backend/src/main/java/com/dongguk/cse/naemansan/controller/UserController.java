@@ -1,5 +1,6 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.dto.request.UserDeviceRequestDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.common.ResponseDto;
@@ -84,5 +85,10 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         map.put("tags", userService.updateTagByUserChoice(Long.valueOf(authentication.getName()), requestDto));
         return new ResponseDto<Map<String, Object>>(map);
+    }
+
+    @PutMapping("/notification")
+    public ResponseDto<?> updateUserDevice(Authentication authentication, @RequestBody UserDeviceRequestDto requestDto) {
+        return new ResponseDto<Boolean>(userService.updateUserDevice(Long.valueOf(authentication.getName()), requestDto));
     }
 }
