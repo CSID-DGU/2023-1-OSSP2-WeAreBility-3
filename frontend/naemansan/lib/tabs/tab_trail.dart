@@ -123,6 +123,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             );
           },
         ),
+        titleSpacing: 0,
         title: const Text(
           '산책로',
           style: TextStyle(
@@ -145,7 +146,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           indicatorColor: Colors.black, //선택된 항목 나타내기
           tabs: const [
             Tab(
-              child: Text('추천순',
+              child: Text('추천',
                   style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
@@ -153,11 +154,11 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
                   style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text('좋아요순',
+              child: Text('인기순', // = 좋아요순
                   style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
-              child: Text('이용자순',
+              child: Text('이용순',
                   style: TextStyle(color: Colors.black, fontSize: 12.5)),
             ),
             Tab(
