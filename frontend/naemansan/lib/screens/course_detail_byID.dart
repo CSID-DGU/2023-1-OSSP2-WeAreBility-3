@@ -47,7 +47,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     ApiService apiService = ApiService();
     Map<String, dynamic>? data;
 
-    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    data = await apiService
+        .getEnrollmentCourseDetailById(widget.id); //등록한 (enrolled) 산책로
     print(data);
 
     if (data != null) {
@@ -58,8 +59,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       fetchWriterProfile();
     }
   }
-
-  // 산책로 댓글 POST 보내기
 
   // 상대프로필 조회
   Future<void> fetchWriterProfile() async {
@@ -84,7 +83,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     super.dispose();
   }
 
-  // comment POST보내기
+  //댓글 관련
+  //댓글 작성  comment POST보내기
   Future<void> postComment() async {
     ApiService apiService = ApiService();
     final comment = _commentController.text;
@@ -105,6 +105,9 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       });
     }
   }
+
+  //댓글 수정  - 댓글 선택시 댓글 id
+  //댓글 삭제
 
   // 좋아요 POST보내기
   Future<void> postLike() async {
@@ -194,7 +197,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                             //-------------------------------------------------------------------------------------------------------------
                             builder: (context) => ViewProfile(
                               userId: trailDetail!.userid,
-                              // 상대방 프로필 조회
                             ),
                           ),
                         );
@@ -305,6 +307,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   );
                 }).toList(),
               ),
+              //작성된 댓글 get
+              //댓글 클릭시 수정, 삭제 가능하게 (id전달)
               const SizedBox(height: 24),
               // Add your content here
               TextField(

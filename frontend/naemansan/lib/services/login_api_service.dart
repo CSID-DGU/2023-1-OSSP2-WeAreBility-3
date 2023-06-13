@@ -583,14 +583,9 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+// ------------------ 산책로 좋아요
   Future<bool> likeCourse(int courseId) async {
     final response = await postRequest('course/$courseId/like', {});
-    return response.statusCode == 200;
-  }
-
-  Future<bool> serverLogout() async {
-    final response = await getRequest('auth/logout');
-    // print("SERVER LOGOUT 결과 : ${response.body}");
     return response.statusCode == 200;
   }
 
@@ -600,10 +595,33 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+// 로그아웃
+  Future<bool> serverLogout() async {
+    final response = await getRequest('auth/logout');
+    // print("SERVER LOGOUT 결과 : ${response.body}");
+    return response.statusCode == 200;
+  }
+
+//--------산책로 댓글 ----------------
   Future<bool> addComment(
       int courseId, Map<String, dynamic> commentData) async {
     print("add 할때 는 $commentData");
     final response = await postRequest('course/$courseId/comment', commentData);
+    return response.statusCode == 200;
+  }
+
+  Future<bool> changeComment(
+      int courseId, int commentId, Map<String, dynamic> commentData) async {
+    print("수정 할때 는 $commentData");
+    final response =
+        await putRequest('course/$courseId/comment/$commentId', commentData);
+    return response.statusCode == 200;
+  }
+
+  Future<bool> deleteComment(
+      int courseId, int commentId, Map<String, dynamic> commentData) async {
+    print("삭제 할때 는 $commentData");
+    final response = await deleteRequest('course/$courseId/comment/$commentId');
     return response.statusCode == 200;
   }
 }
