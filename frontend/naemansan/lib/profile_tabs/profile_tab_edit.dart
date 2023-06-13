@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:naemansan/tabs/tab_mypage.dart';
+import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:naemansan/services/mypage_api_service.dart';
 import 'package:naemansan/profile_tabs/profile_introduction_edit.dart';
@@ -83,11 +83,10 @@ class _EditpageState extends State<Editpage> {
               onPressed: () {
                 saveChanges();
 
-                Navigator.of(context).push(
+                Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        const Mypage(), // glm ....
-                  ),
+                      builder: (context) => const IndexScreen(index: 3)),
+                  (route) => false,
                 );
               },
               child: const Text(
@@ -160,7 +159,6 @@ class _EditpageState extends State<Editpage> {
                           Row(
                             children: [
                               Expanded(
-                                // 추가: 텍스트를 가운데로 정렬하기 위해 Expanded 위젯 사용
                                 child: Text(
                                   userData?['name'] ?? 'No Name',
                                   style: const TextStyle(
@@ -206,7 +204,7 @@ class _EditpageState extends State<Editpage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Flexible(
+                              Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: Text(
@@ -216,8 +214,7 @@ class _EditpageState extends State<Editpage> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 100,
-                                    overflow: TextOverflow.visible,
+                                    textAlign: TextAlign.center, // 텍스트 가운데 정렬
                                   ),
                                 ),
                               ),

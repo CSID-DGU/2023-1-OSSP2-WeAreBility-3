@@ -75,7 +75,8 @@ class _MypageState extends State<Mypage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => const IndexScreen(),
+                    builder: (BuildContext context) =>
+                        const IndexScreen(index: 3),
                   ),
                 );
               },
