@@ -25,14 +25,20 @@ class _CourseEditpageState extends State<CourseEditpage> {
 
   String newTitle = '';
   String newIntro = '';
-  List<String> keywords = []; //!! 키워드 부분 추가
+  List<Map<String, String>> keywordStatus = [];
 
   // 산책로 정보 업데이트
   Future<void> saveChanges() async {
     final apiService = ApiService();
+    final tags = keywordStatus
+        .map((item) => {
+              'name': item['name']!,
+              'status': item['status']!,
+            })
+        .toList();
     final response = await apiService.putRequest(
         'course/enrollment/${widget.id}',
-        {'title': newTitle, 'introduction': newIntro, 'tags': keywords});
+        {'title': newTitle, 'introduction': newIntro, 'tags': tags});
     // 산책로 정보 다시 불러오기
   }
 
@@ -41,6 +47,29 @@ class _CourseEditpageState extends State<CourseEditpage> {
     super.initState();
     newIntro = widget.introduction;
     newTitle = widget.title;
+
+    // Initialize keyword status
+    for (final keyword in widget.keywords) {
+      keywordStatus.add({
+        'name': keyword,
+        'status': 'DEFAULT',
+      });
+    }
+  }
+
+  void toggleKeywordStatus(String keyword) {
+    setState(() {
+      for (final item in keywordStatus) {
+        if (item['name'] == keyword) {
+          if (item['status'] == 'DEFAULT') {
+            item['status'] = 'DELETE';
+          } else if (item['status'] == 'DELETE') {
+            item['status'] = 'DEFAULT';
+          }
+          break;
+        }
+      }
+    });
   }
 
   @override
@@ -167,6 +196,59 @@ class _CourseEditpageState extends State<CourseEditpage> {
               ),
             ),
             const SizedBox(height: 20),
+            // Keyword Selection
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    '키워드',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: widget.keywords
+                        .map(
+                          (keyword) => GestureDetector(
+                            onTap: () => toggleKeywordStatus(keyword),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0, horizontal: 10.0),
+                              decoration: BoxDecoration(
+                                color: keywordStatus.firstWhere((item) =>
+                                            item['name'] ==
+                                            keyword)['status'] ==
+                                        'DEFAULT'
+                                    ? Colors.blue
+                                    : Colors.black,
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Text(
+                                keyword,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
