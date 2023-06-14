@@ -5,7 +5,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/models/mytap_trail_model.dart';
 import 'package:naemansan/models/trailmodel.dart';
-import 'package:naemansan/models/trailcommentmodel.dart';
+import 'package:naemansan/models/trailcommentmodel.dart'; //댓글단 산책로 목록에서 사용
+import 'package:naemansan/models/commentmodel.dart'; //산책로 세부 정보 페이지 댓글 목록 조회에서 사용
 
 class TrailApiService {
   final String baseUrl = 'https://ossp.dcs-hyungjoon.com';
@@ -404,4 +405,62 @@ class TrailApiService {
       return http.Response('Error', 00);
     }
   }
+
+//산책로 댓글 조회
+//다른 데이터들도 불러와서 표시는 작성자? + 댓글만
+  Future<List<CommentModel>?> viewComment(
+      int courseId, int page, int num) async {
+    try {
+      final response =
+          await getRequest('course/$courseId/comment?page=$page&num=$num');
+
+      if (response.statusCode == 200) {
+        final parsedResponse =
+            jsonDecode(response.body) as Map<String, dynamic>;
+        final commenttrails = parsedResponse['data'] as List<dynamic>; //x
+        //final commenttrails = parsedResponse['content'] as List<dynamic>;
+        List<CommentModel> commentInstances = [];
+        for (var commenttrail in commenttrails) {
+          final instance = CommentModel.fromJson(commenttrail);
+          commentInstances.add(instance);
+        }
+        print('산책로 댓글 조회 GET 요청 성공? - 상태 코드: ${response.statusCode}');
+        print('commentrails - $commenttrails');
+        return commentInstances;
+      } else {
+        print('산책로 댓글 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('실패 - $e');
+      return null;
+    }
+  }
+
+//comment만 불러오게  하면 나중에 ㅇ안디ㅗ는데 ...
+/*
+Future<List<String>?> viewComment(int courseId, int page, int num) async {
+  try {
+    final response = await getRequest('course/$courseId/comment?page=$page&num=$num');
+
+    if (response.statusCode == 200) {
+      final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      final commentList = parsedResponse['data'] as List<dynamic>;
+
+      List<String> comments = commentList
+          .map((comment) => comment['content'].toString())
+          .toList();
+
+      print('산책로 댓글 조회 GET 요청 성공 - 상태 코드: ${response.statusCode}');
+      return comments;
+    } else {
+      print('산책로 댓글 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    print('실패 - $e');
+    return null;
+  }
+}
+*/
 }

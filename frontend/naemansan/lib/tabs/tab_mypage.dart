@@ -5,6 +5,7 @@ import 'package:naemansan/services/mypage_api_service.dart';
 import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/profile_tabs/profile_tab_settings.dart';
+import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
@@ -297,7 +298,8 @@ class _MypageState extends State<Mypage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const Badge(),
+                                          builder: (context) => const Badges(),
+                                          // builder: (context) => const Badge(), 라고 되어잇던데 Badge() 는 어디서 나온거지...
                                         ),
                                       );
                                     },

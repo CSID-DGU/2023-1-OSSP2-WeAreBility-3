@@ -1,4 +1,4 @@
-// 사용하는 산책로 세부 정보 페이지
+// 사용하는 산책로 세부 정보 페이지 (course_detail.dart는 삭제해도 될 것 같아욤)
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +8,9 @@ import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/detail_map.dart';
 import 'package:naemansan/profile_tabs/view_profile.dart';
 import 'package:naemansan/screens/course_tabs/course_edit.dart';
+import 'package:naemansan/models/commentmodel.dart';
+import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/widgets/comment.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -30,6 +33,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   int likeCnt = 0;
   bool isWriter = false;
   final _commentController = TextEditingController();
+  late TrailApiService TrailapiService;
 
   void addComment(String comment) {
     //산책로 댓글 등록
@@ -43,6 +47,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     super.initState();
     print(widget.id);
     fetchTrailDetail();
+    TrailapiService = TrailApiService();
   }
 
   Future<void> fetchTrailDetail() async {
@@ -84,6 +89,68 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     _commentController.dispose();
     super.dispose();
   }
+
+  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
+    return ListView.separated(
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      //itemCount: snapshot.data!.length,
+      itemCount: 3, // !! 댓글 개수 넣어야됨
+      // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var trail = snapshot.data![index];
+
+        return CommentWidget(content: trail.content);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 20),
+    );
+  }
+
+/*
+  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var commentlist = snapshot.data![index];
+
+        return CommentWidget(content: commentlist.content);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 20),
+    );
+  }*/
+
+/*
+  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
+    final commentList = snapshot.data;
+
+    if (commentList == null || commentList.isEmpty) {
+      return ListView(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        children: const [
+          Center(
+            child: Text('작성된 댓글이 없습니다'),
+          ),
+        ],
+      );
+    }
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: commentList.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var comment = commentList[index];
+
+        return CommentWidget(content: comment.content);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 20),
+    );
+  }
+*/
 
   //댓글 관련
   //댓글 작성  comment POST보내기
@@ -153,6 +220,11 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<CommentModel>?> commentlist =
+        TrailapiService.viewComment(widget.id, 0, 1000);
+
+    //widgetId, page, num
+
     print(trailDetail);
     if (trailDetail == null) {
       return const Scaffold(
@@ -166,7 +238,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
     final double lengthInKm = trailDetail!.distance / 1000;
     final formattedDate = DateFormat("MM/dd").format(trailDetail!.createdDate);
-
+//!! 여기서부터 화면 !!!!!!!!!!!!!!!
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -324,8 +396,32 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   );
                 }).toList(),
               ),
-              //작성된 댓글 get
-              //댓글 클릭시 수정, 삭제 가능하게 (id전달)
+              //작성된 댓글 get //댓글 클릭시 수정, 삭제 가능하게 (id전달)
+              const SizedBox(height: 24),
+              const Text(
+                '댓글',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                // 댓글 가져오기
+                padding: const EdgeInsets.symmetric(vertical: 0),
+                child: FutureBuilder(
+                  future: commentlist,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Row(
+                        children: [Expanded(child: makeList(snapshot))],
+                      );
+                    }
+                    return const Center(
+                      child: Text('작성된 댓글이 없습니다'),
+                    );
+                  },
+                ),
+              ),
               const SizedBox(height: 24),
               // Add your content here
               TextField(
@@ -348,7 +444,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     );
   }
 
-  //!! 수정
   void _showPopupMenu(BuildContext context) {
     showDialog(
       context: context,
