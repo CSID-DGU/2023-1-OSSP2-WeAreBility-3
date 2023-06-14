@@ -71,7 +71,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
           id: trail.id,
           title: trail.title,
           startpoint: trail.startLocationName,
-          distance: trail.distance,
+          distance: trail.distance / 1000,
           CourseKeyWord: trail.tags,
           likeCnt: trail.likeCount,
           userCnt: trail.userCount,

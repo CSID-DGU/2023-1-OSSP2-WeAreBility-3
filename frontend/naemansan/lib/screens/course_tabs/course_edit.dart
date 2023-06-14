@@ -25,6 +25,7 @@ class _CourseEditpageState extends State<CourseEditpage> {
 
   String newTitle = '';
   String newIntro = '';
+  //!! 키워드 부분 추가
 
   // 산책로 정보 업데이트
   Future<void> saveChanges() async {
