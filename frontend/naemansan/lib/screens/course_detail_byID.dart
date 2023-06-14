@@ -7,6 +7,7 @@ import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/detail_map.dart';
 import 'package:naemansan/profile_tabs/view_profile.dart';
+import 'package:naemansan/screens/course_tabs/course_edit.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -177,7 +178,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         actions: [
           IconButton(
             // ---------------------------수정 및 삭제 버튼 -------------
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(
+                Icons.more_vert), //프로필 조회해서 내가 작성한 산책로인 경우에만 수정, 삭제 되도록 ...
             onPressed: () {
               _showPopupMenu(context);
             },
@@ -345,6 +347,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     );
   }
 
+  //!! 수정
   void _showPopupMenu(BuildContext context) {
     showDialog(
       context: context,
@@ -356,7 +359,17 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               ListTile(
                 title: const Text('수정'),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseEditpage(
+                        id: trailDetail!.id,
+                        title: trailDetail!.title,
+                        introduction: trailDetail!.introduction,
+                        keywords: trailDetail!.tags,
+                      ),
+                    ),
+                  );
                   // 수정 페이지로 이동
                 },
               ),
@@ -374,6 +387,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     );
   }
 
+  //삭제
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,

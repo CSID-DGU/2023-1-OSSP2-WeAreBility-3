@@ -527,7 +527,7 @@ class ApiService {
     }
   }
 
-  // 전체 산책로 수정
+  // 전체 산책로 수정  //!!!
   Future<bool> updateEnrollmentCourse(
       int id, Map<String, dynamic> updatedData) async {
     final response = await putRequest('course/enrollment/$id', updatedData);
