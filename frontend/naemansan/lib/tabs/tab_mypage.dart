@@ -117,7 +117,7 @@ class _MypageState extends State<Mypage> {
             Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                padding: const EdgeInsets.only(top: 0, right: 2.5),
+                padding: const EdgeInsets.only(top: 15, right: 15),
                 icon: const Icon(Icons.edit, color: Colors.black),
                 onPressed: () async {
                   // 프로필 수정 페이지로 이동

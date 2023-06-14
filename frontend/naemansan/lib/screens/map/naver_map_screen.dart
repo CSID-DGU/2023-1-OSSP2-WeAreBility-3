@@ -21,8 +21,12 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
   bool _isTracking = false;
   DateTime? _startTime;
   DateTime? _endTime;
+  Position? _currentPosition;
+
+  NaverMapController? _mapController;
 
   final Set<PathOverlay> _pathOverlays = {};
+  final Set<PathOverlay> _pathOverlaysToServer = {};
 
   @override
   void initState() {
@@ -63,6 +67,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
   }
 
   void _drawPath() {
+    // int cnt = 0;
     if (_isTracking && _currentLocation != null) {
       final List<LatLng> coordinates =
           _pathOverlays.expand((overlay) => overlay.coords).toList();
@@ -87,10 +92,14 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         outlineColor: Colors.transparent,
       );
 
-      print('현재 pathOverlay: ${pathOverlay.coords}');
+      // print('현재 pathOverlay: ${pathOverlay.coords}');
+      // if (cnt % 10 == 0) {
+      //   _pathOverlaysToServer.add(pathOverlay);
+      // }
 
       setState(() {
         _pathOverlays.add(pathOverlay);
+        // cnt++;
       });
     }
   }
@@ -145,8 +154,20 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
   }
 
   void onMapCreated(NaverMapController controller) {
+    // _mapController = controller;
     if (_controller.isCompleted) _controller = Completer();
     _controller.complete(controller);
+
+    // if (_currentPosition != null) {
+    //   final latitude = _currentPosition!.latitude;
+    //   final longitude = _currentPosition!.longitude;
+    //   final location = LatLng(latitude, longitude);
+    //   _locations.add(location);
+    //   _addMarker(latitude, longitude);
+    //   _mapController!.animateCamera(
+    //     CameraUpdate.scrollWithOptions(location),
+    //   );
+    // }
   }
 
   void startWalking() {
@@ -155,7 +176,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       _startTime = DateTime.now();
     });
 
-    _timer2 = Timer.periodic(const Duration(seconds: 1), (_) {
+    _timer2 = Timer.periodic(const Duration(seconds: 10), (_) {
       if (mounted) {
         _getCurrentLocation();
       }

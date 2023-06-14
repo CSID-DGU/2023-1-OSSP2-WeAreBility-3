@@ -118,8 +118,10 @@ class _EditpageState extends State<Editpage> {
                   'https://ossp.dcs-hyungjoon.com/image?uuid=$imageFileName';
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const SizedBox(
+                      height: 110,
+                    ),
                     Stack(
                       children: [
                         CircleAvatar(
@@ -128,7 +130,7 @@ class _EditpageState extends State<Editpage> {
                         ),
                         Positioned(
                           bottom: -10,
-                          right: -10,
+                          right: -15,
                           child: IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () async {
@@ -158,6 +160,7 @@ class _EditpageState extends State<Editpage> {
                           ),
                           Row(
                             children: [
+                              const SizedBox(width: 30),
                               Expanded(
                                 child: Text(
                                   userData?['name'] ?? 'No Name',
@@ -204,6 +207,7 @@ class _EditpageState extends State<Editpage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              const SizedBox(width: 30),
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 8),
