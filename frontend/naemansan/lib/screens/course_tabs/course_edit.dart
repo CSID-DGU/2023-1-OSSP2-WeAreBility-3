@@ -25,16 +25,14 @@ class _CourseEditpageState extends State<CourseEditpage> {
 
   String newTitle = '';
   String newIntro = '';
-  //!! 키워드 부분 추가
+  List<String> keywords = []; //!! 키워드 부분 추가
 
   // 산책로 정보 업데이트
   Future<void> saveChanges() async {
     final apiService = ApiService();
-    final response =
-        await apiService.putRequest('course/enrollment/${widget.id}', {
-      'title': newTitle,
-      'introduction': newIntro,
-    });
+    final response = await apiService.putRequest(
+        'course/enrollment/${widget.id}',
+        {'title': newTitle, 'introduction': newIntro, 'tags': keywords});
     // 산책로 정보 다시 불러오기
   }
 
