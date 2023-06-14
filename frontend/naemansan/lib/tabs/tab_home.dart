@@ -439,7 +439,11 @@ class _HomeState extends State<Home> {
     FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging firebaseMessage = FirebaseMessaging.instance;
     String? deviceToken = await firebaseMessage.getToken();
-    bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
+    bool isIos = true;
+    if (mounted) {
+      bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
+    }
+
     // deviceToekn, apple iOS여부 보내기
     // await apiService.sendDeviceToken(deviceToken, isIos);
     print("??");

@@ -28,6 +28,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   String imageUrl = "";
   bool isLikeNow = false;
   int likeCnt = 0;
+  bool isWriter = false;
   final _commentController = TextEditingController();
 
   void addComment(String comment) {
@@ -64,19 +65,18 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   // 상대프로필 조회
   Future<void> fetchWriterProfile() async {
     ApiService apiService = ApiService();
-    Map<String, dynamic>? data;
-
+    Map<String, dynamic>? data, myData;
+    myData = await apiService.getUserInfo();
     data = await apiService.getOtherUserProfile(trailDetail!.userid);
 
-    if (data != null) {
+    if (mounted) {
       setState(() {
-        otherUser = OtherUserModel.fromJson(data!);
+        myData!['name'] == data!['name'] ? isWriter = true : isWriter = false;
+        otherUser = OtherUserModel.fromJson(data);
+        imageUrl =
+            'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
       });
     }
-    setState(() {
-      imageUrl =
-          'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
-    });
   }
 
   @override
@@ -176,17 +176,16 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           },
         ),
         title: Text(trailDetail!.title),
-        actions: [
-          IconButton(
-            // ---------------------------수정 및 삭제 버튼 -------------
-            // 본인 게시글인지 확인, 만약 아닐시 안보이게
-            icon: const Icon(
-                Icons.more_vert), //프로필 조회해서 내가 작성한 산책로인 경우에만 수정, 삭제 되도록 ...
-            onPressed: () {
-              _showPopupMenu(context);
-            },
-          ),
-        ],
+        actions: isWriter
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () {
+                    _showPopupMenu(context);
+                  },
+                ),
+              ]
+            : [],
         elevation: 2,
         foregroundColor: Colors.black87,
         backgroundColor: Colors.white,
