@@ -67,6 +67,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     Map<String, dynamic>? data;
 
     data = await apiService.getOtherUserProfile(trailDetail!.userid);
+
     if (data != null) {
       setState(() {
         otherUser = OtherUserModel.fromJson(data!);
@@ -112,13 +113,13 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
 
   // 좋아요 POST보내기
   Future<void> postLike() async {
-    print("POST");
+    // print("POST");
     ApiService apiService = ApiService();
     bool data;
 
     data = await apiService.likeCourse(widget.id);
     if (data) {
-      print("좋아요 성공");
+      // print("좋아요 성공");
       setState(() {
         isLikeNow = true;
         trailDetail!.likeCnt++;
@@ -178,6 +179,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         actions: [
           IconButton(
             // ---------------------------수정 및 삭제 버튼 -------------
+            // 본인 게시글인지 확인, 만약 아닐시 안보이게
             icon: const Icon(
                 Icons.more_vert), //프로필 조회해서 내가 작성한 산책로인 경우에만 수정, 삭제 되도록 ...
             onPressed: () {
