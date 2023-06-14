@@ -1,3 +1,5 @@
+// 개인 산책로 조회 - 내가 등록한 (나만의) 산책로 /course/individual/{id}
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:naemansan/models/indivtraildetailmodel.dart';
@@ -38,7 +40,7 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
     ApiService apiService = ApiService();
     Map<String, dynamic>? data;
 
-    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    data = await apiService.getIndividualmentCourseDetailById(widget.id);
     print(data);
 
     if (data != null) {

@@ -6,7 +6,9 @@ import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/tabs/tab_mypage.dart';
 
 class IndexScreen extends StatefulWidget {
-  const IndexScreen({Key? key}) : super(key: key);
+  final int index;
+  const IndexScreen({Key? key, required this.index}) : super(key: key);
+
   @override
   _IndexScreenState createState() => _IndexScreenState();
 }
@@ -14,23 +16,14 @@ class IndexScreen extends StatefulWidget {
 class _IndexScreenState extends State<IndexScreen> {
   dynamic userInfo = '';
   static const storage = FlutterSecureStorage();
+  int currentIndex = 0;
+
   @override
   void initState() {
-    // TODO: implement initState
-    getLoginStatus();
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _asyncMethod();
-    // });
+    currentIndex = widget.index;
+    getLoginStatus();
   }
-
-  // _asyncMethod() async {
-  //   final accessToken = await storage.read(key: 'accessToken');
-  //   print("??????;$accessToken ");
-  //   if (accessToken == null) {
-  //     goLogin();
-  //   }
-  // }
 
   Future<void> getLoginStatus() async {
     userInfo = await storage.read(key: 'login');
@@ -39,21 +32,19 @@ class _IndexScreenState extends State<IndexScreen> {
     if (userInfo == null) {
       goLogin();
     }
-    setState(
-      () {},
-    );
+    setState(() {});
   }
 
   goLogin() =>
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
 
-  int currentIndex = 0;
   final List<Widget> tabs = [
     const Home(),
-    const Trail(), //임시
+    const Trail(),
     const Myrail(),
     const Mypage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -5,7 +5,6 @@ import 'package:naemansan/screens/screen_index.dart';
 import 'package:naemansan/widgets/widget_mytrail.dart';
 import 'package:naemansan/widgets/widget_trail.dart';
 import 'package:naemansan/models/trailmodel.dart';
-//세부 페이지 이동 시 사용
 //import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/models/trailcommentmodel.dart';
@@ -52,7 +51,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var data = snapshot.data![index];
-
+// --------------------------------------- 탭별 위젯 디자인 선택
         if (data is TrailModel) {
           var trail = data;
 
@@ -77,7 +76,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             tags: trail.tags,
             content: trail.content,
           );
-        } else if (data is MytabTrail) {
+        } else if (data is MytabTrailModel) {
           var trail = data;
 
           return MyTrailWidget(
@@ -102,69 +101,13 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
     List<String> keywords = [
       '힐링',
       '스타벅스',
-      '자연',
-      '오솔길',
-      '도심',
-      '출근길',
-      '퇴근길',
-      '점심시간',
-      '스트레스해소',
-      '한강',
-      '공원',
-      '성수',
-      '강아지',
-      '바다',
-      '해안가',
-      '러닝',
-      '맛집',
-      '카페',
-      '영화',
-      '문화',
-      '사색',
-      '핫플',
-      '서울숲',
-      '경복궁',
-      '한옥마을',
-      '문화재',
-      '고양이',
-      '개울가',
-      '계곡',
-      '들판',
-      '산',
-      '동산',
-      '야경',
-      '노을',
-      '숲길',
-      '강서구',
-      '양천구',
-      '구로구',
-      '영등포구',
-      '금천구',
-      '동작구',
-      '관악구',
-      '서초구',
-      '강남구',
-      '송파구',
-      '강동구',
       '은평구',
-      '서대문구',
-      '마포구',
-      '용산구',
-      '중구',
-      '종로구',
-      '도봉구',
-      '강북구',
-      '성북구',
-      '동대문구',
-      '성동구',
-      '노원구',
-      '중랑구',
-      '광진구'
+      '출근길'
     ]; //임시 키워드 설정()->추후 내가 설정한 키워드 불러오기로 바꾸어야함!!
 
     final Future<List<TrailModel>?> EnrolledTrail =
         TrailapiService.getEnrolledCourses(page, num);
-    final Future<List<MytabTrail>?> IndivTrail =
+    final Future<List<MytabTrailModel>?> IndivTrail =
         TrailapiService.getIndividualBasicCourses(page, num);
     final Future<List<TrailModel>?> LikedTrail =
         TrailapiService.getLikedCourses(page, num);
@@ -189,7 +132,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (BuildContext context) => const IndexScreen(),
+                builder: (BuildContext context) => const IndexScreen(index: 0),
               ),
             );
           },
@@ -259,62 +202,74 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
         children: [
           //첫번째 탭
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () {
+                    TextButton(
+                      onPressed: () {
                         setState(() {
                           openIndex = 1;
                         });
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: openIndex == 1 ? Colors.green : Colors.white,
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        child: Text(
-                          '등록된', //EnrolledTrail
-                          style: TextStyle(
-                            color: openIndex == 1 ? Colors.white : Colors.black,
-                            fontSize: 12.5,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.pressed) ||
+                              openIndex == 1) {
+                            return const Color.fromARGB(255, 26, 167, 85);
+                          }
+                          return Colors.white;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        //공개 산책로 listview
+                        elevation: MaterialStateProperty.all(1.0),
+                      ),
+                      child: Text(
+                        '등록된', //EnrolledTrail
+                        style: TextStyle(
+                          color: openIndex == 1 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () {
+                    TextButton(
+                      onPressed: () {
                         setState(() {
                           openIndex = 0;
                         });
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: openIndex == 0 ? Colors.green : Colors.white,
-                          borderRadius: BorderRadius.circular(20.0),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.pressed) ||
+                              openIndex == 0) {
+                            return const Color.fromARGB(255, 26, 167, 85);
+                          }
+                          return Colors.white;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              '나만의', //IndivTrail
-                              style: TextStyle(
-                                color: openIndex == 0
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontSize: 12.5,
-                              ),
-                              //미공개 산책로 listView
-                            ),
-                          ],
+                        elevation: MaterialStateProperty.all(1.0),
+                      ),
+                      child: Text(
+                        '나만의', //EnrolledTrail
+                        style: TextStyle(
+                          color: openIndex == 0 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -322,6 +277,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                 ),
                 const SizedBox(height: 16),
                 Expanded(
+                  //---------------------------산책로 정보 조회 --------------------
                   child: FutureBuilder(
                     future: openIndex == 1 ? EnrolledTrail : IndivTrail,
                     builder: (context, snapshot) {
@@ -329,7 +285,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         if (snapshot.data!.isNotEmpty) {
                           return makeList(snapshot);
                         } else {
-                          // 등록한 산책로 없을 때만 여기서도 등록 버튼 (있을때는 상단바에 있는 버튼으로 등록 가능)
+                          // 산책로 없을 때 추가 ---
                           return Center(
                             child: IconButton(
                               icon: const Icon(Icons.add),
@@ -377,7 +333,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          // 두 번째 탭
+          // 두 번째 탭--------------------------------------------------------------------------------
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: FutureBuilder(
@@ -454,10 +410,10 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
           ),
 
           // 다섯 번째 탭
-          //
           Padding(
-            padding: const EdgeInsets.only(left: 16.0),
+            padding: const EdgeInsets.only(left: 16.0, top: 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -468,83 +424,73 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         final keyword = keywords[index];
                         bool isSelected = index == selectedIndex;
 
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                selectedIndex = index;
-                              });
-                            },
-                            style: ButtonStyle(
-                              elevation:
-                                  MaterialStateProperty.resolveWith<double>(
-                                (Set<MaterialState> states) {
-                                  return 8.0;
+                        return Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    selectedIndex = index;
+                                  });
                                 },
-                              ),
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (isSelected) {
-                                    return Colors.green; // 선택된 버튼은 초록색 배경
-                                  }
-                                  return Colors.white; // 선택되지 않은 버튼은 흰 배경
-                                },
-                              ),
-                              foregroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (isSelected) {
-                                    return Colors.white; // 선택된 버튼은 하얀 글씨
-                                  }
-                                  return Colors.black; // 선택되지 않은 버튼은 검은 글씨
-                                },
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  side: BorderSide(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color>(
+                                    (Set<MaterialState> states) {
+                                      if (isSelected) {
+                                        return const Color.fromARGB(
+                                            255, 26, 167, 85);
+                                      }
+                                      return Colors.white;
+                                    },
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  elevation: MaterialStateProperty.all(1.0),
+                                ),
+                                child: Text(
+                                  keyword,
+                                  style: TextStyle(
                                     color: isSelected
-                                        ? Colors.transparent
-                                        : Colors.white,
-                                    width: 2.0,
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                            child: Text(
-                              keyword,
-                              style: const TextStyle(
-                                fontSize: 16, // 글자 크기를 16으로 조정
-                              ),
-                            ),
-                          ),
+                          ],
                         );
                       },
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0),
-                FutureBuilder(
-                  future: KeyWordTrail,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        return Expanded(child: makeList(snapshot));
-                      } else {
-                        return const Center(
-                          child: Text('해당 산책로가 없습니다'),
-                        );
+                const SizedBox(height: 10),
+                Expanded(
+                  child: FutureBuilder(
+                    future: KeyWordTrail,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
+                          return makeList(snapshot);
+                        } else {
+                          return const Center(
+                            child: Text('해당 산책로가 없습니다'),
+                          );
+                        }
                       }
-                    }
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.black,
-                      ),
-                    );
-                  },
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

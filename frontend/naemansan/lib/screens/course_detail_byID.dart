@@ -7,6 +7,7 @@ import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/detail_map.dart';
 import 'package:naemansan/profile_tabs/view_profile.dart';
+import 'package:naemansan/screens/course_tabs/course_edit.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -47,7 +48,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     ApiService apiService = ApiService();
     Map<String, dynamic>? data;
 
-    data = await apiService.getEnrollmentCourseDetailById(widget.id);
+    data = await apiService
+        .getEnrollmentCourseDetailById(widget.id); //등록한 (enrolled) 산책로
     print(data);
 
     if (data != null) {
@@ -58,8 +60,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       fetchWriterProfile();
     }
   }
-
-  // 산책로 댓글 POST 보내기
 
   // 상대프로필 조회
   Future<void> fetchWriterProfile() async {
@@ -84,7 +84,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     super.dispose();
   }
 
-  // comment POST보내기
+  //댓글 관련
+  //댓글 작성  comment POST보내기
   Future<void> postComment() async {
     ApiService apiService = ApiService();
     final comment = _commentController.text;
@@ -105,6 +106,9 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       });
     }
   }
+
+  //댓글 수정  - 댓글 선택시 댓글 id
+  //댓글 삭제
 
   // 좋아요 POST보내기
   Future<void> postLike() async {
@@ -138,6 +142,14 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     }
   }
 
+  //산책로 Delete
+  Future<void> deleteTrail() async {
+    print("${trailDetail!.title} 삭제");
+    ApiService apiService = ApiService();
+
+    apiService.deleteEnrollmentCourse(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     print(trailDetail);
@@ -165,9 +177,11 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         title: Text(trailDetail!.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert),
+            // ---------------------------수정 및 삭제 버튼 -------------
+            icon: const Icon(
+                Icons.more_vert), //프로필 조회해서 내가 작성한 산책로인 경우에만 수정, 삭제 되도록 ...
             onPressed: () {
-              // Handle URL sharing functionality
+              _showPopupMenu(context);
             },
           ),
         ],
@@ -194,7 +208,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                             //-------------------------------------------------------------------------------------------------------------
                             builder: (context) => ViewProfile(
                               userId: trailDetail!.userid,
-                              // 상대방 프로필 조회
                             ),
                           ),
                         );
@@ -272,7 +285,12 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ),
               ),
               const SizedBox(height: 8),
-
+              Text(
+                trailDetail!.introduction,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
               const SizedBox(height: 15),
               const Text(
                 '🎯 키워드',
@@ -305,6 +323,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   );
                 }).toList(),
               ),
+              //작성된 댓글 get
+              //댓글 클릭시 수정, 삭제 가능하게 (id전달)
               const SizedBox(height: 24),
               // Add your content here
               TextField(
@@ -324,6 +344,74 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           ),
         ),
       ),
+    );
+  }
+
+  //!! 수정
+  void _showPopupMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('수정'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseEditpage(
+                        id: trailDetail!.id,
+                        title: trailDetail!.title,
+                        introduction: trailDetail!.introduction,
+                        keywords: trailDetail!.tags,
+                      ),
+                    ),
+                  );
+                  // 수정 페이지로 이동
+                },
+              ),
+              ListTile(
+                title: const Text('삭제'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showDeleteConfirmationDialog(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //삭제
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제 확인'),
+          content: const Text('정말 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('삭제'),
+              onPressed: () {
+                deleteTrail();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

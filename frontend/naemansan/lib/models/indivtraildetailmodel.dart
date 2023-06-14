@@ -28,7 +28,7 @@ class IndivTraildetailModel {
           'longitude': location['longitude']
         };
       })),
-      createdDate: DateTime.parse(json['created_date']),
+      createdDate: DateTime.parse(json['create_date']), //created_date ...
       distance: json['distance'],
     );
   }

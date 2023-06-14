@@ -75,7 +75,8 @@ class _MypageState extends State<Mypage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (BuildContext context) => const IndexScreen(),
+                    builder: (BuildContext context) =>
+                        const IndexScreen(index: 0),
                   ),
                 );
               },
@@ -316,27 +317,13 @@ class _MypageState extends State<Mypage> {
                         ],
                       );
                     } else {
-                      return const Text('No user data available.');
+                      return const Text('NA');
                     }
                   }
                 },
               ),
             ),
           ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              // ElevatedButton(
-              //   onPressed: logout,
-              //   child: const Text('Logout'),
-              // ),
-            ],
-          ),
         ),
       ),
     );
