@@ -71,13 +71,13 @@ class _IndexScreenState extends State<IndexScreen> {
             icon: Icon(
               currentIndex == 1 ? Icons.forest : Icons.forest_outlined,
             ),
-            label: '산책로',
+            label: '모두의 산책로',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               currentIndex == 2 ? Icons.park : Icons.park_outlined,
             ),
-            label: '나만의산책로',
+            label: '나만의 산책로',
           ),
           BottomNavigationBarItem(
             icon: Icon(

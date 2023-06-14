@@ -232,7 +232,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         elevation: MaterialStateProperty.all(1.0),
                       ),
                       child: Text(
-                        '등록된', //EnrolledTrail
+                        '모두의', //EnrolledTrail
                         style: TextStyle(
                           color: openIndex == 1 ? Colors.white : Colors.black,
                           fontSize: 14,
