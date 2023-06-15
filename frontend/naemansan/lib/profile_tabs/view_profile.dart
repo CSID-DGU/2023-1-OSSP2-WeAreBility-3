@@ -38,6 +38,16 @@ class _ViewProfileState extends State<ViewProfile> {
     }
   }
 
+  String fetchUserName(String? name) {
+    if (name == null) {
+      return 'Loading...';
+    } else if (name.length >= 7) {
+      return '${name.substring(0, 7)}...';
+    } else {
+      return name;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +63,7 @@ class _ViewProfileState extends State<ViewProfile> {
               child: Row(
                 children: [
                   Text(
-                    '${otherUser?.name ?? "Loading..."}님의 프로필',
+                    '${fetchUserName(otherUser?.name)}님의 프로필',
                     style: const TextStyle(
                       fontSize: 21,
                       fontWeight: FontWeight.w600,

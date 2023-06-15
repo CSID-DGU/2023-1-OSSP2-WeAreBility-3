@@ -51,9 +51,11 @@ class _CommentWidgetState extends State<CommentWidget> {
     print(data);
 
     if (data != null) {
-      setState(() {
-        trailDetail = TraildetailModel.fromJson(data!);
-      });
+      if (mounted) {
+        setState(() {
+          trailDetail = TraildetailModel.fromJson(data!);
+        });
+      }
       fetchWriterProfile();
     }
   }
