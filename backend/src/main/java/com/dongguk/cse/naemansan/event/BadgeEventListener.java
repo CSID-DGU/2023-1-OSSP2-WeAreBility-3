@@ -15,13 +15,13 @@ public class BadgeEventListener {
 
     @Async
     @EventListener
-    public void sendPushForIndividualBadge(IndividualCourseBadgeEvent event) throws InterruptedException {
+    public void sendPushForIndividualBadge(IndividualCourseBadgeEvent event) throws Exception {
         badgeService.createIndividualBadge(event.getUserId());
     }
 
     @Async
     @EventListener
-    public void sendPushForEnrollmentBadge(EnrollmentCourseBadgeEvent event) throws InterruptedException {
+    public void sendPushForEnrollmentBadge(EnrollmentCourseBadgeEvent event) throws Exception {
         badgeService.createEnrollmentBadge(event.getUserId());
     }
 

@@ -79,13 +79,13 @@ public class NotificationUtil {
     }
 
     //안드로이드 푸시알림
-    public void sendNotificationByToken(FCMNotificationRequestDto fcmNotificationRequestDto) {
-        User user = userRepository.findById(fcmNotificationRequestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+    public void sendNotificationByToken(FCMNotificationRequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         if (user.getDeviceToken() != null) {
             com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification.builder()
-                    .setTitle(fcmNotificationRequestDto.getTitle())
-                    .setBody(fcmNotificationRequestDto.getBody())
+                    .setTitle(requestDto.getTitle())
+                    .setBody(requestDto.getBody())
                     .build();
 
             Message message = Message.builder()
@@ -95,13 +95,13 @@ public class NotificationUtil {
 
             try {
                 firebaseMessaging.send(message);
-                log.info("알림을 성공적으로 전송했습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
+                log.info("알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId());
             } catch (FirebaseMessagingException e) {
                 e.printStackTrace();
-                log.info("알림 보내기를 실패하였습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
+                log.info("알림 보내기를 실패하였습니다. targetUserID=" + requestDto.getTargetUserId());
             }
         } else {
-            log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
+            log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
         }
     }
 
@@ -109,23 +109,25 @@ public class NotificationUtil {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/wearebility-303e9/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(FCMNotificationRequestDto fcmNotificationRequestDto) throws IOException {
-        User user = userRepository.findById(fcmNotificationRequestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+    public void sendMessageTo(FCMNotificationRequestDto requestDto) throws IOException {
+        User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        if (user.getDeviceToken() != null) {
+            String message = makeMessage(user.getDeviceToken(), requestDto.getTitle(), requestDto.getBody());
 
-        String message = makeMessage(user.getDeviceToken(), fcmNotificationRequestDto.getTitle(), fcmNotificationRequestDto.getBody());
-
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .post(requestBody)
-                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                .build();
-
-        Response response = client.newCall(request).execute();
-        //System.out.println("sendMessageTo 끝나기 전");
-        System.out.println(response.body().string());
+            OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
+            Response response = client.newCall(request).execute();
+            //System.out.println("sendMessageTo 끝나기 전");
+            log.info(response.body().string());
+        } else {
+            log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
+        }
     }
 
     private String makeMessage(String targetToken, String title, String body) throws

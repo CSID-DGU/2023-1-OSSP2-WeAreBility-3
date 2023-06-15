@@ -17,6 +17,18 @@ public class NotificationEventListener {
     @Async
     @EventListener
     public void sendNotificationForComment(CommentNotificationEvent event) throws Exception {
-        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId()); // Service 연결
+        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(),1); // Service 연결
+    }
+
+    @Async
+    @EventListener
+    public void sendNotificationForLike(CommentNotificationEvent event) throws Exception {
+        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(),2); // Service 연결
+    }
+
+    @Async
+    @EventListener
+    public void sendNotificationForFollow(CommentNotificationEvent event) throws Exception {
+        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(),3); // Service 연결
     }
 }

@@ -21,17 +21,17 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final NotificationUtil notificationUtil;
     //private final FCMNotificationService fcmNotificationService;
-    
+
     //안드로이드 푸시알림 테스트
     @PostMapping("/andfcm")
-    public void sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) {
+    public void sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) throws IOException {
         notificationUtil.sendNotificationByToken(requestDto);
     }
+
     //안드로이드 버전2 테스트
     @PostMapping("/andfcm2")
-    public ResponseEntity pushMessage(Authentication authentication, @RequestBody NotificationRequestDto notificationRequestDto) throws IOException {
-        System.out.println(notificationRequestDto.getTargetToken() + " "
-                + notificationRequestDto.getTitle() + " " + notificationRequestDto.getContent());
+    public void pushMessage(@RequestBody FCMNotificationRequestDto requestDto) throws IOException {
+        notificationUtil.sendMessageTo(requestDto);
 /*
         notificationService.sendMessageTo(
                 notificationRequestDto.getTargetToken(),
@@ -40,14 +40,15 @@ public class NotificationController {
 */
 //notificationRequestDto 수정
         //notificationService.createNotification(Long.valueOf(authentication.getName()),notificationRequestDto);
-        return ResponseEntity.ok().build();
+        //return ResponseEntity.ok().build();
     }
+
     //ios 푸시알림 테스트
     @PostMapping("/api/iosfcm")
-    public void pushIosMessage(@RequestBody String token) throws Exception{
+    public void pushIosMessage(@RequestBody String token) throws Exception {
         //notificationUtil.sendApnFcmtoken(token);
     }
-    
+
     //Notification Read
     @GetMapping("")
     public ResponseDto<List<NotificationDto>> readNotification(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {
