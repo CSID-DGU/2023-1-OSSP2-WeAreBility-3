@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,13 +90,11 @@ public class NotificationService {
         String title = "내만산";
         String content = "오랜만에 산책 어떠신가요?";
 
-        if (NotificationType == 1) {  //댓글
+        if (NotificationType == 1)   //댓글
             content = fromUser.getName() + "님이 산책로" + course.getTitle() + "에 댓글을 작성하였습니다.";
-            publisher.publishEvent(new CommentNotificationEvent(fromUserId, toUserId, courseId));
-        } else if (NotificationType == 2) { //좋아요
+        else if (NotificationType == 2)  //좋아요
             content = fromUser.getName() + "님이 산책로" + course.getTitle() + "에 좋아요를 눌렀습니다.";
-            publisher.publishEvent(new LikeNotificationEvent(fromUserId, toUserId, courseId));
-        }
+
 
         if (toUser.getIsIos()) { //ios 푸시알림
             fcmNotificationDto = FCMNotificationRequestDto.builder()
@@ -108,8 +107,8 @@ public class NotificationService {
                     .targetUserId(toUserId)
                     .title(title)
                     .body(content).build();
-            //notificationUtil.sendNotificationByToken(fcmNotificationDto);
-            notificationUtil.sendMessageTo(fcmNotificationDto); //버전2
+            notificationUtil.sendNotificationByToken(fcmNotificationDto);
+            //notificationUtil.sendMessageTo(fcmNotificationDto); //버전2
         }
     }
 
@@ -120,10 +119,8 @@ public class NotificationService {
         String title = "내만산";
         String content = "오랜만에 산책 어떠신가요?";
 
-        if (NotificationType == 3) {  //팔로우
+        if (NotificationType == 3)  //팔로우
             content = fromUser.getName() + "님이 팔로우를 하였습니다";
-            publisher.publishEvent(new FollowNotificationEvent(fromUserId, toUserId));
-        }
 
         if (toUser.getIsIos()) { //ios 푸시알림
             fcmNotificationDto = FCMNotificationRequestDto.builder()
