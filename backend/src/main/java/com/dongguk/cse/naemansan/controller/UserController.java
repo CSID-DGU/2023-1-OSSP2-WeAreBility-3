@@ -1,6 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.request.UserDeviceRequestDto;
+import com.dongguk.cse.naemansan.dto.request.UserPaymentRequestDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.common.ResponseDto;
@@ -90,5 +91,10 @@ public class UserController {
     @PutMapping("/notification")
     public ResponseDto<?> updateUserDevice(Authentication authentication, @RequestBody UserDeviceRequestDto requestDto) {
         return new ResponseDto<Boolean>(userService.updateUserDevice(Long.valueOf(authentication.getName()), requestDto));
+    }
+
+    @PostMapping("/payment")
+    public  ResponseDto updatePremium(Authentication authentication, @RequestBody UserPaymentRequestDto requestDto) {
+        return new ResponseDto<Boolean>(userService.updatePremium(Long.valueOf(authentication.getName()), requestDto));
     }
 }

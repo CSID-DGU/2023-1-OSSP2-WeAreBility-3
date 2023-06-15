@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bouncycastle.util.Times;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
@@ -58,13 +59,16 @@ public class User {
     @Column(name = "isIOS", columnDefinition = "TINYINT(1)")
     private Boolean isIos;
 
+    @Column(name = "isPremium", columnDefinition = "TINYINT(1)")
+    private Boolean isPremium;
+
+    @Column(name = "expiration_date")
+    private Timestamp expirationDate;
+
     // ------------------------------------------------------------
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Image image;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Subscribe subscribe;
 
     @OneToMany(mappedBy = "followingUser", fetch = FetchType.LAZY)
     private List<Follow> followings = new ArrayList<>();
@@ -112,7 +116,8 @@ public class User {
         this.refreshToken = refreshToken;
         this.deviceToken = null;
         this.isIos = null;
-
+        this.isPremium = null;
+        this.expirationDate = null;
     }
 
     public void updateUser(String name, String introduction) {
@@ -129,5 +134,15 @@ public class User {
         setIsLogin(false);
         setRefreshToken(null);
         setDeviceToken(null);
+    }
+
+    public void updatePremium(Long monthCnt) {
+        if (monthCnt == 0) {
+            setIsPremium(null);
+            setExpirationDate(null);
+        } else {
+            setIsPremium(true);
+            setExpirationDate(Timestamp.valueOf(LocalDateTime.now().plusMonths(monthCnt)));
+        }
     }
 }

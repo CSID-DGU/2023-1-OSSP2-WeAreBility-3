@@ -38,6 +38,9 @@ CREATE TABLE `users` (
                          `is_login` boolean NOT NULL,
                          `refresh_token` varchar(300),
                          `device_token` varchar(300),
+                         `isIOS` boolean,
+                         `isPremium` boolean,
+                         `expiration_date` date,
                          CONSTRAINT USERS_PK PRIMARY KEY (`id`),
                          CONSTRAINT USERS_CK UNIQUE(`social_id`, `provider`)
 );
@@ -53,19 +56,6 @@ CREATE TABLE `notifications` (
                                  CONSTRAINT NOTIFICATIONS_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `subscribes` (
-                              `id` integer AUTO_INCREMENT,
-                              `user_id` integer NOT NULL,
-                              `pay_type` enum('KAKAOPAY') NOT NULL,
-                              `created_at` time,
-                              `successed_at` time,
-                              `expiration_date` date,
-                              `next_order_date` date,
-                              `biliing_key` varchar(300),
-                              `next_refresh` boolean,
-                              CONSTRAINT SUBSCRIBES_PK PRIMARY KEY (`id`),
-                              CONSTRAINT SUBSCRIBES_FK FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-);
 
 CREATE TABLE `user_tags` (
                              `id` integer AUTO_INCREMENT,
