@@ -131,9 +131,10 @@ class _MypageState extends State<Mypage> {
                     ),
                   );
                   // 정보 수정 후 다시 가져오기
+/*
                   setState(() {
                     user = fetchUserInfo();
-                  });
+                  });*/
                 },
               ),
             ),
