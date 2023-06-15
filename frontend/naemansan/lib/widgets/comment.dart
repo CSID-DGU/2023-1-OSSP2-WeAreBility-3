@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/screens/comment_edit.dart';
-import 'package:naemansan/services/courses_api.dart';
-import 'package:naemansan/models/other_user_model.dart';
 
-import 'package:naemansan/models/traildetailmodel.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:naemansan/services/mypage_api_service.dart';
 
 // 산책로 디테일 페이지에서 댓글 볼 때 사용
 class CommentWidget extends StatefulWidget {
@@ -28,55 +27,31 @@ class CommentWidget extends StatefulWidget {
 }
 
 class _CommentWidgetState extends State<CommentWidget> {
-  OtherUserModel? otherUser;
-  TraildetailModel? trailDetail;
-  String imageUrl = "";
-  bool isWriter = false;
-  late TrailApiService TrailapiService;
+  late Future<Map<String, dynamic>?> user;
+  static const storage = FlutterSecureStorage();
+  dynamic userInfo = '';
+  late bool isWriter; // 댓글 작성자와 현재 사용자를 비교한 결과를 저장할 변수
+
+  // Fetch user info
+  Future<Map<String, dynamic>?> fetchUserInfo() async {
+    ProfileApiService apiService = ProfileApiService();
+    Map<String, dynamic>? userInfo = await apiService.getUserInfo();
+    String myName = userInfo?['name'];
+
+    if (myName == widget.user_name) {
+      setState(() {
+        isWriter = true;
+      });
+    }
+
+    return userInfo;
+  }
 
   @override
   void initState() {
     super.initState();
-    print(widget.id);
-    fetchTrailDetail();
-    TrailapiService = TrailApiService();
-  }
-
-  Future<void> fetchTrailDetail() async {
-    ApiService apiService = ApiService();
-    Map<String, dynamic>? data;
-
-    data = await apiService
-        .getEnrollmentCourseDetailById(widget.id); //등록한 (enrolled) 산책로
-    print(data);
-
-    if (data != null) {
-      if (mounted) {
-        setState(() {
-          trailDetail = TraildetailModel.fromJson(data!);
-        });
-      }
-      fetchWriterProfile();
-    }
-  }
-
-  // 상대프로필 조회
-  Future<void> fetchWriterProfile() async {
-    ApiService apiService = ApiService();
-    Map<String, dynamic>? data, myData;
-    myData = await apiService.getUserInfo();
-    data = await apiService.getOtherUserProfile(trailDetail!.userid);
-
-    if (mounted) {
-      setState(() {
-        myData!['name'] == data!['name']
-            ? isWriter = true
-            : isWriter = false; //isWriter 설정 //!! - isWriter ㅓㄹ정 수정 필요
-        otherUser = OtherUserModel.fromJson(data);
-        imageUrl =
-            'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
-      });
-    }
+    user = fetchUserInfo();
+    isWriter = false; // 초기값으로 false 설정
   }
 
   @override
@@ -111,23 +86,23 @@ class _CommentWidgetState extends State<CommentWidget> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (isWriter) // 현재 사용자인 경우에만 수정 옵션 표시
-                ListTile(
-                  title: const Text('수정'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommentEditpage(
-                          id: widget.id,
-                          content: widget.content,
-                          course_id: widget.course_id,
-                          user_id: widget.user_id,
-                        ),
+              // 현재 사용자인 경우에만 수정 옵션 표시
+              ListTile(
+                title: const Text('수정'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommentEditpage(
+                        id: widget.id,
+                        content: widget.content,
+                        course_id: widget.course_id,
+                        user_id: widget.user_id,
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
+              ),
               ListTile(
                 title: const Text('삭제'),
                 onTap: () {
