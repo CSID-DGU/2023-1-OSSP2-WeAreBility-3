@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/screens/map/naver_map_screen.dart';
+import 'package:naemansan/screens/shot_list_screen.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/main_card.dart';
 
@@ -100,13 +101,44 @@ class _HorizontalSliderState extends State<HorizontalSlider> {
           )
         : Center(
             child: widget.title == "🍽️ 상권"
-                ? const Text(
-                    '등록된 상권이 없습니다!',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
+                ? Column(
+                    children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ShotList(
+                                      latitude: widget.latitude,
+                                      longitude: widget.longitude,
+                                    )),
+                          )
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Colors.black87),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.food_bank_outlined,
+                          color: Colors.black87,
+                        ),
+                        label: const Text(
+                          '상권 리스트 보러가기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

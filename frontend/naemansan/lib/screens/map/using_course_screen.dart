@@ -239,7 +239,9 @@ class _UsingCourseScreenState extends State<UsingCourseScreen> {
   bool isInsideRoute(LatLng currentLocation) {
     final double currentLat = currentLocation.latitude;
     final double currentLng = currentLocation.longitude;
+
     checkLocation();
+
     if (startLocation) {
       startLocation = false;
       return true;
