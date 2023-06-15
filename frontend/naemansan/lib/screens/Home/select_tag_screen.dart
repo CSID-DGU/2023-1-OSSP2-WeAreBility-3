@@ -64,10 +64,8 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
 
     if (myDataTag != null && !myDataTag['data']['tags'].isEmpty) {
       success = await apiService.putMyTag(tagData);
-      print("PUTPUTPUTPUTPUTPUTPUTPUTPUT");
     } else {
       success = await apiService.postMyTag(tagData);
-      print("POSTPOSTPOSTPOSTPOSTPOST");
     }
 
     print(success);
