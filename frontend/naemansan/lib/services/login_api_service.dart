@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:naemansan/models/FollowModel.dart';
+import 'package:naemansan/models/badge.dart';
 
 class ApiService {
   final String baseUrl = 'https://ossp.dcs-hyungjoon.com';
@@ -221,19 +222,24 @@ class ApiService {
   }
 
   // 본인 프로필 뱃지 조회 GET 요청
-  Future<http.Response> getProfileBadges() async {
+  Future<List<BadgeModel>?> getProfileBadges() async {
     try {
       final response = await getRequest('user/badge');
       if (response.statusCode == 200) {
         print('본인 프로필 뱃지 조회 GET 요청 성공');
+        final responseData = json.decode(response.body);
+        final badgeList = responseData['data'] as List<dynamic>;
+        final List<BadgeModel> badges = badgeList.map((badgeData) {
+          return BadgeModel.fromJson(badgeData);
+        }).toList();
+        return badges;
       } else {
         print('본인 프로필 뱃지 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
       }
-      return response;
     } catch (e) {
       print('본인 프로필 뱃지 조회 GET 요청 실패 - $e');
-      return http.Response('Error', 500);
     }
+    return null;
   }
 
   // 사용자 댓글 조회 GET 요청

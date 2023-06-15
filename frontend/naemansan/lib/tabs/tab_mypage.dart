@@ -317,7 +317,8 @@ class _MypageState extends State<Mypage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const Badges(),
+                                          builder: (context) =>
+                                              const BadgePage(),
                                           // builder: (context) => const Badge(), 라고 되어잇던데 Badge() 는 어디서 나온거지...
                                         ),
                                       );
