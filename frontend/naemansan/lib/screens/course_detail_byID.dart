@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
+import 'package:naemansan/screens/map/using_course_screen.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/widgets/detail_map.dart';
 import 'package:naemansan/profile_tabs/view_profile.dart';
@@ -311,8 +312,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 ],
               ),
 
-              const SizedBox(height: 16),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -406,6 +405,38 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                     ),
                   );
                 }).toList(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  const SizedBox(width: 30),
+                  ElevatedButton(
+                    // button white
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(300, 50),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UsingCourseScreen(
+                            locations: trailDetail!.locations,
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text("이용하기",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600)),
+                  ),
+                ],
               ),
               //작성된 댓글 get //댓글 클릭시 수정, 삭제 가능하게 (id전달)
               const SizedBox(height: 24),
