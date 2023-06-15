@@ -49,7 +49,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         _updateCurrentLocation(position.latitude, position.longitude);
       });
     } catch (e) {
-      print('위치 정보를 가져오는 중에 오류가 발생했습니다: $e');
+      // print('위치 정보를 가져오는 중에 오류가 발생했습니다: $e');
     }
   }
 
@@ -67,7 +67,6 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
   }
 
   void _drawPath() {
-    // int cnt = 0;
     if (_isTracking && _currentLocation != null) {
       final List<LatLng> coordinates =
           _pathOverlays.expand((overlay) => overlay.coords).toList();
@@ -82,7 +81,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         coordinates.add(_currentLocation!);
       }
       coordinates.add(_currentLocation!);
-      print(coordinates);
+//      print(coordinates);
 
       final pathOverlay = PathOverlay(
         PathOverlayId('walking_path'),
@@ -92,14 +91,9 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
         outlineColor: Colors.transparent,
       );
 
-      // print('현재 pathOverlay: ${pathOverlay.coords}');
-      // if (cnt % 10 == 0) {
-      //   _pathOverlaysToServer.add(pathOverlay);
-      // }
-
       setState(() {
-        _pathOverlays.add(pathOverlay);
-        // cnt++;
+        _pathOverlays.clear(); // Clear the path overlays array
+        _pathOverlays.add(pathOverlay); // Add the new path overlay
       });
     }
   }
@@ -207,16 +201,22 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
           TextButton(
             onPressed: () async {
               // 이동할 화면으로부터 데이터를 받기 위해 `pushNamed` 메소드를 사용합니다.
-
+              List<Map<String, double>> coordinates = [];
+              for (var pathOverlay in _pathOverlays) {
+                for (var coordinate in pathOverlay.coords) {
+                  coordinates.add({
+                    'latitude': coordinate.latitude,
+                    'longitude': coordinate.longitude,
+                  });
+                }
+              }
+              print("ASDASDSADASDASD");
+              print(coordinates);
+              print("ASDASDSADASDASD");
               await Navigator.pushNamed(
                 context,
                 '/createTitle',
-                arguments: _pathOverlays
-                    .map((pathOverlay) => {
-                          'latiditude': pathOverlay.coords[0].latitude,
-                          'longitude': pathOverlay.coords[0].longitude,
-                        })
-                    .toList(),
+                arguments: coordinates,
               );
             },
             child: const Text('확인'),

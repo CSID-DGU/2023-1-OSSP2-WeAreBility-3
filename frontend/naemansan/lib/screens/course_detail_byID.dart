@@ -98,9 +98,14 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       itemCount: 3, // !! 댓글 개수 넣어야됨
       // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
-        var trail = snapshot.data![index];
+        var trail = snapshot.data;
 
-        return CommentWidget(content: trail.content);
+        if (trail != null && index >= 0 && index < trail.length) {
+          return CommentWidget(content: trail[index].content);
+        } else {
+          // Handle the case when `trail` is null or `index` is invalid
+          return const SizedBox(); // or any other widget that represents an empty space
+        }
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -263,6 +268,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -297,8 +303,13 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   ],
                 ),
               ),
-
-              DetailMap(locations: trailDetail!.locations),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  DetailMap(locations: trailDetail!.locations),
+                ],
+              ),
 
               const SizedBox(height: 16),
 
