@@ -100,57 +100,16 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
 
-        return CommentWidget(content: trail.content);
+        return CommentWidget(
+            content: trail.content,
+            user_id: trail.user_id, //댓글 작성자의 user id
+            course_id: trail.course_id,
+            id: trail.id);
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
     );
   }
-
-/*
-  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
-    return ListView.separated(
-      scrollDirection: Axis.vertical,
-      itemCount: snapshot.data!.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      itemBuilder: (context, index) {
-        var commentlist = snapshot.data![index];
-
-        return CommentWidget(content: commentlist.content);
-      },
-      separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 20),
-    );
-  }*/
-
-/*
-  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
-    final commentList = snapshot.data;
-
-    if (commentList == null || commentList.isEmpty) {
-      return ListView(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        children: const [
-          Center(
-            child: Text('작성된 댓글이 없습니다'),
-          ),
-        ],
-      );
-    }
-    return ListView.separated(
-      scrollDirection: Axis.vertical,
-      itemCount: commentList.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      itemBuilder: (context, index) {
-        var comment = commentList[index];
-
-        return CommentWidget(content: comment.content);
-      },
-      separatorBuilder: (BuildContext context, int index) =>
-          const SizedBox(height: 20),
-    );
-  }
-*/
 
   //댓글 관련
   //댓글 작성  comment POST보내기
@@ -248,7 +207,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           },
         ),
         title: Text(trailDetail!.title),
-        actions: isWriter
+        actions: isWriter // !! 버튼 부분
             ? [
                 IconButton(
                   icon: const Icon(Icons.more_vert),
