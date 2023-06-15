@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 
@@ -96,6 +98,16 @@ class _UsingCourseScreenState extends State<UsingCourseScreen> {
     } else {
       return '00:00:00';
     }
+  }
+
+  void cantWalking() {
+    Fluttertoast.showToast(
+      msg: "출발/도착 지점에 가셔야 버튼이 활성화 됩니다.",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+    );
   }
 
   void _getCurrentLocation() async {
@@ -196,7 +208,7 @@ class _UsingCourseScreenState extends State<UsingCourseScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: isInsideRoute(_currentLocation ?? const LatLng(0, 0))
             ? (isCourseStarted ? endCourse : startCourse)
-            : null,
+            : cantWalking,
         label: Text(
           isCourseStarted ? '산책 종료하기' : '산책 시작하기',
           style: const TextStyle(
