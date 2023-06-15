@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class UsingCourseEvent {
-    private Long userId;
+public class CommentNotificationEvent {
+    private Long fromUserId;
+    private Long toUserId;
+    private Long courseId;
 }
