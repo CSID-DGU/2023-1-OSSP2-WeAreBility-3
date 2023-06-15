@@ -9,9 +9,10 @@ import 'package:naemansan/models/traildetailmodel.dart';
 // 산책로 디테일 페이지에서 댓글 볼 때 사용
 class CommentWidget extends StatefulWidget {
   final String content;
-  final int user_id; //사용자 아이디
+  final int user_id; //(댓글사용자 아이디
   final int course_id; //코스 아이디
   final int id; // 댓글 아이디
+  final String user_name;
 
   const CommentWidget({
     Key? key,
@@ -19,6 +20,7 @@ class CommentWidget extends StatefulWidget {
     required this.course_id,
     required this.content,
     required this.user_id,
+    required this.user_name,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       setState(() {
         myData!['name'] == data!['name']
             ? isWriter = true
-            : isWriter = false; //isWriter 설정
+            : isWriter = false; //isWriter 설정 //!! - isWriter ㅓㄹ정 수정 필요
         otherUser = OtherUserModel.fromJson(data);
         imageUrl =
             'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
