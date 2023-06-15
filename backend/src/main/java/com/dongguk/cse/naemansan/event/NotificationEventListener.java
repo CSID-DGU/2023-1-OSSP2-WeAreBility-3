@@ -1,8 +1,6 @@
 package com.dongguk.cse.naemansan.event;
 
-import com.dongguk.cse.naemansan.domain.Like;
 import com.dongguk.cse.naemansan.service.NotificationService;
-import com.dongguk.cse.naemansan.util.NotificationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,12 +22,12 @@ public class NotificationEventListener {
     @Async
     @EventListener
     public void sendNotificationForLike(LikeNotificationEvent event) throws Exception {
-        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(), 2); // Service 연결
+        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(), 2);
     }
 
     @Async
     @EventListener
     public void sendNotificationForFollow(FollowNotificationEvent event) throws Exception {
-        notificationService.sendPushNotification(event.getFromUserId(), event.getToUserId(), event.getCourseId(), 3); // Service 연결
+        notificationService.sendPushNotificationForFollow(event.getFromUserId(), event.getToUserId(), 3);
     }
 }

@@ -28,6 +28,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @Slf4j
@@ -50,9 +52,9 @@ public class NotificationUtil {
                 payload.addCustomDictionary("id", "1");
                 System.out.println(payload.toString());
                 Object obj = user.getDeviceToken();
-                //InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
-
-                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Users\\woobi\\Documents\\WeAreBility\\2023-1-OSSP2-WeAreBility-3\\backend\\src\\Certificates.p12", "naemansan@", false, obj);
+                ClassPathResource resource = new ClassPathResource("SpringPushNotification.p12");
+                //List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Users\\woobi\\Documents\\WeAreBility\\2023-1-OSSP2-WeAreBility-3\\backend\\src\\Certificates.p12", "naemansan@", false, obj);
+                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, resource.getPath(), "naemansan@", false, obj);
                 for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
                     if (NOTIFICATION.isSuccessful()) {
                         log.info("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());
@@ -114,7 +116,6 @@ public class NotificationUtil {
         User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         if (user.getDeviceToken() != null) {
             String message = makeMessage(user.getDeviceToken(), requestDto.getTitle(), requestDto.getBody());
-
             OkHttpClient client = new OkHttpClient();
             RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
             Request request = new Request.Builder()
@@ -124,16 +125,28 @@ public class NotificationUtil {
                     .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                     .build();
             Response response = client.newCall(request).execute();
-            //System.out.println("sendMessageTo 끝나기 전");
             log.info(response.body().string());
         } else {
             log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
         }
     }
 
+    public void sendMessageToTest(String token, String title, String body) throws IOException {
+            String message = makeMessage(token, title, body);
+            OkHttpClient client = new OkHttpClient();
+            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+            Request request = new Request.Builder()
+                    .url(API_URL)
+                    .post(requestBody)
+                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                    .build();
+            Response response = client.newCall(request).execute();
+            log.info(response.body().string());
+    }
+
     private String makeMessage(String targetToken, String title, String body) throws
             JsonParseException, JsonProcessingException {
-        //System.out.println("makeMessage 시작");
 
         MessageDto messageDto = MessageDto.builder()
                 .message(MessageDto.Message.builder()

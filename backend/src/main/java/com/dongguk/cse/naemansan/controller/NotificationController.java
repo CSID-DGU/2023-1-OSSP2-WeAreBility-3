@@ -30,8 +30,8 @@ public class NotificationController {
 
     //안드로이드 버전2 테스트
     @PostMapping("/andfcm2")
-    public void pushMessage(@RequestBody FCMNotificationRequestDto requestDto) throws IOException {
-        notificationUtil.sendMessageTo(requestDto);
+    public void pushMessage(@RequestBody NotificationRequestDto requestDto) throws IOException {
+        notificationUtil.sendMessageToTest(requestDto.getTargetToken(),requestDto.getTitle(),requestDto.getBody());
 /*
         notificationService.sendMessageTo(
                 notificationRequestDto.getTargetToken(),

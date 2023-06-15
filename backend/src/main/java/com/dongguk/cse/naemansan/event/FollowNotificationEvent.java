@@ -10,5 +10,4 @@ import lombok.RequiredArgsConstructor;
 public class FollowNotificationEvent {
     private Long fromUserId;
     private Long toUserId;
-    private Long courseId;
 }
