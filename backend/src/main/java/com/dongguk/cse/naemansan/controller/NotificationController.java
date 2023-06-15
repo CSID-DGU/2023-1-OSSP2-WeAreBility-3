@@ -2,11 +2,16 @@ package com.dongguk.cse.naemansan.controller;
 
 import com.dongguk.cse.naemansan.dto.NotificationDto;
 import com.dongguk.cse.naemansan.common.ResponseDto;
+import com.dongguk.cse.naemansan.dto.request.FCMNotificationRequestDto;
+import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.service.NotificationService;
+import com.dongguk.cse.naemansan.util.NotificationUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -14,11 +19,35 @@ import java.util.List;
 @RequestMapping("/notification")
 public class NotificationController {
     private final NotificationService notificationService;
-
-
-
-
-
+    private final NotificationUtil notificationUtil;
+    //private final FCMNotificationService fcmNotificationService;
+    
+    //안드로이드 푸시알림 테스트
+    @PostMapping("/andfcm")
+    public String sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) {
+        return notificationUtil.sendNotificationByToken(requestDto);
+    }
+    //안드로이드 버전2 테스트
+    @PostMapping("/andfcm2")
+    public ResponseEntity pushMessage(Authentication authentication, @RequestBody NotificationRequestDto notificationRequestDto) throws IOException {
+        System.out.println(notificationRequestDto.getTargetToken() + " "
+                + notificationRequestDto.getTitle() + " " + notificationRequestDto.getContent());
+/*
+        notificationService.sendMessageTo(
+                notificationRequestDto.getTargetToken(),
+                notificationRequestDto.getTitle(),
+                notificationRequestDto.getContent());
+*/
+//notificationRequestDto 수정
+        //notificationService.createNotification(Long.valueOf(authentication.getName()),notificationRequestDto);
+        return ResponseEntity.ok().build();
+    }
+    //ios 푸시알림 테스트
+    @PostMapping("/api/iosfcm")
+    public void pushIosMessage(@RequestBody String token) throws Exception{
+        notificationUtil.sendApnFcmtoken(token);
+    }
+    
     //Notification Read
     @GetMapping("")
     public ResponseDto<List<NotificationDto>> readNotification(Authentication authentication, @RequestParam("page") Long page, @RequestParam("num") Long num) {

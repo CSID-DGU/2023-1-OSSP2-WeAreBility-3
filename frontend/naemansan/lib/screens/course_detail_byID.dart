@@ -1,3 +1,5 @@
+// 사용하는 산책로 세부 정보 페이지
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:naemansan/models/other_user_model.dart';
@@ -25,8 +27,10 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
   String imageUrl = "";
   bool isLikeNow = false;
   int likeCnt = 0;
+  final _commentController = TextEditingController();
 
   void addComment(String comment) {
+    //산책로 댓글 등록
     setState(() {
       comments.add(comment);
     });
@@ -55,6 +59,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     }
   }
 
+  // 산책로 댓글 POST 보내기
+
   // 상대프로필 조회
   Future<void> fetchWriterProfile() async {
     ApiService apiService = ApiService();
@@ -70,6 +76,34 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       imageUrl =
           'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
     });
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  // comment POST보내기
+  Future<void> postComment() async {
+    ApiService apiService = ApiService();
+    final comment = _commentController.text;
+
+    bool data;
+    Map<String, dynamic> commentData = {
+      "content": comment,
+    };
+    print("dsadsadsa ${widget.id} ,$commentData");
+
+    data = await apiService.addComment(widget.id, commentData);
+    print(data);
+    if (data) {
+      print("댓글 성공");
+      setState(() {
+        // isLikeNow = true;
+        // trailDetail!.likeCnt++;
+      });
+    }
   }
 
   // 좋아요 POST보내기
@@ -274,12 +308,14 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               const SizedBox(height: 24),
               // Add your content here
               TextField(
+                controller: _commentController,
                 decoration: InputDecoration(
                   labelText: '댓글',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.send),
                     onPressed: () {
-                      addComment('New comment');
+                      postComment();
+                      // addComment('New comment');
                     },
                   ),
                 ),
