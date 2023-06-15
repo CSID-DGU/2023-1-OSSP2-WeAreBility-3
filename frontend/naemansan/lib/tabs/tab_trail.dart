@@ -125,7 +125,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
         ),
         titleSpacing: 0,
         title: const Text(
-          '산책로',
+          '모두의 산책로',
           style: TextStyle(
             fontSize: 21,
             fontWeight: FontWeight.w600,

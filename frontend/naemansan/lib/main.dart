@@ -3,6 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/providers/location.dart';
+import 'package:naemansan/screens/Home/select_tag_screen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:naemansan/screens/map/create_title_map.dart';
 import 'package:naemansan/screens/screen_index.dart';
@@ -107,6 +108,10 @@ class _AppState extends State<App> {
               '/index': (context) => const IndexScreen(index: 0),
               '/login': (context) => const LoginScreen(),
               "/createTitle": (context) => const CreateTitleScreen(),
+              "/mytab": (context) => const IndexScreen(index: 2),
+              "/tagSelect": (context, {arguments}) => const SelectTagScreen(
+                    isEdit: false,
+                  ),
             },
           );
         }

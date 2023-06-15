@@ -29,13 +29,14 @@ class _HomeState extends State<Home> {
   String _district = "";
   String _street = "";
   bool nowLocation = false;
-  String selectedKeyword = "한강"; // 선택한 키워드 초기값
   List<bool> keywordButtonStates = [
     true,
     false,
     false,
     false,
   ]; //
+  List<dynamic> myTagList = ["한강"];
+  String selectedKeyword = "한강"; // 선택한 키워드 초기값
 // Set the latitude and longitude values
   late double _latitude = 0.0;
   late double _longitude = 0.0;
@@ -55,12 +56,18 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isTag();
+    });
     init();
+
     super.initState();
     ApiService apiService = ApiService();
     user = apiService.getUserInfo();
+
     // user의 값이 null일때 loginScreen으로 이동하고 토큰값 지우기
     // print(user);
+
     user.then((value) {
       if (value == null) {
         goLogin();
@@ -70,6 +77,38 @@ class _HomeState extends State<Home> {
     setState(() {
       nowLocation = true;
     });
+  }
+
+  Future<void> isTag() async {
+    ApiService apiService = ApiService();
+    var data = await apiService.getMyTag();
+
+    if (data != null && data['success'] == true) {
+      if (data['data'] != null && data['data']['tags'] != null) {
+        // Tags exist
+        if (data['data']['tags'].isEmpty) {
+          // 테그 만들기 페이지로 이동
+          // go to SelectTagScreen
+          print(data['data']['tags']);
+          if (mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/tagSelect', (route) => false);
+          }
+        } else {
+          print('Tags exist');
+        }
+        List<dynamic> tags = data['data']['tags'];
+        myTagList = tags.map((tag) => tag['name'] as String).toList();
+        selectedKeyword = myTagList[0];
+        print(myTagList);
+      } else {
+        // Tags do not exist
+        print('No tags found');
+      }
+    } else {
+      // Request failed or unsuccessful response
+      print('Failed to retrieve data or unsuccessful response');
+    }
   }
 
   goLogin() async {
@@ -86,9 +125,9 @@ class _HomeState extends State<Home> {
   init() async {
     String deviceToken = await getDeviceToken();
 
-    print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFCIATION ######");
-    print(deviceToken);
-    print("############################################################");
+    // print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFCIATION ######");
+    // print(deviceToken);
+    // print("############################################################");
 
     // listen for user to click on notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
@@ -307,10 +346,14 @@ class _HomeState extends State<Home> {
                               ),
                               Row(
                                 children: [
-                                  _buildKeywordButton("한강", index: 0),
-                                  _buildKeywordButton("힐링", index: 1),
-                                  _buildKeywordButton("공원", index: 2),
-                                  _buildKeywordButton("중구", index: 3),
+                                  _buildKeywordButton(myTagList[0], index: 0),
+                                  if (myTagList.length > 1)
+                                    _buildKeywordButton(myTagList[1], index: 1),
+                                  if (myTagList.length > 2)
+                                    _buildKeywordButton(myTagList[2], index: 2),
+
+                                  _buildKeywordButton("변경하기", index: 3),
+
                                   // Add more keyword buttons as needed
                                 ],
                               ),
@@ -407,6 +450,11 @@ class _HomeState extends State<Home> {
             for (int i = 0; i < keywordButtonStates.length; i++) {
               keywordButtonStates[i] = (i == index);
             }
+            if (mounted && index == 3) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/tagSelect', (route) => true,
+                  arguments: true);
+            }
           });
         },
         style: ButtonStyle(
@@ -443,7 +491,6 @@ class _HomeState extends State<Home> {
     if (mounted) {
       bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
     }
-
     // deviceToekn, apple iOS여부 보내기
     // await apiService.sendDeviceToken(deviceToken, isIos);
     print("??");
