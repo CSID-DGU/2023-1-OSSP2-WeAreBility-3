@@ -25,13 +25,17 @@ class _CreateTitleScreenState extends State<CreateTitleScreen> {
     final title = _titleController.text;
     final locations =
         ModalRoute.of(context)!.settings.arguments as List<dynamic>;
+    print("locations가 이렇게 들어가있어요! $locations");
 
     final courseData = {
       'title': title,
       'locations': locations,
     };
 
+    print("--------------------산책로 생성한다--------------------");
     final response = await apiService.registerIndividualCourse(courseData);
+    print(response);
+    print("--------------------산책로 생성한다--------------------");
     if (response['success']) {
       final data = response['data'];
       final id = data['id'];

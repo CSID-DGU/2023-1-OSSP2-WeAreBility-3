@@ -99,7 +99,8 @@ class _HomeState extends State<Home> {
         }
         List<dynamic> tags = data['data']['tags'];
         myTagList = tags.map((tag) => tag['name'] as String).toList();
-        selectedKeyword = myTagList[0];
+        // selectedKeyword = myTagList[0];
+        selectedKeyword = "한강";
         print(myTagList);
       } else {
         // Tags do not exist
@@ -352,7 +353,7 @@ class _HomeState extends State<Home> {
                                   if (myTagList.length > 2)
                                     _buildKeywordButton(myTagList[2], index: 2),
 
-                                  _buildKeywordButton("변경하기", index: 3),
+                                  _buildKeywordButton("변경", index: 3),
 
                                   // Add more keyword buttons as needed
                                 ],
