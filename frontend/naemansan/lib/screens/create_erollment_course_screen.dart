@@ -42,10 +42,16 @@ class _CreateErollmentCourseScreenState
         children: [
           Text("ID: $id"),
           Text("Title: $title"),
-          TextField(
-            controller: introductionController,
-            decoration: const InputDecoration(
-              hintText: 'Enter Introduction',
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              controller: introductionController,
+              maxLines: 5, // Adjust the number of lines as needed
+              decoration: const InputDecoration(
+                hintText: 'Enter Introduction',
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -61,7 +67,9 @@ class _CreateErollmentCourseScreenState
                   onChanged: (value) {
                     setState(() {
                       if (value == true) {
-                        selectedTags.add(tag);
+                        if (selectedTags.length < 8) {
+                          selectedTags.add(tag);
+                        }
                       } else {
                         selectedTags.remove(tag);
                       }
@@ -72,6 +80,14 @@ class _CreateErollmentCourseScreenState
             ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              minimumSize: const Size(300, 50),
+            ),
             onPressed: () {
               showDialog(
                 context: context,
@@ -82,8 +98,12 @@ class _CreateErollmentCourseScreenState
                     actions: [
                       TextButton(
                         onPressed: () {
-                          // Perform the submit action
-                          Navigator.pop(context); // Close the dialog
+                          if (selectedTags.isNotEmpty) {
+                            // Perform the submit action
+                            Navigator.pop(context); // Close the dialog
+                          } else {
+                            // Display an error message or take appropriate action
+                          }
                         },
                         child: const Text("네"),
                       ),
@@ -98,7 +118,11 @@ class _CreateErollmentCourseScreenState
                 },
               );
             },
-            child: const Text("공개하기"),
+            child: const Text("공개하기",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                )),
           ),
         ],
       ),
