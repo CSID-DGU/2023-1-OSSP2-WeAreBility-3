@@ -221,6 +221,20 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>?> getLocationBasedShapList(
+      double? latitude, double? longitude) async {
+    final response = await getRequest(
+        'shop?page=0&num=10&latitude=$latitude&longitude=$longitude');
+    print("??");
+    if (response.statusCode == 200) {
+      final parsedResponse = jsonDecode(response.body);
+      // print(parsedResponse['data']);
+      return parsedResponse['data'];
+    } else {
+      return null;
+    }
+  }
+
   // 본인 프로필 뱃지 조회 GET 요청
   Future<List<BadgeModel>?> getProfileBadges() async {
     try {

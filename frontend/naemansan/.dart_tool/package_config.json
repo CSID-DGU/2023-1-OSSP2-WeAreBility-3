@@ -290,6 +290,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "fluttertoast",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/fluttertoast-8.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "geocoding",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/geocoding-2.1.0",
       "packageUri": "lib/",
@@ -968,7 +974,8 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-15T16:51:00.076881Z",
+
+  "generated": "2023-06-15T18:06:53.641071Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }

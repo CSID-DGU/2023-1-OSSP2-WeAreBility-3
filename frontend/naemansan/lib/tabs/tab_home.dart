@@ -227,6 +227,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  getShop(latitude, longitude) async {
+    ApiService apiService = ApiService();
+    List<dynamic>? data;
+    data = await apiService.getLocationBasedShapList(latitude, longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
