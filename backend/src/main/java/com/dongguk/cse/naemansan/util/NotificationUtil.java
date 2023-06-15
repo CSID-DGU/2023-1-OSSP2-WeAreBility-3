@@ -12,6 +12,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.google.gson.JsonParseException;
 import javapns.Push;
 import javapns.communication.exceptions.CommunicationException;
@@ -115,8 +116,6 @@ public class NotificationUtil {
         } catch (CommunicationException e) {
             e.printStackTrace();
         }
-       // log.info("알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId());
-
     }
 
     //안드로이드 푸시알림
@@ -124,7 +123,7 @@ public class NotificationUtil {
         User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         if (user.getDeviceToken() != null) {
-            com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification.builder()
+            Notification notification = Notification.builder()
                     .setTitle(requestDto.getTitle())
                     .setBody(requestDto.getBody())
                     .build();
@@ -146,11 +145,9 @@ public class NotificationUtil {
         }
     }
 
-    //아드로이드 테스트
+    //안드로이드 테스트
     public void sendNotificationByTokenTest(String token, String title, String body) {
-
-
-            com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification.builder()
+            Notification notification = Notification.builder()
                     .setTitle(title)
                     .setBody(body)
                     .build();
