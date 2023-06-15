@@ -7,8 +7,7 @@ import com.dongguk.cse.naemansan.domain.EnrollmentCourse;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
-import com.dongguk.cse.naemansan.event.CommentEvent;
-import com.dongguk.cse.naemansan.event.IndividualCourseEvent;
+import com.dongguk.cse.naemansan.event.CommentBadgeEvent;
 import com.dongguk.cse.naemansan.repository.CommentRepository;
 import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -48,7 +47,7 @@ public class CommentService {
                 .enrollmentCourse(enrollmentCourse)
                 .content(commentRequestDto.getContent()).build());
 
-        publisher.publishEvent(new CommentEvent(userId));
+        publisher.publishEvent(new CommentBadgeEvent(userId));
 
         return Boolean.TRUE;
     }

@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class CommentEvent {
+public class EnrollmentCourseBadgeEvent {
     private Long userId;
 }

@@ -9,9 +9,9 @@ import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
-import com.dongguk.cse.naemansan.event.EnrollmentCourseEvent;
-import com.dongguk.cse.naemansan.event.IndividualCourseEvent;
-import com.dongguk.cse.naemansan.event.UsingCourseEvent;
+import com.dongguk.cse.naemansan.event.EnrollmentCourseBadgeEvent;
+import com.dongguk.cse.naemansan.event.IndividualCourseBadgeEvent;
+import com.dongguk.cse.naemansan.event.UsingCourseBadgeEvent;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public class CourseService {
                 .locations(multiPoint)
                 .distance(distance).build());
 
-        publisher.publishEvent(new IndividualCourseEvent(userId));
+        publisher.publishEvent(new IndividualCourseBadgeEvent(userId));
 
         return IndividualCourseDetailDto.builder()
                 .id(course.getId())
@@ -106,7 +106,7 @@ public class CourseService {
         EnrollmentCourse enrollmentCourse =  enrollmentCourseRepository.findByIdAndStatus(requestDto.getEnrollment_id(),true)
                 .orElseThrow(()-> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
 
-        publisher.publishEvent(new UsingCourseEvent(userId));
+        publisher.publishEvent(new UsingCourseBadgeEvent(userId));
 
         Boolean finishState = courseUtil.checkFinishState(requestDto.getEnrollment_id(), requestDto.getLocations());
         usingCourseRepository.save(UsingCourse.builder()
@@ -148,7 +148,7 @@ public class CourseService {
         List<CourseTag> courseTags = courseUtil.getTagDto2TagForEnrollmentCourse(enrollmentCourse, requestDto.getTags());
         courseTagRepository.saveAll(courseTags);
 
-        publisher.publishEvent(new EnrollmentCourseEvent(userId));
+        publisher.publishEvent(new EnrollmentCourseBadgeEvent(userId));
 
         // ResponseDto 를 위한 TagDto 생성
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForCourse(courseTags);
