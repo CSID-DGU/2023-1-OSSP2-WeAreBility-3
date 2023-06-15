@@ -94,8 +94,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      //itemCount: snapshot.data!.length,
-      itemCount: 3, // !! 댓글 개수 넣어야됨
+      itemCount: snapshot.data!.length,
+      // itemCount: 3, // !! 댓글 개수 넣어야됨
       // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         var trail = snapshot.data![index];
@@ -104,7 +104,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
             content: trail.content,
             user_id: trail.user_id, //댓글 작성자의 user id
             course_id: trail.course_id,
-            id: trail.id);
+            id: trail.id); //댓글 아이디
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),

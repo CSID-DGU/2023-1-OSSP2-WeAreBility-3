@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/screens/comment_edit.dart';
 
 // 산책로 디테일 페이지에서 댓글 볼 때 사용
 class CommentWidget extends StatefulWidget {
@@ -68,20 +69,17 @@ class _CommentWidgetState extends State<CommentWidget> {
               ListTile(
                 title: const Text('수정'),
                 onTap: () {
-                  /*
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CourseEditpage(
-                        id: trailDetail!.id,
-                        title: trailDetail!.title,
-                        introduction: trailDetail!.introduction,
-                        keywords: trailDetail!.tags,
+                      builder: (context) => CommentEditpage(
+                        id: widget.id, //산책로 아이디
+                        content: widget.content,
+                        course_id: widget.course_id,
                       ),
                     ),
                   );
                   // 수정 페이지로 이동
-                */
                 },
               ),
               ListTile(
@@ -116,7 +114,6 @@ class _CommentWidgetState extends State<CommentWidget> {
             TextButton(
               child: const Text('삭제'),
               onPressed: () {
-                //deleteTrail(); //산책로 삭제
                 deleteComment();
                 Navigator.of(context).pop();
               },

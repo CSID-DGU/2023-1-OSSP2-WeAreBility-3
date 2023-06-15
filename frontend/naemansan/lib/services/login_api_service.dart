@@ -613,12 +613,11 @@ class ApiService {
     return response.statusCode == 200;
   }
 
-  Future<bool> changeComment(
-      int courseId, int commentId, Map<String, dynamic> commentData) async {
+  Future<void> changeComment(
+      int courseId, int commentId, String commentData) async {
     print("수정 할때 는 $commentData");
     final response =
         await putRequest('course/$courseId/comment/$commentId', commentData);
-    return response.statusCode == 200;
   }
 
   Future<void> deleteComment(int courseId, int commentId) async {
