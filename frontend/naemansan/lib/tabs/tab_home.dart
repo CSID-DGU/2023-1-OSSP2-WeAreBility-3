@@ -351,6 +351,7 @@ class _HomeState extends State<Home> {
                                     _buildKeywordButton(myTagList[1], index: 1),
                                   if (myTagList.length > 2)
                                     _buildKeywordButton(myTagList[2], index: 2),
+
                                   _buildKeywordButton("변경하기", index: 3),
 
                                   // Add more keyword buttons as needed
@@ -451,7 +452,8 @@ class _HomeState extends State<Home> {
             }
             if (mounted && index == 3) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/tagSelect', (route) => false);
+                  context, '/tagSelect', (route) => true,
+                  arguments: true);
             }
           });
         },

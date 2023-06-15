@@ -109,7 +109,9 @@ class _AppState extends State<App> {
               '/login': (context) => const LoginScreen(),
               "/createTitle": (context) => const CreateTitleScreen(),
               "/mytab": (context) => const IndexScreen(index: 2),
-              "/tagSelect": (context) => const SelectTagScreen(),
+              "/tagSelect": (context, {arguments}) => const SelectTagScreen(
+                    isEdit: false,
+                  ),
             },
           );
         }

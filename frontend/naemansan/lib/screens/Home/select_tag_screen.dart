@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:naemansan/services/login_api_service.dart';
 
 class SelectTagScreen extends StatefulWidget {
-  const SelectTagScreen({super.key});
+  final bool isEdit;
+
+  const SelectTagScreen({
+    required this.isEdit,
+    super.key,
+  });
 
   @override
   State<SelectTagScreen> createState() => _SelectTagScreenState();
@@ -15,6 +20,7 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
   @override
   void initState() {
     super.initState();
+    print("widget.isEdit 값은? ${widget.isEdit}");
     getTagList();
   }
 
@@ -50,8 +56,14 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
     Map<String, dynamic> tagData = {
       "tags": selectedTags,
     };
-
-    bool success = await apiService.postMyTag(tagData);
+    bool? success;
+    // 수정 상태
+    print("${widget.isEdit} 값은?");
+    if (widget.isEdit) {
+      success = await apiService.putMyTag(tagData);
+    } else {
+      success = await apiService.postMyTag(tagData);
+    }
 
     print(success);
     if (success) {

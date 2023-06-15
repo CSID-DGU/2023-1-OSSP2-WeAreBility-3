@@ -592,6 +592,13 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+  Future<bool> putMyTag(Map<String, dynamic> selectedTags) async {
+    print("변경되나?????");
+    final response = await putRequest('user/tags', selectedTags);
+    print("변경 ${response.body}는?");
+    return response.statusCode == 200;
+  }
+
   // 태그 리스트 뽑기
   Future<dynamic> getTagList() async {
     final response = await getRequest('course/tags');
