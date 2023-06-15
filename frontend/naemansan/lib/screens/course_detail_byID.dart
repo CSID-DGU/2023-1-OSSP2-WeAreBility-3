@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:naemansan/models/other_user_model.dart';
 import 'package:naemansan/models/traildetailmodel.dart';
 import 'package:naemansan/services/login_api_service.dart';
+import 'package:naemansan/widgets/detail_map.dart';
 import 'package:naemansan/profile_tabs/view_profile.dart';
 import 'package:naemansan/screens/course_tabs/course_edit.dart';
 import 'package:naemansan/models/commentmodel.dart';
 import 'package:naemansan/services/courses_api.dart';
 import 'package:naemansan/widgets/comment.dart';
-import 'package:naemansan/widgets/detail_map.dart';
 
 class CourseDetailbyID extends StatefulWidget {
   final int id;
@@ -268,184 +268,185 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DetailMap(locations: trailDetail!.locations),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // 상대방 프로필로 이동
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                //-------------------------------------------------------------------------------------------------------------
-                                builder: (context) => ViewProfile(
-                                  userId: trailDetail!.userid,
-                                ),
-                              ),
-                            );
-                          },
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundImage: NetworkImage(imageUrl),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // 상대방 프로필로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            //-------------------------------------------------------------------------------------------------------------
+                            builder: (context) => ViewProfile(
+                              userId: trailDetail!.userid,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(trailDetail!.username,
-                            style: const TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.w500)),
-                      ],
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(imageUrl),
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Text(trailDetail!.username,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+              ),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  DetailMap(locations: trailDetail!.locations),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    trailDetail!.title,
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     children: [
-                      Text(
-                        trailDetail!.title,
-                        style: const TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+                      IconButton(
+                        icon: Icon(
+                          isLikeNow ? Icons.favorite : Icons.favorite_border,
+                          color: isLikeNow ? Colors.red : null,
                         ),
+                        onPressed: () => {
+                          // 좋아요 POST보내기
+                          isLikeNow ? deleteLike() : postLike(),
+                        },
                       ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              isLikeNow
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: isLikeNow ? Colors.red : null,
-                            ),
-                            onPressed: () => {
-                              // 좋아요 POST보내기
-                              isLikeNow ? deleteLike() : postLike(),
-                            },
-                          ),
-                          Text(
-                            '${trailDetail!.likeCnt}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        '${trailDetail!.likeCnt}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
-                  Text(
-                    '생성 날짜: ${DateFormat('yy.MM.dd').format(trailDetail!.createdDate)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
+                ],
+              ),
+              Text(
+                '생성 날짜: ${DateFormat('yy.MM.dd').format(trailDetail!.createdDate)}',
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
 
-                  const SizedBox(height: 8),
+              const SizedBox(height: 8),
 
-                  const SizedBox(height: 16),
-                  Text(
-                    '시작위치: ${trailDetail!.startLocationName}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '길이: ${lengthInKm.toStringAsFixed(2)} km',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    trailDetail!.introduction,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    '🎯 키워드',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+              const SizedBox(height: 16),
+              Text(
+                '시작위치: ${trailDetail!.startLocationName}',
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '길이: ${lengthInKm.toStringAsFixed(2)} km',
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                trailDetail!.introduction,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 15),
+              const Text(
+                '🎯 키워드',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
 
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: trailDetail!.tags.map((keyword) {
-                      return Chip(
-                        label: Text(
-                          keyword,
-                          style: const TextStyle(
-                            color: Colors.black87,
-                          ),
-                        ),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(4.0),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  //작성된 댓글 get //댓글 클릭시 수정, 삭제 가능하게 (id전달)
-                  const SizedBox(height: 24),
-                  const Text(
-                    '댓글',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    // 댓글 가져오기
-                    padding: const EdgeInsets.symmetric(vertical: 0),
-                    child: FutureBuilder(
-                      future: commentlist,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Row(
-                            children: [Expanded(child: makeList(snapshot))],
-                          );
-                        }
-                        return const Center(
-                          child: Text('작성된 댓글이 없습니다'),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Add your content here
-                  TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      labelText: '댓글',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: () {
-                          postComment();
-                          // addComment('New comment');
-                        },
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: trailDetail!.tags.map((keyword) {
+                  return Chip(
+                    label: Text(
+                      keyword,
+                      style: const TextStyle(
+                        color: Colors.black87,
                       ),
                     ),
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  );
+                }).toList(),
+              ),
+              //작성된 댓글 get //댓글 클릭시 수정, 삭제 가능하게 (id전달)
+              const SizedBox(height: 24),
+              const Text(
+                '댓글',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                // 댓글 가져오기
+                padding: const EdgeInsets.symmetric(vertical: 0),
+                child: FutureBuilder(
+                  future: commentlist,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Row(
+                        children: [Expanded(child: makeList(snapshot))],
+                      );
+                    }
+                    return const Center(
+                      child: Text('작성된 댓글이 없습니다'),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Add your content here
+              TextField(
+                controller: _commentController,
+                decoration: InputDecoration(
+                  labelText: '댓글',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed: () {
+                      postComment();
+                      // addComment('New comment');
+                    },
                   ),
-                ],
+                ),
               ),
             ],
           ),
