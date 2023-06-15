@@ -1,36 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:naemansan/services/login_api_service.dart';
 import 'package:naemansan/screens/comment_edit.dart';
+import 'package:naemansan/services/courses_api.dart';
+import 'package:naemansan/models/other_user_model.dart';
+
+import 'package:naemansan/models/traildetailmodel.dart';
 
 // 산책로 디테일 페이지에서 댓글 볼 때 사용
 class CommentWidget extends StatefulWidget {
   final String content;
-  final int user_id;
-  final int course_id;
-  final int id;
+  final int user_id; //사용자 아이디
+  final int course_id; //코스 아이디
+  final int id; // 댓글 아이디
 
-  const CommentWidget(
-      {Key? key,
-      required this.id,
-      required this.course_id,
-      required this.content,
-      required this.user_id})
-      : super(key: key);
+  const CommentWidget({
+    Key? key,
+    required this.id,
+    required this.course_id,
+    required this.content,
+    required this.user_id,
+  }) : super(key: key);
+
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
 }
 
 class _CommentWidgetState extends State<CommentWidget> {
+  OtherUserModel? otherUser;
+  TraildetailModel? trailDetail;
+  String imageUrl = "";
+  bool isWriter = false;
+  late TrailApiService TrailapiService;
+
   @override
-  void initState();
+  void initState() {
+    super.initState();
+    print(widget.id);
+    fetchTrailDetail();
+    TrailapiService = TrailApiService();
+  }
 
-  //산책로 Delete
-  Future<void> deleteComment() async {
-    print("${widget.content} 삭제");
+  Future<void> fetchTrailDetail() async {
     ApiService apiService = ApiService();
+    Map<String, dynamic>? data;
 
-    apiService.deleteComment(
-        widget.course_id, widget.id); //course id, comment id
+    data = await apiService
+        .getEnrollmentCourseDetailById(widget.id); //등록한 (enrolled) 산책로
+    print(data);
+
+    if (data != null) {
+      setState(() {
+        trailDetail = TraildetailModel.fromJson(data!);
+      });
+      fetchWriterProfile();
+    }
+  }
+
+  // 상대프로필 조회
+  Future<void> fetchWriterProfile() async {
+    ApiService apiService = ApiService();
+    Map<String, dynamic>? data, myData;
+    myData = await apiService.getUserInfo();
+    data = await apiService.getOtherUserProfile(trailDetail!.userid);
+
+    if (mounted) {
+      setState(() {
+        myData!['name'] == data!['name']
+            ? isWriter = true
+            : isWriter = false; //isWriter 설정
+        otherUser = OtherUserModel.fromJson(data);
+        imageUrl =
+            'https://ossp.dcs-hyungjoon.com/image?uuid=${otherUser!.imagePath}';
+      });
+    }
   }
 
   @override
@@ -46,14 +88,13 @@ class _CommentWidgetState extends State<CommentWidget> {
             ),
           ),
         ),
-        //
-        IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {
-            // 댓글 삭제 로직 추가
-            _showPopupMenu(context);
-          },
-        ),
+        if (isWriter) // 현재 사용자인 경우에만 아이콘 버튼 표시
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              _showPopupMenu(context);
+            },
+          ),
       ],
     );
   }
@@ -66,22 +107,23 @@ class _CommentWidgetState extends State<CommentWidget> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: const Text('수정'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommentEditpage(
-                        id: widget.id, //산책로 아이디
-                        content: widget.content,
-                        course_id: widget.course_id,
+              if (isWriter) // 현재 사용자인 경우에만 수정 옵션 표시
+                ListTile(
+                  title: const Text('수정'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommentEditpage(
+                          id: widget.id,
+                          content: widget.content,
+                          course_id: widget.course_id,
+                          user_id: widget.user_id,
+                        ),
                       ),
-                    ),
-                  );
-                  // 수정 페이지로 이동
-                },
-              ),
+                    );
+                  },
+                ),
               ListTile(
                 title: const Text('삭제'),
                 onTap: () {
@@ -96,7 +138,6 @@ class _CommentWidgetState extends State<CommentWidget> {
     );
   }
 
-  //삭제
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -122,5 +163,11 @@ class _CommentWidgetState extends State<CommentWidget> {
         );
       },
     );
+  }
+
+  Future<void> deleteComment() async {
+    print("${widget.content} 삭제");
+    ApiService apiService = ApiService();
+    apiService.deleteComment(widget.course_id, widget.id);
   }
 }

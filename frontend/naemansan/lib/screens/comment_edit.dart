@@ -5,13 +5,15 @@ import 'package:naemansan/services/login_api_service.dart';
 class CommentEditpage extends StatefulWidget {
   final int id;
   final String content;
+  final int user_id;
   final int course_id;
 
   const CommentEditpage({
     Key? key,
-    required this.id,
+    required this.id, //댓글의 아이디
     required this.content,
-    required this.course_id,
+    required this.user_id, //사용자의 아이디
+    required this.course_id, // 산책로 아이디
   }) : super(key: key);
 
   @override
