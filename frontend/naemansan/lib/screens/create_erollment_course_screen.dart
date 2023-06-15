@@ -104,6 +104,8 @@ class _CreateErollmentCourseScreenState
                   return CheckboxListTile(
                     title: Text(tag),
                     value: selectedTags.contains(tag),
+                    activeColor: Colors.green, // Set the active color to green
+
                     onChanged: (value) {
                       setState(() {
                         if (value == true) {
