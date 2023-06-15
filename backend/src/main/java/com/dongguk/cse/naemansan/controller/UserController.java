@@ -93,7 +93,7 @@ public class UserController {
         return new ResponseDto<Boolean>(userService.updateUserDevice(Long.valueOf(authentication.getName()), requestDto));
     }
 
-    @PostMapping("/payment")
+    @PutMapping("/payment")
     public  ResponseDto updatePremium(Authentication authentication, @RequestBody UserPaymentRequestDto requestDto) {
         return new ResponseDto<Boolean>(userService.updatePremium(Long.valueOf(authentication.getName()), requestDto));
     }
