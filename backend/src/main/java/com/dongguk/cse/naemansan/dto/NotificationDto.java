@@ -16,15 +16,5 @@ public class NotificationDto {
     private String content;
     private Timestamp create_date;
     private Boolean is_read_status;
-
-/*
-    @Builder
-    public NotificationDto(Long id, String title, String content, Timestamp createDate, Boolean isReadStatus) {
-        this.id = id;
-        this.title=title;
-        this.content=content;
-        this.createDate = createDate;
-        this.isReadStatus = isReadStatus;
-    }*/
 }
 

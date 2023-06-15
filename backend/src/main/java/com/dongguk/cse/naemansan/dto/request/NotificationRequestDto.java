@@ -11,5 +11,4 @@ public class NotificationRequestDto {
     private String targetToken; //추가
     private String title; //추가
     private String body; //수정
-    //private Boolean is_read_status; //삭제
 }
