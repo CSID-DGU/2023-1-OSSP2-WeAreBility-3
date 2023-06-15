@@ -36,6 +36,7 @@ class _HomeState extends State<Home> {
     false,
     false,
   ]; //
+  List<dynamic> myTagList = ["한강"];
 // Set the latitude and longitude values
   late double _latitude = 0.0;
   late double _longitude = 0.0;
@@ -83,6 +84,7 @@ class _HomeState extends State<Home> {
         if (data['data']['tags'].isEmpty) {
           // 테그 만들기 페이지로 이동
           // go to SelectTagScreen
+          print(data['data']['tags']);
           if (mounted) {
             Navigator.pushNamedAndRemoveUntil(
                 context, '/tagSelect', (route) => false);
@@ -90,6 +92,9 @@ class _HomeState extends State<Home> {
         } else {
           print('Tags exist');
         }
+        List<dynamic> tags = data['data']['tags'];
+        myTagList = tags.map((tag) => tag['name'] as String).toList();
+        print(myTagList);
       } else {
         // Tags do not exist
         print('No tags found');
