@@ -35,7 +35,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
       initialIndex: widget.initialTabIndex,
       vsync: this,
     );
-    openIndex = 1;
+    openIndex = 0;
   }
 
   @override
@@ -211,39 +211,6 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          openIndex = 1;
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(MaterialState.pressed) ||
-                              openIndex == 1) {
-                            return const Color.fromARGB(255, 26, 167, 85);
-                          }
-                          return Colors.white;
-                        }),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        elevation: MaterialStateProperty.all(1.0),
-                      ),
-                      child: Text(
-                        '모두의', //EnrolledTrail
-                        style: TextStyle(
-                          color: openIndex == 1 ? Colors.white : Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
                           openIndex = 0;
                         });
                       },
@@ -268,6 +235,39 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         '나만의', //EnrolledTrail
                         style: TextStyle(
                           color: openIndex == 0 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          openIndex = 1;
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(MaterialState.pressed) ||
+                              openIndex == 1) {
+                            return const Color.fromARGB(255, 26, 167, 85);
+                          }
+                          return Colors.white;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        elevation: MaterialStateProperty.all(1.0),
+                      ),
+                      child: Text(
+                        '모두의', //EnrolledTrail
+                        style: TextStyle(
+                          color: openIndex == 1 ? Colors.white : Colors.black,
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
@@ -305,19 +305,23 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreateCourseScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            const Text('산책로 등록하러 가기'), // 산책로 추가하러 가기
+                            if (openIndex == 0)
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CreateCourseScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            if (openIndex == 0)
+                              const Text('산책로 등록하러 가기')
+                            else if (openIndex == 1)
+                              const Text('공개 등록한 산책로가 없습니다.')
                           ],
                         );
                       }
