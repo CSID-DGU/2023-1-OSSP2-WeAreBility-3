@@ -39,6 +39,10 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
     });
   }
 
+  goIndex() {
+    Navigator.pushNamedAndRemoveUntil(context, '/index', (route) => false);
+  }
+
   void submitTags() async {
     ApiService apiService = ApiService();
     // 서버에 POST 요청을 보내는 로직을 추가해야 합니다.
@@ -51,7 +55,7 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
 
     print(success);
     if (success) {
-      Navigator.of(context).pop();
+      goIndex();
     }
   }
 
