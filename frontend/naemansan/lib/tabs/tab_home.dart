@@ -59,6 +59,7 @@ class _HomeState extends State<Home> {
     super.initState();
     ApiService apiService = ApiService();
     user = apiService.getUserInfo();
+    isTag();
     // user의 값이 null일때 loginScreen으로 이동하고 토큰값 지우기
     // print(user);
     user.then((value) {
@@ -70,6 +71,33 @@ class _HomeState extends State<Home> {
     setState(() {
       nowLocation = true;
     });
+  }
+
+  Future<void> isTag() async {
+    ApiService apiService = ApiService();
+    var data = await apiService.getMyTag();
+
+    if (data != null && data['success'] == true) {
+      if (data['data'] != null && data['data']['tags'] != null) {
+        // Tags exist
+        if (data['data']['tags'].isEmpty) {
+          // 테그 만들기 페이지로 이동
+          // go to SelectTagScreen
+          if (mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/tagSelect', (route) => false);
+          }
+        } else {
+          print('Tags exist');
+        }
+      } else {
+        // Tags do not exist
+        print('No tags found');
+      }
+    } else {
+      // Request failed or unsuccessful response
+      print('Failed to retrieve data or unsuccessful response');
+    }
   }
 
   goLogin() async {
@@ -86,9 +114,9 @@ class _HomeState extends State<Home> {
   init() async {
     String deviceToken = await getDeviceToken();
 
-    print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFCIATION ######");
-    print(deviceToken);
-    print("############################################################");
+    // print("###### PRINT DEVICE TOKEN TO USE FOR PUSH NOTIFCIATION ######");
+    // print(deviceToken);
+    // print("############################################################");
 
     // listen for user to click on notification
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) {
@@ -443,7 +471,6 @@ class _HomeState extends State<Home> {
     if (mounted) {
       bool isIos = Theme.of(context).platform == TargetPlatform.iOS;
     }
-
     // deviceToekn, apple iOS여부 보내기
     // await apiService.sendDeviceToken(deviceToken, isIos);
     print("??");

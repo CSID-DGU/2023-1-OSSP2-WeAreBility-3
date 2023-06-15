@@ -574,6 +574,34 @@ class ApiService {
     }
   }
 
+  // 개인 태그 조회
+  Future<dynamic> getMyTag() async {
+    final response = await getRequest('user/tags');
+    print(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
+    }
+  }
+
+  // 개인태그 POST
+  Future<bool> postMyTag(Map<String, dynamic> selectedTags) async {
+    print(selectedTags);
+    final response = await postRequest('user/tags', selectedTags);
+    return response.statusCode == 200;
+  }
+
+  // 태그 리스트 뽑기
+  Future<dynamic> getTagList() async {
+    final response = await getRequest('course/tags');
+    print(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
+    }
+  }
 /* -------- 팔로우 신청 -------- */
 
 // 팔로우 신청
