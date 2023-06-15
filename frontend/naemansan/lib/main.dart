@@ -107,6 +107,7 @@ class _AppState extends State<App> {
               '/index': (context) => const IndexScreen(index: 0),
               '/login': (context) => const LoginScreen(),
               "/createTitle": (context) => const CreateTitleScreen(),
+              "/mytab": (context) => const IndexScreen(index: 2),
             },
           );
         }

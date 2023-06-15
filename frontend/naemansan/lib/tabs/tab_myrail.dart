@@ -30,6 +30,7 @@ class _MyrailState extends State<Myrail> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     TrailapiService = TrailApiService();
+
     _tabController = TabController(
       length: 5,
       initialIndex: widget.initialTabIndex,

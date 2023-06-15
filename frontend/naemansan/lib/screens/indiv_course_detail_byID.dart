@@ -36,6 +36,14 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
     fetchUserInfo();
   }
 
+  //산책로 Delete
+  Future<void> deleteTrail() async {
+    print("----- 개인 산책로 삭제");
+    ApiService apiService = ApiService();
+
+    apiService.deleteIndiviudalCourse(widget.id);
+  }
+
   Future<void> fetchTrailDetail() async {
     ApiService apiService = ApiService();
     Map<String, dynamic>? data;
@@ -91,7 +99,7 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () {
-              // Handle URL sharing functionality
+              _showPopupMenu(context);
             },
           ),
         ],
@@ -136,8 +144,8 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Column(
-                    children: const [],
+                  const Column(
+                    children: [],
                   ),
                 ],
               ),
@@ -159,5 +167,59 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
         ),
       ),
     );
+  }
+
+  void _showPopupMenu(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('삭제'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showDeleteConfirmationDialog(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //삭제
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제 확인'),
+          content: const Text('정말 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('삭제'),
+              onPressed: () {
+                deleteTrail();
+                goMyTab();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  goMyTab() async {
+    Navigator.pushNamed(context, '/mytab');
   }
 }

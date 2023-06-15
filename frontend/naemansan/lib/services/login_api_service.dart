@@ -540,6 +540,13 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+// 개인 산책로
+  Future<bool> deleteIndiviudalCourse(int id) async {
+    final response = await deleteRequest('course/individual/$id');
+    print(response);
+    return response.statusCode == 200;
+  }
+
   /* -------- 사용한 산책로 등록 -------- */
 
 // 사용한 산책로 등록
