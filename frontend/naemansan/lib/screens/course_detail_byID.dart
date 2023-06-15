@@ -409,35 +409,27 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 30),
-                  ElevatedButton(
-                    // button white
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      minimumSize: const Size(300, 50),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UsingCourseScreen(
-                            locations: trailDetail!.locations,
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text("이용하기",
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     const SizedBox(width: 30),
+              //     ElevatedButton(
+              //       // button white
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: Colors.white,
+              //         foregroundColor: Colors.black,
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(10),
+              //         ),
+              //         minimumSize: const Size(300, 50),
+              //       ),
+              //       onPressed: () {},
+              //       child: const Text("이용하기",
+              //           style: TextStyle(
+              //               fontSize: 15, fontWeight: FontWeight.w600)),
+              //     ),
+              //   ],
+              // ),
+
               //작성된 댓글 get //댓글 클릭시 수정, 삭제 가능하게 (id전달)
               const SizedBox(height: 24),
               const Text(
@@ -500,6 +492,27 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UsingCourseScreen(
+                locations: trailDetail!.locations,
+              ),
+            ),
+          );
+        },
+        label: const Text(
+          "이용하기",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
     );
   }
