@@ -11,7 +11,7 @@ class BannerSwiper extends StatelessWidget {
 
   final List<String> captions = [
     "내가 만든 산책로, 내만산이란?",
-    "산책을 즐기는 5가지 방법",
+    "6월 내만산 추천 산책로",
     "내만산 이용시 유의할점",
   ];
 
