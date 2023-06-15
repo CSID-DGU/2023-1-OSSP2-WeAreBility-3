@@ -34,7 +34,7 @@ class CommentTrailWidget extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 130.0,
+              width: 255.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -64,17 +64,18 @@ class CommentTrailWidget extends StatelessWidget {
                         ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          content,
+                          style: const TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Text(
-                  content,
-                  style: const TextStyle(fontSize: 16.0),
-                  textAlign: TextAlign.center,
-                ),
               ),
             ),
             IconButton(
@@ -86,7 +87,7 @@ class CommentTrailWidget extends StatelessWidget {
                   MaterialPageRoute(
                     //-------------------------------------------------------------------------------------------------------------
                     builder: (context) => CourseDetailbyID(
-                      id: id,
+                      id: courseId,
                       // 산책로 세부 페이지로 이동 -> ID 값 전달
                     ),
                   ),
