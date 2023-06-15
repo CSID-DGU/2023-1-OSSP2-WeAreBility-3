@@ -620,6 +620,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "lottie",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/lottie-2.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/matcher-0.12.15",
       "packageUri": "lib/",
@@ -998,7 +1004,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-15T02:03:56.921719Z",
+  "generated": "2023-06-15T03:14:23.256830Z",
   "generator": "pub",
   "generatorVersion": "3.0.2"
 }

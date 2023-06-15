@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 // import 'package:lottie/lottie.dart';
 
 class BannerDetailScreen extends StatelessWidget {
@@ -27,6 +28,7 @@ class BannerDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 30),
+
               Center(
                 child: Text(
                   caption,
@@ -39,11 +41,26 @@ class BannerDetailScreen extends StatelessWidget {
               // Lottie.asset('assets/lottie/sample.json'),
 
               const SizedBox(height: 30),
+
               Image.network(
                 "https://velog.velcdn.com/images/seochan99/post/395ade8c-409f-49a8-9725-a37c6ed1f894/image.png",
                 fit: BoxFit.cover,
               ),
-              const SizedBox(height: 50),
+
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: 70, // Set the desired width
+
+                    child: Lottie.network(
+                      'https://assets5.lottiefiles.com/packages/lf20_i9mxcD.json',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
               RichText(
                 text: TextSpan(
                   style: const TextStyle(fontSize: 16, color: Colors.black),

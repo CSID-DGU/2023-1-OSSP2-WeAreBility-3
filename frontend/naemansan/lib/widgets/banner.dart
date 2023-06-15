@@ -21,7 +21,7 @@ class BannerSwiper extends StatelessWidget {
 \n
 내가 만드는 산책로, 내만산입니다.\n
 \n
-내만산은 양방향 산책로 공유 서비스 지원함으로서 ㄱ\n
+내만산은 양방향 산책로 공유 서비스 지원함으로서\n
 개인만의 산책로를 알릴 수 있는 플랫폼입니다.\n
 \n
 [title]나만의 산책로 생성\n
