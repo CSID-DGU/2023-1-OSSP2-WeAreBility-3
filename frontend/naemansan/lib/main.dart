@@ -108,6 +108,7 @@ class _AppState extends State<App> {
             routes: {
               '/index': (context) => const IndexScreen(index: 0),
               '/login': (context) => const LoginScreen(),
+              '/allCourse': (context) => const IndexScreen(index: 1),
               "/createTitle": (context) => const CreateTitleScreen(),
               "/mytab": (context) => const IndexScreen(index: 2),
               "/erollmentCourse": (
