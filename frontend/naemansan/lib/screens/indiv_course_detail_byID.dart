@@ -184,7 +184,13 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
                       ),
                       minimumSize: const Size(300, 50),
                     ),
-                    onPressed: erollmentCourse,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/erollmentCourse',
+                          arguments: {
+                            "id": widget.id,
+                            "title": trailDetail!.title,
+                          });
+                    },
                     child: const Text("공개하기",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600)),

@@ -213,7 +213,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
                 '/createTitle',
                 arguments: _pathOverlays
                     .map((pathOverlay) => {
-                          'latitude': pathOverlay.coords[0].latitude,
+                          'latiditude': pathOverlay.coords[0].latitude,
                           'longitude': pathOverlay.coords[0].longitude,
                         })
                     .toList(),

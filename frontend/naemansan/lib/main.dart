@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_talk.dart';
 import 'package:naemansan/providers/location.dart';
 import 'package:naemansan/screens/Home/select_tag_screen.dart';
+import 'package:naemansan/screens/create_erollment_course_screen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:naemansan/screens/map/create_title_map.dart';
 import 'package:naemansan/screens/screen_index.dart';
@@ -109,6 +110,10 @@ class _AppState extends State<App> {
               '/login': (context) => const LoginScreen(),
               "/createTitle": (context) => const CreateTitleScreen(),
               "/mytab": (context) => const IndexScreen(index: 2),
+              "/erollmentCourse": (
+                context,
+              ) =>
+                  const CreateErollmentCourseScreen(),
               "/tagSelect": (context, {arguments}) => const SelectTagScreen(
                     isEdit: false,
                   ),
