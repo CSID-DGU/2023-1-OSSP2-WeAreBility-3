@@ -5,6 +5,9 @@ import 'package:naemansan/services/mypage_api_service.dart';
 import 'package:naemansan/profile_tabs/profile_tab_edit.dart';
 import 'package:naemansan/tabs/tab_myrail.dart';
 import 'package:naemansan/profile_tabs/profile_tab_settings.dart';
+import 'package:naemansan/profile_tabs/profile_tab_badges.dart';
+import 'package:naemansan/profile_tabs/follower.dart';
+import 'package:naemansan/profile_tabs/following.dart';
 
 class Mypage extends StatefulWidget {
   const Mypage({Key? key}) : super(key: key);
@@ -187,7 +190,15 @@ class _MypageState extends State<Mypage> {
                                     style: TextStyle(fontSize: 16),
                                   ),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Follower(),
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       userData?['follower_cnt'].toString() ??
                                           '0',
@@ -208,7 +219,15 @@ class _MypageState extends State<Mypage> {
                                   ),
                                   const SizedBox(height: 8),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Following(),
+                                        ),
+                                      );
+                                    },
                                     child: Text(
                                       userData?['following_cnt'].toString() ??
                                           '0',
@@ -297,7 +316,8 @@ class _MypageState extends State<Mypage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const Badge(),
+                                          builder: (context) => const Badges(),
+                                          // builder: (context) => const Badge(), 라고 되어잇던데 Badge() 는 어디서 나온거지...
                                         ),
                                       );
                                     },

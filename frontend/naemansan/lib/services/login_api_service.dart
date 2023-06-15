@@ -527,7 +527,7 @@ class ApiService {
     }
   }
 
-  // 전체 산책로 수정  //!!!
+  // 전체 산책로 수정
   Future<bool> updateEnrollmentCourse(
       int id, Map<String, dynamic> updatedData) async {
     final response = await putRequest('course/enrollment/$id', updatedData);
@@ -603,6 +603,9 @@ class ApiService {
   }
 
 //--------산책로 댓글 ----------------
+
+// 작성한 댓글
+
   Future<bool> addComment(
       int courseId, Map<String, dynamic> commentData) async {
     print("add 할때 는 $commentData");
