@@ -94,7 +94,7 @@ class _FollowingState extends State<Following> {
                   } else if (snapshot.hasData && snapshot.data != null) {
                     return makeList(snapshot);
                   } else {
-                    return const Text('No data available');
+                    return const Text('팔로우가 없습니다');
                   }
                 },
               ),
