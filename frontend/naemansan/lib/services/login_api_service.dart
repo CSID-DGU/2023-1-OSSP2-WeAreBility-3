@@ -564,6 +564,13 @@ class ApiService {
     return responseBody;
   }
 
+  Future<Map<String, dynamic>> registerErollmentCourse(
+      Map<String, dynamic> courseData) async {
+    final response = await postRequest('course/enrollment', courseData);
+    final responseBody = jsonDecode(response.body);
+    return responseBody;
+  }
+
   // 개인 산책로 조회
   Future<dynamic> getIndividualCourse(int id) async {
     final response = await getRequest('course/individual/$id');

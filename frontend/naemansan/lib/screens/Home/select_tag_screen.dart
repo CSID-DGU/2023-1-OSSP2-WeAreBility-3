@@ -58,11 +58,16 @@ class _SelectTagScreenState extends State<SelectTagScreen> {
     };
     bool? success;
     // 수정 상태
+
     print("${widget.isEdit} 값은?");
-    if (widget.isEdit) {
+    var myDataTag = await apiService.getMyTag();
+
+    if (myDataTag != null && !myDataTag['data']['tags'].isEmpty) {
       success = await apiService.putMyTag(tagData);
+      print("PUTPUTPUTPUTPUTPUTPUTPUTPUT");
     } else {
       success = await apiService.postMyTag(tagData);
+      print("POSTPOSTPOSTPOSTPOSTPOST");
     }
 
     print(success);

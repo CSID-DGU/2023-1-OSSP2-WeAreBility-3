@@ -23,6 +23,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Long countByUser(User user);
 
+    Long countByUserAndStatus(User user, Boolean status);
+
     Optional<Comment> findByIdAndUserAndEnrollmentCourse(Long id, User user, EnrollmentCourse enrollmentCourse);
 
     @Query(value = "SELECT c FROM Comment c WHERE c.user = :user AND c.status = true")

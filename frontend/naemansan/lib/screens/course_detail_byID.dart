@@ -97,6 +97,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       itemCount: snapshot.data!.length,
       // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
+
         var trail = snapshot.data![index];
 
         return CommentWidget(
@@ -106,6 +107,60 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           id: trail.id,
           user_name: trail.user_name,
         ); //댓글 아이디
+
+        var trail = snapshot.data;
+
+        if (trail != null && index >= 0 && index < trail.length) {
+          return CommentWidget(content: trail[index].content);
+        } else {
+          // Handle the case when `trail` is null or `index` is invalid
+          return const SizedBox(); // or any other widget that represents an empty space
+        }
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 20),
+    );
+  }
+
+/*
+  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var commentlist = snapshot.data![index];
+
+        return CommentWidget(content: commentlist.content);
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 20),
+    );
+  }*/
+
+/*
+  ListView makeList(AsyncSnapshot<List<CommentModel>?> snapshot) {
+    final commentList = snapshot.data;
+
+    if (commentList == null || commentList.isEmpty) {
+      return ListView(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        children: const [
+          Center(
+            child: Text('작성된 댓글이 없습니다'),
+          ),
+        ],
+      );
+    }
+    return ListView.separated(
+      scrollDirection: Axis.vertical,
+      itemCount: commentList.length,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        var comment = commentList[index];
+
+        return CommentWidget(content: comment.content);
+
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -223,6 +278,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -257,8 +313,13 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   ],
                 ),
               ),
-
-              DetailMap(locations: trailDetail!.locations),
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  DetailMap(locations: trailDetail!.locations),
+                ],
+              ),
 
               const SizedBox(height: 16),
 

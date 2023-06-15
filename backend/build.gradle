@@ -16,6 +16,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -32,6 +33,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation 'javax.xml.bind:jaxb-api:2.3.0'
 	implementation group: 'com.github.fernandospr', name: 'javapns-jdk16', version: '2.4.0'

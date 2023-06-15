@@ -7,7 +7,6 @@ import com.dongguk.cse.naemansan.dto.request.NotificationRequestDto;
 import com.dongguk.cse.naemansan.service.NotificationService;
 import com.dongguk.cse.naemansan.util.NotificationUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,15 @@ public class NotificationController {
 
     //안드로이드 푸시알림 테스트
     @PostMapping("/andfcm")
-    public void sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) throws IOException {
-        notificationUtil.sendNotificationByToken(requestDto);
+    public void sendNotificationByToken(@RequestBody NotificationRequestDto requestDto) throws IOException {
+        notificationUtil.sendNotificationByTokenTest(requestDto.getTargetToken(), requestDto.getTitle(), requestDto.getBody());
     }
 
     //안드로이드 버전2 테스트
     @PostMapping("/andfcm2")
     public void pushMessage(@RequestBody NotificationRequestDto requestDto) throws IOException {
-        notificationUtil.sendMessageToTest(requestDto.getTargetToken(),requestDto.getTitle(),requestDto.getBody());
-/*
-        notificationService.sendMessageTo(
-                notificationRequestDto.getTargetToken(),
-                notificationRequestDto.getTitle(),
-                notificationRequestDto.getContent());
-*/
+        System.out.println(requestDto.getTargetToken() + " / " + requestDto.getTitle() + " / " + requestDto.getBody());
+        notificationUtil.sendMessageToTest(requestDto.getTargetToken(), requestDto.getTitle(), requestDto.getBody());
 //notificationRequestDto 수정
         //notificationService.createNotification(Long.valueOf(authentication.getName()),notificationRequestDto);
         //return ResponseEntity.ok().build();
@@ -46,7 +40,7 @@ public class NotificationController {
     //ios 푸시알림 테스트
     @PostMapping("/api/iosfcm")
     public void pushIosMessage(@RequestBody String token) throws Exception {
-        //notificationUtil.sendApnFcmtoken(token);
+        notificationUtil.sendApnFcmtokenTest(token);
     }
 
     //Notification Read

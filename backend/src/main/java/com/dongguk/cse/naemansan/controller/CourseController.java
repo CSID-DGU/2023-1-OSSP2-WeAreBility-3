@@ -1,5 +1,7 @@
 package com.dongguk.cse.naemansan.controller;
 
+import com.dongguk.cse.naemansan.domain.CourseTag;
+import com.dongguk.cse.naemansan.domain.type.CourseTagType;
 import com.dongguk.cse.naemansan.dto.request.IndividualCourseRequestDto;
 import com.dongguk.cse.naemansan.dto.response.*;
 import com.dongguk.cse.naemansan.dto.request.EnrollmentCourseRequestDto;
@@ -145,5 +147,10 @@ public class CourseController {
     @DeleteMapping("/{courseId}/like")
     public ResponseDto<Map<String, Object>> dislikeCourse(Authentication authentication, @PathVariable Long courseId) {
         return new ResponseDto<Map<String, Object>>(courseService.dislikeCourse(Long.valueOf(authentication.getName()), courseId));
+    }
+
+    @GetMapping("/tags")
+    public ResponseDto<?> getTagList() {
+        return new ResponseDto<List<CourseTagType>>(courseService.getTagList());
     }
 }

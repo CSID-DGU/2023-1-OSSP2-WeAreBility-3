@@ -3,7 +3,7 @@ class OtherUserModel {
   final String name;
   final String imagePath;
   final String? introduction;
-  final bool isPremium;
+  final bool? isPremium;
   final int likeCnt;
   final int cmtCnt;
   final int badgeCnt;
@@ -14,7 +14,7 @@ class OtherUserModel {
     required this.name,
     required this.imagePath,
     this.introduction,
-    required this.isPremium,
+    this.isPremium,
     required this.likeCnt,
     required this.cmtCnt,
     required this.badgeCnt,

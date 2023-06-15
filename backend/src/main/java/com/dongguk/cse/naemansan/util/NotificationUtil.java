@@ -26,10 +26,9 @@ import org.json.JSONException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 @Slf4j
@@ -53,7 +52,7 @@ public class NotificationUtil {
                 System.out.println(payload.toString());
                 Object obj = user.getDeviceToken();
                 ClassPathResource resource = new ClassPathResource("SpringPushNotification.p12");
-                //List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Users\\woobi\\Documents\\WeAreBility\\2023-1-OSSP2-WeAreBility-3\\backend\\src\\Certificates.p12", "naemansan@", false, obj);
+                //List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\Users\woobi\Documents\WeAreBility\2023-1-OSSP2-WeAreBility-3\backend\src\main\resources\\Certificates.p12", "naemansan@", false, obj);
                 List<PushedNotification> NOTIFICATIONS = Push.payload(payload, resource.getPath(), "naemansan@", false, obj);
                 for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
                     if (NOTIFICATION.isSuccessful()) {
@@ -79,6 +78,45 @@ public class NotificationUtil {
         } else {
             log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
         }
+    }
+
+    //ios 테스트
+    public void sendApnFcmtokenTest(String token) throws Exception {
+
+        try {
+            PushNotificationPayload payload = PushNotificationPayload.complex();
+            payload.addAlert("title");
+            payload.getPayload().put("message", "body");
+            payload.addBadge(1);
+            payload.addSound("default");
+            payload.addCustomDictionary("id", "1");
+            System.out.println(payload.toString());
+            Object obj = token;
+            ClassPathResource resource = new ClassPathResource("SpringPushNotification.p12");
+            List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Users\\woobi\\Documents\\WeAreBility\\2023-1-OSSP2-WeAreBility-3\\backend\\src\\main\\resources\\Certificates.p12", "naemansan@", false, obj);
+            //List<PushedNotification> NOTIFICATIONS = Push.payload(payload, resource.getPath(), "naemansan@", false, obj);
+            for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
+                if (NOTIFICATION.isSuccessful()) {
+                    log.info("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());
+                } else {
+                    //부적절한 토큰 DB에서 삭제하기
+                    Exception THEPROBLEM = NOTIFICATION.getException();
+                    THEPROBLEM.printStackTrace();
+                    ResponsePacket THEERRORRESPONSE = NOTIFICATION.getResponse();
+                    if (THEERRORRESPONSE != null) {
+                        log.info(THEERRORRESPONSE.getMessage());
+                    }
+                }
+            }
+        } catch (KeystoreException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (CommunicationException e) {
+            e.printStackTrace();
+        }
+       // log.info("알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId());
+
     }
 
     //안드로이드 푸시알림
@@ -108,6 +146,29 @@ public class NotificationUtil {
         }
     }
 
+    //아드로이드 테스트
+    public void sendNotificationByTokenTest(String token, String title, String body) {
+
+
+            com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification.builder()
+                    .setTitle(title)
+                    .setBody(body)
+                    .build();
+
+            Message message = Message.builder()
+                    .setToken(token)
+                    .setNotification(notification)
+                    .build();
+
+            try {
+                firebaseMessaging.send(message);
+                log.info("알림을 성공적으로 전송했습니다.");
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+                log.info("알림 보내기를 실패하였습니다");
+            }
+    }
+
     //안드로이드 푸시알림 버전2
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/wearebility-303e9/messages:send";
     private final ObjectMapper objectMapper;
@@ -130,24 +191,31 @@ public class NotificationUtil {
             log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
         }
     }
-
-    public void sendMessageToTest(String token, String title, String body) throws IOException {
-            String message = makeMessage(token, title, body);
-            OkHttpClient client = new OkHttpClient();
-            RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-            Request request = new Request.Builder()
-                    .url(API_URL)
-                    .post(requestBody)
-                    .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
-                    .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
-                    .build();
-            Response response = client.newCall(request).execute();
-            log.info(response.body().string());
+    //안드로이드 버전2 테스트
+    public ResponseEntity sendMessageToTest(String token, String title, String body) throws IOException {
+        System.out.println("시작");
+        String message = makeMessage(token, title, body);
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+        Request request = new Request.Builder()
+                .url(API_URL)
+                .post(requestBody)
+                .addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+                .build();
+        System.out.println("1");
+        Response response = client.newCall(request).execute();
+        System.out.println("2");
+        System.out.println(response.body().string());
+        System.out.println("3");
+        //log.info(response.body().string());
+        System.out.println("끝");
+        return ResponseEntity.ok().build();
     }
 
     private String makeMessage(String targetToken, String title, String body) throws
             JsonParseException, JsonProcessingException {
-
+        System.out.println("send시작");
         MessageDto messageDto = MessageDto.builder()
                 .message(MessageDto.Message.builder()
                         .token(targetToken)
@@ -157,10 +225,12 @@ public class NotificationUtil {
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
+        System.out.println("send끝");
         return objectMapper.writeValueAsString(messageDto);
     }
 
     private String getAccessToken() throws IOException {
+        System.out.println("token시작");
         String firebaseConfigPath = "firebase/firebase_service_key.json";
 
         GoogleCredentials googleCredentials = GoogleCredentials
@@ -168,6 +238,7 @@ public class NotificationUtil {
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
+        System.out.println("token끝");
         return googleCredentials.getAccessToken().getTokenValue();
     }
 }

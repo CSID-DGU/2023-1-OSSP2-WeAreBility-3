@@ -177,7 +177,6 @@ public class CourseService {
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags());
-
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
                 .user_id(enrollmentCourse.getUser().getId())
@@ -193,12 +192,12 @@ public class CourseService {
                 .is_like(courseUtil.existLike(user, enrollmentCourse)).build();
     }
 
-    public EnrollmentCourseDetailDto updateEnrollmentCourse(Long userId, Long courseId, EnrollmentCourseRequestDto enrollmentCourseRequestDto) {
+    public EnrollmentCourseDetailDto updateEnrollmentCourse(Long userId, Long courseId, EnrollmentCourseRequestDto requestDto) {
         // User, Course 존재유무, Course Title 중복유무 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         EnrollmentCourse enrollmentCourse = enrollmentCourseRepository.findByIdAndStatus(courseId, true)
                 .orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_ENROLLMENT_COURSE));
-        enrollmentCourseRepository.findByIdNotAndTitleAndStatus(courseId, enrollmentCourseRequestDto.getTitle(), true)
+        enrollmentCourseRepository.findByIdNotAndTitleAndStatus(courseId, requestDto.getTitle(), true)
                 .ifPresent(c -> { throw new RestApiException(ErrorCode.DUPLICATION_TITLE);});
 
         // Course User 와 Request User 동등유무 확인
@@ -207,28 +206,31 @@ public class CourseService {
         }
 
         // Comment 수정
-        if ((enrollmentCourseRequestDto.getTitle() == null) || (enrollmentCourseRequestDto.getTitle().length() == 0)) {
+        if ((requestDto.getTitle() == null) || (requestDto.getTitle().length() == 0)) {
             throw new RestApiException(ErrorCode.NOT_EXIST_PARAMETER);
         }
 
         // Course Data Update
-        enrollmentCourse.updateCourse(enrollmentCourseRequestDto.getTitle(), enrollmentCourseRequestDto.getIntroduction());
+        enrollmentCourse.updateCourse(requestDto.getTitle(), requestDto.getIntroduction());
 
         // Course Tag Data Update, 최적화 필요
-        List<CourseTag> courseTagList = new ArrayList<>();
-        for (CourseTagDto courseTagDto : enrollmentCourseRequestDto.getTags()) {
-            switch (courseTagDto.getStatus()) {
-                case NEW -> {
-                    courseTagList.add(courseTagRepository.save(CourseTag.builder()
-                            .enrollmentCourse(enrollmentCourse)
-                            .courseTagType(courseTagDto.getName()).build()));
-                }
-                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, courseTagDto.getName()); }
-                case DEFAULT -> { courseTagList.add(CourseTag.builder()
-                        .enrollmentCourse(enrollmentCourse)
-                        .courseTagType(courseTagDto.getName()).build()); }
-            }
-        }
+        courseTagRepository.deleteAll(enrollmentCourse.getCourseTags());
+
+        List<CourseTag> courseTags = courseTagRepository.saveAll(courseUtil.getTagDto2TagForEnrollmentCourse(enrollmentCourse, requestDto.getTags()));
+//        List<CourseTag> courseTagList = new ArrayList<>();
+//        for (CourseTagDto courseTagDto : enrollmentCourseRequestDto.getTags()) {
+//            switch (courseTagDto.getStatus()) {
+//                case NEW -> {
+//                    courseTagList.add(courseTagRepository.save(CourseTag.builder()
+//                            .enrollmentCourse(enrollmentCourse)
+//                            .courseTagType(courseTagDto.getName()).build()));
+//                }
+//                case DELETE -> { courseTagRepository.deleteByEnrollmentCourseAndCourseTagType(enrollmentCourse, courseTagDto.getName()); }
+//                case DEFAULT -> { courseTagList.add(CourseTag.builder()
+//                        .enrollmentCourse(enrollmentCourse)
+//                        .courseTagType(courseTagDto.getName()).build()); }
+//            }
+//        }
 
         // ResponseDto 를 위한 PointDto 생성
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
@@ -240,7 +242,7 @@ public class CourseService {
                 .title(enrollmentCourse.getTitle())
                 .created_date(enrollmentCourse.getCreatedDate())
                 .introduction(enrollmentCourse.getIntroduction())
-                .tags(courseUtil.getTag2TagDtoForCourse(courseTagList))
+                .tags(courseUtil.getTag2TagDtoForCourse(courseTags))
                 .start_location_name(enrollmentCourse.getStartLocationName())
                 .locations(locations)
                 .distance(enrollmentCourse.getDistance())
@@ -477,5 +479,9 @@ public class CourseService {
         map.put("is_like", Boolean.FALSE);
 
         return map;
+    }
+
+    public List<CourseTagType> getTagList() {
+        return List.of(CourseTagType.values());
     }
 }
