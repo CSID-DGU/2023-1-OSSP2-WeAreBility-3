@@ -116,23 +116,26 @@ public class UserService {
 
     public List<CourseTagDto> updateTagByUserChoice(Long userId, UserTagRequestDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        userTagRepository.deleteAll(user.getUserTags());
 
-        List<UserTag> userTags = new ArrayList<>();
-        for (CourseTagDto tagDto : requestDto.getTags()) {
-            switch (tagDto.getStatus()) {
-                case NEW -> {
-                    userTags.add(userTagRepository.save(UserTag.builder()
-                            .user(user)
-                            .tag(tagDto.getName()).build()));
-                }
-                case DELETE -> {
-                    userTagRepository.deleteByUserAndTag(user, tagDto.getName()); }
-                case DEFAULT -> {
-                    userTags.add(UserTag.builder()
-                            .user(user)
-                            .tag(tagDto.getName()).build()); }
-            }
-        }
+        List<UserTag> userTags = userTagRepository.saveAll(courseUtil.getTagDto2TagForUser(user, requestDto.getTags()));
+
+//        List<UserTag> userTags = new ArrayList<>();
+//        for (CourseTagDto tagDto : requestDto.getTags()) {
+//            switch (tagDto.getStatus()) {
+//                case NEW -> {
+//                    userTags.add(userTagRepository.save(UserTag.builder()
+//                            .user(user)
+//                            .tag(tagDto.getName()).build()));
+//                }
+//                case DELETE -> {
+//                    userTagRepository.deleteByUserAndTag(user, tagDto.getName()); }
+//                case DEFAULT -> {
+//                    userTags.add(UserTag.builder()
+//                            .user(user)
+//                            .tag(tagDto.getName()).build()); }
+//            }
+//        }
 
         return courseUtil.getTag2TagDtoForUser(userTags);
     }
