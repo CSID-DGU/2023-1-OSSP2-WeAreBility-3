@@ -30,8 +30,9 @@ class _CreateErollmentCourseScreenState
     });
   }
 
-  void submitEnrollmentCourse() {
+  void submitEnrollmentCourse() async {
     final String introduction = introductionController.text;
+    ApiService apiService = ApiService();
 
     if (introduction.isEmpty) {
       print("내용을 입력해주세요");
@@ -42,25 +43,27 @@ class _CreateErollmentCourseScreenState
     final id = arguments['id'];
     final title = arguments['title'];
 
-    final Map<String, dynamic> data = {
+    final Map<String, dynamic> courseData = {
       'individual_id': id, // Replace with the actual individual ID
       'title': title,
       'introduction': introduction,
       'tags':
           selectedTags.map((tag) => {'name': tag, 'status': 'NEW'}).toList(),
     };
+    final response = await apiService.registerErollmentCourse(courseData);
+    if (response['success'] == true) {
+      goAllCourse();
+    }
+  }
 
-    print(data);
-
-    // Perform the submission
-    // ...
+  goAllCourse() {
+    Navigator.pushReplacementNamed(context, '/allCourse');
   }
 
   @override
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, Object>;
-    final id = arguments['id'];
     final title = arguments['title'];
 
     return Scaffold(
