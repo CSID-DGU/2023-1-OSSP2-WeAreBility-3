@@ -97,7 +97,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
       itemCount: snapshot.data!.length,
       // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
-
         var trail = snapshot.data![index];
 
         return CommentWidget(
@@ -107,15 +106,6 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           id: trail.id,
           user_name: trail.user_name,
         ); //댓글 아이디
-
-        var trail = snapshot.data;
-
-        if (trail != null && index >= 0 && index < trail.length) {
-          return CommentWidget(content: trail[index].content);
-        } else {
-          // Handle the case when `trail` is null or `index` is invalid
-          return const SizedBox(); // or any other widget that represents an empty space
-        }
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -166,7 +156,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           const SizedBox(height: 20),
     );
   }
-
+*/
   //댓글 관련
   //댓글 작성  comment POST보내기
   Future<void> postComment() async {
@@ -278,7 +268,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -432,8 +422,8 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.isEmpty) {
-                      return Column(
-                        children: const [
+                      return const Column(
+                        children: [
                           SizedBox(
                             height: 10,
                           ),

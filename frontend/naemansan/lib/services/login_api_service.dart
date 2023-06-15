@@ -624,6 +624,15 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+// 팔로워 리스트 가져오기
+  Future<Map<String, dynamic>> getFollwer() async {
+    final response = await getRequest('user/following?page=0&num=10');
+
+    // if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+    // } else {
+    // return null;
+  }
 /* -------- 팔로우 취소 -------- */
 
 // 팔로우 취소
