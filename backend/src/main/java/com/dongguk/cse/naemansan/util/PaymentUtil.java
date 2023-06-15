@@ -30,7 +30,7 @@ public class PaymentUtil {
 
     public Boolean verifyIamport(IamportResponse<Payment> irsp, Long amount) {
         if (irsp.getResponse().getAmount().intValue() != amount) {
-
+            return Boolean.FALSE;
         }
 
         return Boolean.TRUE;

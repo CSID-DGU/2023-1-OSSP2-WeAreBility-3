@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<UserLoginForm> findByIdAndRefreshToken(@Param("userId") Long userId, @Param("refreshToken") String refreshToken);
 
     Optional<User> findByIdAndIsLoginAndRefreshTokenIsNotNull(Long userId, Boolean isLogin);
+
+//    List<User> findBy
 
 
     public interface UserLoginForm {

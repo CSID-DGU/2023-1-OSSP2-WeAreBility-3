@@ -137,7 +137,12 @@ public class User {
     }
 
     public void updatePremium(Long monthCnt) {
-        setIsPremium(true);
-        setExpirationDate(Timestamp.valueOf(LocalDateTime.now().plusMonths(monthCnt)));
+        if (monthCnt == 0) {
+            setIsPremium(null);
+            setExpirationDate(null);
+        } else {
+            setIsPremium(true);
+            setExpirationDate(Timestamp.valueOf(LocalDateTime.now().plusMonths(monthCnt)));
+        }
     }
 }
