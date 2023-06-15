@@ -176,10 +176,8 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
       _startTime = DateTime.now();
     });
 
-    _timer2 = Timer.periodic(const Duration(seconds: 10), (_) {
-      if (mounted) {
-        _getCurrentLocation();
-      }
+    _timer2 = Timer.periodic(const Duration(seconds: 5), (_) {
+      _getCurrentLocation();
     });
   }
 
@@ -215,7 +213,7 @@ class _NaverMapScreenState extends State<NaverMapScreen> {
                 '/createTitle',
                 arguments: _pathOverlays
                     .map((pathOverlay) => {
-                          'latitude': pathOverlay.coords[0].latitude,
+                          'latiditude': pathOverlay.coords[0].latitude,
                           'longitude': pathOverlay.coords[0].longitude,
                         })
                     .toList(),

@@ -232,8 +232,8 @@ class TrailApiService {
   // 나만의 Tap 등록한 공개 산책로 조회
   Future<List<TrailModel>?> getEnrolledCourses(int page, int num) async {
     try {
-      final response =
-          await getRequest('course/list/individual/basic?page=$page&num=$num');
+      final response = await getRequest(
+          'course/list/individual/enrollment?page=$page&num=$num');
 
       if (response.statusCode == 200) {
         final parsedResponse =
