@@ -177,7 +177,6 @@ public class CourseService {
         // Point to PointDto, Tag to TagDto 변환
         List<PointDto> locations = courseUtil.getPoint2PointDto(enrollmentCourse.getLocations());
         List<CourseTagDto> courseTagDtoList = courseUtil.getTag2TagDtoForCourse(enrollmentCourse.getCourseTags());
-
         return EnrollmentCourseDetailDto.builder()
                 .id(enrollmentCourse.getId())
                 .user_id(enrollmentCourse.getUser().getId())

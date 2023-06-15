@@ -119,7 +119,6 @@ public class UserService {
         userTagRepository.deleteAll(user.getUserTags());
 
         List<UserTag> userTags = userTagRepository.saveAll(courseUtil.getTagDto2TagForUser(user, requestDto.getTags()));
-
 //        List<UserTag> userTags = new ArrayList<>();
 //        for (CourseTagDto tagDto : requestDto.getTags()) {
 //            switch (tagDto.getStatus()) {
