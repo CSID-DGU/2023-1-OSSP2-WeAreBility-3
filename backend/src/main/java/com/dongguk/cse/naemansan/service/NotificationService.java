@@ -38,7 +38,6 @@ public class NotificationService {
     private final EnrollmentCourseRepository courseRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationUtil notificationUtil;
-    ApplicationEventPublisher publisher;
 
     public List<NotificationDto> readNotification(Long userId, Long pageNum, Long num) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));

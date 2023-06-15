@@ -19,7 +19,6 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
     private final NotificationUtil notificationUtil;
-    //private final FCMNotificationService fcmNotificationService;
 
     //안드로이드 푸시알림 테스트
     @PostMapping("/andfcm")
@@ -32,9 +31,6 @@ public class NotificationController {
     public void pushMessage(@RequestBody NotificationRequestDto requestDto) throws IOException {
         System.out.println(requestDto.getTargetToken() + " / " + requestDto.getTitle() + " / " + requestDto.getBody());
         notificationUtil.sendMessageToTest(requestDto.getTargetToken(), requestDto.getTitle(), requestDto.getBody());
-//notificationRequestDto 수정
-        //notificationService.createNotification(Long.valueOf(authentication.getName()),notificationRequestDto);
-        //return ResponseEntity.ok().build();
     }
 
     //ios 푸시알림 테스트
