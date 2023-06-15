@@ -11,6 +11,7 @@ import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.PointDto;
 import com.dongguk.cse.naemansan.event.EnrollmentCourseBadgeEvent;
 import com.dongguk.cse.naemansan.event.IndividualCourseBadgeEvent;
+import com.dongguk.cse.naemansan.event.LikeNotificationEvent;
 import com.dongguk.cse.naemansan.event.UsingCourseBadgeEvent;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
@@ -456,7 +457,7 @@ public class CourseService {
         likeRepository.save(Like.builder()
                 .user(user)
                 .enrollmentCourse(enrollmentCourse).build());
-
+        publisher.publishEvent(new LikeNotificationEvent(userId,enrollmentCourse.getUser().getId(),courseId));
         Map<String, Object> map = new HashMap<>();
         map.put("like_cnt", enrollmentCourse.getLikes().size());
         map.put("is_like", Boolean.TRUE);

@@ -7,6 +7,7 @@ import 'package:naemansan/screens/Home/select_tag_screen.dart';
 import 'package:naemansan/screens/create_erollment_course_screen.dart';
 import 'package:naemansan/screens/login_screen.dart';
 import 'package:naemansan/screens/map/create_title_map.dart';
+import 'package:naemansan/screens/premium_screen.dart';
 import 'package:naemansan/screens/screen_index.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -118,6 +119,7 @@ class _AppState extends State<App> {
               "/tagSelect": (context, {arguments}) => const SelectTagScreen(
                     isEdit: false,
                   ),
+              "/premium": (context) => const PremiumScreen(),
             },
           );
         }

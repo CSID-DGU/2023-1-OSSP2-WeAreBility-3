@@ -131,15 +131,7 @@ class _TrailState extends State<Trail> with SingleTickerProviderStateMixin {
             fontWeight: FontWeight.w600,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.add_box_outlined, //산책로 추가 시 버튼으로 사용
-              color: Colors.black,
-            ),
-            onPressed: () {},
-          ),
-        ],
+
         //오른쪽 여백 넣기
         bottom: TabBar(
           controller: _tabController,

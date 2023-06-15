@@ -94,18 +94,18 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
     return ListView.separated(
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      //itemCount: snapshot.data!.length,
-      itemCount: 3, // !! 댓글 개수 넣어야됨
+      itemCount: snapshot.data!.length,
       // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
-        var trail = snapshot.data;
+        var trail = snapshot.data![index];
 
-        if (trail != null && index >= 0 && index < trail.length) {
-          return CommentWidget(content: trail[index].content);
-        } else {
-          // Handle the case when `trail` is null or `index` is invalid
-          return const SizedBox(); // or any other widget that represents an empty space
-        }
+        return CommentWidget(
+          content: trail.content,
+          user_id: trail.user_id, //댓글 작성자의 user id
+          course_id: trail.course_id,
+          id: trail.id,
+          user_name: trail.user_name,
+        ); //댓글 아이디
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
@@ -150,13 +150,13 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         var comment = commentList[index];
 
         return CommentWidget(content: comment.content);
+
       },
       separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 20),
     );
   }
 */
-
   //댓글 관련
   //댓글 작성  comment POST보내기
   Future<void> postComment() async {
@@ -253,7 +253,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
           },
         ),
         title: Text(trailDetail!.title),
-        actions: isWriter
+        actions: isWriter // !! 버튼 부분
             ? [
                 IconButton(
                   icon: const Icon(Icons.more_vert),
@@ -268,7 +268,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -416,23 +416,40 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Padding(
-                // 댓글 가져오기
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                child: FutureBuilder(
-                  future: commentlist,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Row(
-                        children: [Expanded(child: makeList(snapshot))],
+              FutureBuilder(
+                //!! 스크롤 문제
+                future: commentlist,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.isEmpty) {
+                      return const Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text('작성된 댓글이 없습니다') //이용한 - 한강한바퀴
+                        ],
                       );
                     }
-                    return const Center(
-                      child: Text('작성된 댓글이 없습니다'),
+                    return Row(
+                      children: [Expanded(child: makeList(snapshot))],
                     );
-                  },
-                ),
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('댓글을 불러오는 중 오류가 발생했습니다'),
+                    );
+                  }
+                  return const Center(
+                    child: Text(
+                      '작성된 댓글이 없습니다',
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  );
+                },
               ),
+
               const SizedBox(height: 24),
               // Add your content here
               TextField(
@@ -443,6 +460,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                     icon: const Icon(Icons.send),
                     onPressed: () {
                       postComment();
+                      _commentController.clear();
                       // addComment('New comment');
                     },
                   ),

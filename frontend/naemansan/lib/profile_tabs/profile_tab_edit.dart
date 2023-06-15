@@ -64,6 +64,7 @@ class _EditpageState extends State<Editpage> {
           ),
           onPressed: () {
             Navigator.of(context).pop();
+            //Navigator.pop(context);
           },
         ),
         title: Row(
@@ -82,12 +83,20 @@ class _EditpageState extends State<Editpage> {
             TextButton(
               onPressed: () {
                 saveChanges();
+                Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const IndexScreen(index: 3)),
+                );
 
+/*
                 Navigator.of(context).pushAndRemoveUntil(
+                  //----------------------------완료----------------------
                   MaterialPageRoute(
                       builder: (context) => const IndexScreen(index: 3)),
                   (route) => false,
-                );
+                );*/
               },
               child: const Text(
                 '완료',
@@ -149,7 +158,7 @@ class _EditpageState extends State<Editpage> {
                           ),
                         ),
                       ],
-                    ),
+                    ), //-------------------------ㅇㄹ ㅅㅈ
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),

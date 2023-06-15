@@ -6,11 +6,13 @@ import com.dongguk.cse.naemansan.domain.Comment;
 import com.dongguk.cse.naemansan.domain.Follow;
 import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.response.FollowDto;
+import com.dongguk.cse.naemansan.event.FollowNotificationEvent;
 import com.dongguk.cse.naemansan.repository.FollowRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,16 +30,20 @@ import java.util.Optional;
 public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher publisher;
+
     public Boolean createFollow(Long followingId, Long followerId) {
         // 유저 존재, 이미 팔로잉 되어있는지 유무 확인
         User followingUser = userRepository.findById(followingId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
         User followerUser = userRepository.findById(followerId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        followRepository.findByFollowingUserAndFollowerUser(followingUser, followerUser).ifPresent(follow -> { throw new RestApiException(ErrorCode.EXIST_ENTITY_REQUEST); });
+        followRepository.findByFollowingUserAndFollowerUser(followingUser, followerUser).ifPresent(follow -> {
+            throw new RestApiException(ErrorCode.EXIST_ENTITY_REQUEST);
+        });
 
         followRepository.save(Follow.builder()
                 .followingUser(followingUser)
                 .followerUser(followerUser).build());
-
+        publisher.publishEvent(new FollowNotificationEvent(followingId, followerId));
         return Boolean.TRUE;
     }
 
@@ -47,7 +53,7 @@ public class FollowService {
 
         Pageable paging = PageRequest.of(pageNum.intValue(), num.intValue(), Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Follow> follows = followRepository.findByFollowingUser(followingUser, paging);
-        
+
         // Dto 변환
         List<FollowDto> followDtoList = new ArrayList<>();
         for (Follow follow : follows) {

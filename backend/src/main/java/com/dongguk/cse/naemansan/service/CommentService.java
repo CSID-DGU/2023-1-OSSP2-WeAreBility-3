@@ -8,6 +8,7 @@ import com.dongguk.cse.naemansan.domain.User;
 import com.dongguk.cse.naemansan.dto.response.CommentDto;
 import com.dongguk.cse.naemansan.dto.request.CommentRequestDto;
 import com.dongguk.cse.naemansan.event.CommentBadgeEvent;
+import com.dongguk.cse.naemansan.event.CommentNotificationEvent;
 import com.dongguk.cse.naemansan.repository.CommentRepository;
 import com.dongguk.cse.naemansan.repository.EnrollmentCourseRepository;
 import com.dongguk.cse.naemansan.repository.UserRepository;
@@ -48,7 +49,7 @@ public class CommentService {
                 .content(commentRequestDto.getContent()).build());
 
         publisher.publishEvent(new CommentBadgeEvent(userId));
-
+        publisher.publishEvent(new CommentNotificationEvent(userId, enrollmentCourse.getUser().getId(), courseId));
         return Boolean.TRUE;
     }
 
@@ -62,7 +63,7 @@ public class CommentService {
 
         // Dto 변환
         List<CommentDto> commentDtoList = new ArrayList<>();
-        for (Comment comment: comments.getContent()) {
+        for (Comment comment : comments.getContent()) {
             commentDtoList.add(CommentDto.builder()
                     .id(comment.getId())
                     .user_id(comment.getUser().getId())

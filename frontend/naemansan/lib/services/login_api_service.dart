@@ -624,6 +624,15 @@ class ApiService {
     return response.statusCode == 200;
   }
 
+// 팔로워 리스트 가져오기
+  Future<Map<String, dynamic>> getFollwer() async {
+    final response = await getRequest('user/following?page=0&num=10');
+
+    // if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+    // } else {
+    // return null;
+  }
 /* -------- 팔로우 취소 -------- */
 
 // 팔로우 취소
@@ -662,18 +671,14 @@ class ApiService {
     return response.statusCode == 200;
   }
 
-  Future<bool> changeComment(
-      int courseId, int commentId, Map<String, dynamic> commentData) async {
+  Future<void> changeComment(
+      int courseId, int commentId, String commentData) async {
     print("수정 할때 는 $commentData");
     final response =
         await putRequest('course/$courseId/comment/$commentId', commentData);
-    return response.statusCode == 200;
   }
 
-  Future<bool> deleteComment(
-      int courseId, int commentId, Map<String, dynamic> commentData) async {
-    print("삭제 할때 는 $commentData");
+  Future<void> deleteComment(int courseId, int commentId) async {
     final response = await deleteRequest('course/$courseId/comment/$commentId');
-    return response.statusCode == 200;
   }
 }
