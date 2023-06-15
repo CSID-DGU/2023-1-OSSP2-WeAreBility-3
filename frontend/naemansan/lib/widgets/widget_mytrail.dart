@@ -69,9 +69,9 @@ class MyTrailWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  const Text(
-                    "startpoint",
-                    style: TextStyle(
+                  Text(
+                    created_date.substring(0, 10),
+                    style: const TextStyle(
                       fontSize: 12.0,
                     ),
                   ),

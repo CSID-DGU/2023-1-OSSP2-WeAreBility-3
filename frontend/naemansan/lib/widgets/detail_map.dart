@@ -18,6 +18,8 @@ class _DetailMapState extends State<DetailMap> {
   late double startLng;
   late double lastLat;
   late double lastLng;
+  late double cameraLat;
+  late double cameraLng;
   @override
   void initState() {
     print(widget.locations);
@@ -54,10 +56,13 @@ class _DetailMapState extends State<DetailMap> {
 
     setState(() {
       _pathOverlays.add(pathOverlay);
+      print(coordinates);
       startLat = coordinates.first.latitude;
       startLng = coordinates.first.longitude;
       lastLat = coordinates.last.latitude;
       lastLng = coordinates.last.longitude;
+      cameraLat = (startLat + lastLat) / 2;
+      cameraLng = (startLng + lastLng) / 2;
     });
   }
 
@@ -96,8 +101,8 @@ class _DetailMapState extends State<DetailMap> {
           initialCameraPosition: CameraPosition(
             // target: LatLng(widget.locations[0]['latitude'] as double,
             //     widget.locations[1]['longitude'] as double),
-            target: LatLng(startLat, startLng),
-            zoom: 14,
+            target: LatLng(cameraLat, cameraLng),
+            zoom: 13,
           ),
           locationButtonEnable: false,
           pathOverlays: _pathOverlays,
