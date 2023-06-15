@@ -36,6 +36,14 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
     fetchUserInfo();
   }
 
+// 산책로 공개하기
+  void erollmentCourse() async {
+    ApiService apiService = ApiService();
+    // 서버에 POST 요청을 보내는 로직을 추가해야 합니다.
+    // selectedTags 리스트를 서버에 전송
+    print("산책로 공개");
+  }
+
   //산책로 Delete
   Future<void> deleteTrail() async {
     print("----- 개인 산책로 삭제");
@@ -161,6 +169,27 @@ class _IndivCourseDetailbyIDState extends State<IndivCourseDetailbyID> {
                 style: const TextStyle(
                   fontSize: 18,
                 ),
+              ),
+              const SizedBox(height: 150),
+              Row(
+                children: [
+                  const SizedBox(width: 30),
+                  ElevatedButton(
+                    // button white
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: const Size(300, 50),
+                    ),
+                    onPressed: erollmentCourse,
+                    child: const Text("공개하기",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600)),
+                  ),
+                ],
               ),
             ],
           ),
