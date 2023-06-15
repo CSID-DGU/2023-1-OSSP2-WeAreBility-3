@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.util.List;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -37,55 +38,54 @@ public class NotificationUtil {
     private final UserRepository userRepository;
 
     //ios 푸시알림
-    public void/*8tring*/ sendApnFcmtoken(/*FCMNotificationRequestDto requestDto*/String token) throws Exception{
-        //User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        //if (user.getDeviceToken() != null) {
-        try {
-            PushNotificationPayload payload = PushNotificationPayload.complex();
-            payload.addAlert("푸시알림 테스트");
-            payload.addBadge(1);
-            payload.addSound("default");
-            payload.addCustomDictionary("id", "1");
-            System.out.println(payload.toString());
-            //Object obj = user.getDeviceToken();
-            Object obj = token;
-            //InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
+    public void sendApnFcmtoken(FCMNotificationRequestDto requestDto) throws Exception {
+        User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        if (user.getDeviceToken() != null) {
+            try {
+                PushNotificationPayload payload = PushNotificationPayload.complex();
+                payload.addAlert(requestDto.getBody());
+                payload.addBadge(1);
+                payload.addSound("default");
+                payload.addCustomDictionary("id", "1");
+                System.out.println(payload.toString());
+                Object obj = user.getDeviceToken();
+                //InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
 
-            List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Certificates.p12", "naemansan@", false, obj);
-            for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
-                if (NOTIFICATION.isSuccessful()) {
-                    System.out.println("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());
-                } else {
-                    //부적절한 토큰 DB에서 삭제하기
-                    Exception THEPROBLEM = NOTIFICATION.getException();
-                    THEPROBLEM.printStackTrace();
-                    ResponsePacket THEERRORRESPONSE = NOTIFICATION.getResponse();
-                    if (THEERRORRESPONSE != null) {
-                        System.out.println(THEERRORRESPONSE.getMessage());
+                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Certificates.p12", "naemansan@", false, obj);
+                for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
+                    if (NOTIFICATION.isSuccessful()) {
+                        log.info("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());
+                    } else {
+                        //부적절한 토큰 DB에서 삭제하기
+                        Exception THEPROBLEM = NOTIFICATION.getException();
+                        THEPROBLEM.printStackTrace();
+                        ResponsePacket THEERRORRESPONSE = NOTIFICATION.getResponse();
+                        if (THEERRORRESPONSE != null) {
+                            log.info(THEERRORRESPONSE.getMessage());
+                        }
                     }
                 }
+            } catch (KeystoreException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (CommunicationException e) {
+                e.printStackTrace();
             }
-        } catch (KeystoreException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (CommunicationException e) {
-            e.printStackTrace();
+            log.info("알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId());
+        } else {
+            log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId());
         }
-        //return "알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId();
-        //} else {
-        //     return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId();
     }
 
     //안드로이드 푸시알림
-    public String sendNotificationByToken(FCMNotificationRequestDto requestDto) {
-        //Optional<User> user = userRepository.findById(requestDto.getTargetUserId());
-        User user = userRepository.findById(requestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
-        //if (user.isPresent()) {
+    public void sendNotificationByToken(FCMNotificationRequestDto fcmNotificationRequestDto) {
+        User user = userRepository.findById(fcmNotificationRequestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
         if (user.getDeviceToken() != null) {
             com.google.firebase.messaging.Notification notification = com.google.firebase.messaging.Notification.builder()
-                    .setTitle(requestDto.getTitle())
-                    .setBody(requestDto.getBody())
+                    .setTitle(fcmNotificationRequestDto.getTitle())
+                    .setBody(fcmNotificationRequestDto.getBody())
                     .build();
 
             Message message = Message.builder()
@@ -95,26 +95,24 @@ public class NotificationUtil {
 
             try {
                 firebaseMessaging.send(message);
-                return "알림을 성공적으로 전송했습니다. targetUserID=" + requestDto.getTargetUserId();
+                log.info("알림을 성공적으로 전송했습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
             } catch (FirebaseMessagingException e) {
                 e.printStackTrace();
-                return "알림 보내기를 실패하였습니다. targetUserID=" + requestDto.getTargetUserId();
+                log.info("알림 보내기를 실패하였습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
             }
         } else {
-            return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + requestDto.getTargetUserId();
+            log.info("서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserID=" + fcmNotificationRequestDto.getTargetUserId());
         }
-        //}else {
-        //    return "해당 유저가 존재하지 않습니다. targetUserID="+requestDto.getTargetUserId();
-        //}
     }
 
     //안드로이드 푸시알림 버전2
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/wearebility-303e9/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        //System.out.println("sendMessageTo 시작");
-        String message = makeMessage(targetToken, title, body);
+    public void sendMessageTo(FCMNotificationRequestDto fcmNotificationRequestDto) throws IOException {
+        User user = userRepository.findById(fcmNotificationRequestDto.getTargetUserId()).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+
+        String message = makeMessage(user.getDeviceToken(), fcmNotificationRequestDto.getTitle(), fcmNotificationRequestDto.getBody());
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -130,7 +128,8 @@ public class NotificationUtil {
         System.out.println(response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
+    private String makeMessage(String targetToken, String title, String body) throws
+            JsonParseException, JsonProcessingException {
         //System.out.println("makeMessage 시작");
 
         MessageDto messageDto = MessageDto.builder()
@@ -142,10 +141,6 @@ public class NotificationUtil {
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
-
-
-        System.out.println(targetToken + " / " + title + " / " + body);
-        //System.out.println("makeMessage 끝");
         return objectMapper.writeValueAsString(messageDto);
     }
 

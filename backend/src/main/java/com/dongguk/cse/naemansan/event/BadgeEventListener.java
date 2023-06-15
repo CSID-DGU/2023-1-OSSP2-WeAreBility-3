@@ -15,25 +15,25 @@ public class BadgeEventListener {
 
     @Async
     @EventListener
-    public void sendPushForIndividualBadge(IndividualCourseEvent event) throws InterruptedException {
+    public void sendPushForIndividualBadge(IndividualCourseBadgeEvent event) throws InterruptedException {
         badgeService.createIndividualBadge(event.getUserId());
     }
 
     @Async
     @EventListener
-    public void sendPushForEnrollmentBadge(EnrollmentCourseEvent event) throws InterruptedException {
+    public void sendPushForEnrollmentBadge(EnrollmentCourseBadgeEvent event) throws InterruptedException {
         badgeService.createEnrollmentBadge(event.getUserId());
     }
 
     @Async
     @EventListener
-    public void sendPushForUsingBadge(UsingCourseEvent event) throws InterruptedException {
+    public void sendPushForUsingBadge(UsingCourseBadgeEvent event) throws InterruptedException {
         badgeService.createUsingBadge(event.getUserId());
     }
 
     @Async
     @EventListener
-    public void sendPushForCommentBadge(CommentEvent event) throws InterruptedException {
+    public void sendPushForCommentBadge(CommentBadgeEvent event) throws InterruptedException {
         badgeService.createCommentBadge(event.getUserId());
     }
 }

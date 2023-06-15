@@ -24,8 +24,8 @@ public class NotificationController {
     
     //안드로이드 푸시알림 테스트
     @PostMapping("/andfcm")
-    public String sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) {
-        return notificationUtil.sendNotificationByToken(requestDto);
+    public void sendNotificationByToken(@RequestBody FCMNotificationRequestDto requestDto) {
+        notificationUtil.sendNotificationByToken(requestDto);
     }
     //안드로이드 버전2 테스트
     @PostMapping("/andfcm2")
@@ -45,7 +45,7 @@ public class NotificationController {
     //ios 푸시알림 테스트
     @PostMapping("/api/iosfcm")
     public void pushIosMessage(@RequestBody String token) throws Exception{
-        notificationUtil.sendApnFcmtoken(token);
+        //notificationUtil.sendApnFcmtoken(token);
     }
     
     //Notification Read
