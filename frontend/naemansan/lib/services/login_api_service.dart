@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:naemansan/models/FollowModel.dart';
 
 class ApiService {
   final String baseUrl = 'https://ossp.dcs-hyungjoon.com';
@@ -252,35 +253,41 @@ class ApiService {
   }
 
   // 팔로잉 목록 조회 GET 요청
-  Future<http.Response> getFollowingList(int page, int num) async {
+  Future<List<FollowModel>?> getFollowingList(int page, int num) async {
     try {
       final response = await getRequest('user/following?page=$page&num=$num');
       if (response.statusCode == 200) {
-        print('팔로잉 목록 조회 GET 요청 성공');
+        print('팔로잉 목록 조회 GET 요청 성공 ${response.body}');
+        final jsonData = jsonDecode(response.body);
+        final List<dynamic> data = jsonData['data'];
+        List<FollowModel> followingList =
+            data.map((item) => FollowModel.fromJson(item)).toList();
+        return followingList;
       } else {
-        print('팔로잉 목록 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
+        print('팔로잉 목록 조회 GET 요청 실패 - 상태 코드: ${response.statusCode} ');
       }
-      return response;
     } catch (e) {
       print('팔로잉 목록 조회 GET 요청 실패 - $e');
-      return http.Response('Error', 500);
     }
+    return null;
   }
 
-  // 팔로워 목록 조회 GET 요청
-  Future<http.Response> getFollowerList(int page, int num) async {
+  // 팔로워 목록 조회 GET 요청 // !!!
+  Future<List<FollowModel>?> getFollowerList(int page, int num) async {
     try {
       final response = await getRequest('user/follower?page=$page&num=$num');
       if (response.statusCode == 200) {
         print('팔로워 목록 조회 GET 요청 성공');
+        print({response});
       } else {
         print('팔로워 목록 조회 GET 요청 실패 - 상태 코드: ${response.statusCode}');
       }
-      return response;
+      // return response;
     } catch (e) {
       print('팔로워 목록 조회 GET 요청 실패 - $e');
-      return http.Response('Error', 500);
+      //return http.Response('Error', 500);
     }
+    return null;
   }
 
 // 본인 프로필 수정
@@ -625,7 +632,7 @@ class ApiService {
   }
 
 // 팔로워 리스트 가져오기
-  Future<Map<String, dynamic>> getFollwer() async {
+  Future<Map<String, dynamic>> getFollower() async {
     final response = await getRequest('user/following?page=0&num=10');
 
     // if (response.statusCode == 200) {

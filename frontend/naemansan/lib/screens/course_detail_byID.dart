@@ -422,7 +422,7 @@ class _CourseDetailbyIDState extends State<CourseDetailbyID> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.isEmpty) {
-                      return const Column(
+                      return Column(
                         children: [
                           SizedBox(
                             height: 10,
