@@ -478,4 +478,8 @@ public class CourseService {
 
         return map;
     }
+
+    public List<CourseTagType> getTagList() {
+        return List.of(CourseTagType.values());
+    }
 }
