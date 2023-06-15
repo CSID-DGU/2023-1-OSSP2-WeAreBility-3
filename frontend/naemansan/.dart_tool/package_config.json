@@ -434,6 +434,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "iamport_flutter",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/iamport_flutter-0.10.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
+      "name": "iamport_webview_flutter",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/iamport_webview_flutter-3.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "image",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.0.17",
       "packageUri": "lib/",
@@ -818,6 +830,24 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "uni_links",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/uni_links-0.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "uni_links_platform_interface",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/uni_links_platform_interface-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "uni_links_web",
+      "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/uni_links_web-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "universal_io",
       "rootUri": "file:///C:/Users/wjdgu/AppData/Local/Pub/Cache/hosted/pub.dev/universal_io-2.2.0",
       "packageUri": "lib/",
@@ -938,7 +968,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-15T16:46:41.423046Z",
+  "generated": "2023-06-15T16:47:53.665255Z",
   "generator": "pub",
   "generatorVersion": "2.19.6"
 }

@@ -57,6 +57,10 @@ class _SettingsState extends State<Settings> {
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
+  premium() {
+    Navigator.pushNamed(context, '/premium');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,14 +97,14 @@ class _SettingsState extends State<Settings> {
                 onTap: () {
                   // 스토어 연결
                 },
-                child: Row(
+                child: const Row(
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               '버전 정보',
                               style: TextStyle(
@@ -131,8 +135,8 @@ class _SettingsState extends State<Settings> {
                 onTap: () {
                   // 고객센터 문의하기
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 4.0),
@@ -156,8 +160,8 @@ class _SettingsState extends State<Settings> {
                 onTap: () {
                   logout();
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 4.0),
@@ -179,10 +183,35 @@ class _SettingsState extends State<Settings> {
               padding: const EdgeInsets.all(13.0),
               child: InkWell(
                 onTap: () {
+                  premium();
+                },
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4.0),
+                        child: Text(
+                          '프리미엄 업그레이드',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(13.0),
+              child: InkWell(
+                onTap: () {
                   // 내만산 탈퇴하기
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 4.0),
