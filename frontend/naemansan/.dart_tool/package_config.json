@@ -470,6 +470,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "iamport_flutter",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/iamport_flutter-0.10.9",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
+      "name": "iamport_webview_flutter",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/iamport_webview_flutter-3.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "image",
       "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/image-4.0.17",
       "packageUri": "lib/",
@@ -884,6 +896,24 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "uni_links",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/uni_links-0.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "uni_links_platform_interface",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/uni_links_platform_interface-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "uni_links_web",
+      "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/uni_links_web-0.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "universal_io",
       "rootUri": "file:///Users/seochan/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
       "packageUri": "lib/",
@@ -1004,7 +1034,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2023-06-15T15:05:00.909822Z",
+  "generated": "2023-06-15T16:26:12.858172Z",
   "generator": "pub",
   "generatorVersion": "3.0.2"
 }
