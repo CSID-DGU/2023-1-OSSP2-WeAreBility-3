@@ -43,7 +43,8 @@ public class NotificationUtil {
         if (user.getDeviceToken() != null) {
             try {
                 PushNotificationPayload payload = PushNotificationPayload.complex();
-                payload.addAlert(requestDto.getBody());
+                payload.addAlert(requestDto.getTitle());
+                payload.getPayload().put("message", requestDto.getBody());
                 payload.addBadge(1);
                 payload.addSound("default");
                 payload.addCustomDictionary("id", "1");
@@ -51,7 +52,7 @@ public class NotificationUtil {
                 Object obj = user.getDeviceToken();
                 //InputStream inputStream = new ClassPathResource("SpringPushNotification.p12").getInputStream();
 
-                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Certificates.p12", "naemansan@", false, obj);
+                List<PushedNotification> NOTIFICATIONS = Push.payload(payload, "C:\\Users\\woobi\\Documents\\WeAreBility\\2023-1-OSSP2-WeAreBility-3\\backend\\src\\Certificates.p12", "naemansan@", false, obj);
                 for (PushedNotification NOTIFICATION : NOTIFICATIONS) {
                     if (NOTIFICATION.isSuccessful()) {
                         log.info("PUSH NOTIFICATION SENT SUCCESSFULLY TO" + NOTIFICATION.getDevice().getToken());

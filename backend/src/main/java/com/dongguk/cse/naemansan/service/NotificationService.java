@@ -109,10 +109,10 @@ public class NotificationService {
             publisher.publishEvent(new CommentNotificationEvent(fromUserId, toUserId, courseId));
         } else if (NotificationType == 2) { //좋아요
             content = fromUser.getName() + "님이 산책로" + course.getTitle() + "에 좋아요를 눌렀습니다.";
-            publisher.publishEvent(new LikeNotificationEvent(fromUserId,toUserId));
+            publisher.publishEvent(new LikeNotificationEvent(fromUserId,toUserId, courseId));
         } else if (NotificationType == 3) {  //팔로우
             content = fromUser.getName() + "님이 팔로우를 하였습니다";
-            publisher.publishEvent(new FollowNotificationEvent(fromUserId,toUserId));
+            publisher.publishEvent(new FollowNotificationEvent(fromUserId,toUserId, courseId));
         }
 
 

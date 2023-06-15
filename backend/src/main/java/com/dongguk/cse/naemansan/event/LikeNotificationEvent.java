@@ -9,4 +9,5 @@ import lombok.RequiredArgsConstructor;
 public class LikeNotificationEvent {
     private Long fromUserId;
     private Long toUserId;
+    private Long courseId;
 }

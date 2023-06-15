@@ -1,4 +1,5 @@
 package com.dongguk.cse.naemansan.event;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class FollowNotificationEvent {
     private Long fromUserId;
     private Long toUserId;
+    private Long courseId;
 }
