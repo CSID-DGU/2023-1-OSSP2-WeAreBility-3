@@ -5,6 +5,7 @@ import com.dongguk.cse.naemansan.common.RestApiException;
 import com.dongguk.cse.naemansan.domain.*;
 import com.dongguk.cse.naemansan.dto.CourseTagDto;
 import com.dongguk.cse.naemansan.dto.request.UserDeviceRequestDto;
+import com.dongguk.cse.naemansan.dto.request.UserPaymentRequestDto;
 import com.dongguk.cse.naemansan.dto.request.UserTagRequestDto;
 import com.dongguk.cse.naemansan.dto.response.CommentListDto;
 import com.dongguk.cse.naemansan.dto.response.EnrollmentCourseListDto;
@@ -12,6 +13,9 @@ import com.dongguk.cse.naemansan.dto.response.UserDto;
 import com.dongguk.cse.naemansan.dto.request.UserRequestDto;
 import com.dongguk.cse.naemansan.repository.*;
 import com.dongguk.cse.naemansan.util.CourseUtil;
+import com.dongguk.cse.naemansan.util.PaymentUtil;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,15 +37,17 @@ public class UserService {
     private final UserTagRepository userTagRepository;
     private final CommentRepository commentRepository;
     private final CourseUtil courseUtil;
+    private final PaymentUtil paymentUtil;
 
     public UserDto readUserProfile(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        Long commentCnt = commentRepository.countByUserAndStatus(user, true);
 
         return UserDto.builder()
                 .user(user)
                 .image(user.getImage())
-                .is_premium(user.getSubscribe() != null)
-                .comment_cnt((long) user.getComments().size())
+                .is_premium(user.getIsPremium())
+                .comment_cnt(commentCnt)
                 .like_cnt((long) user.getLikes().size())
                 .badge_cnt((long) user.getBadges().size())
                 .following_cnt((long) user.getFollowings().size())
@@ -58,12 +64,13 @@ public class UserService {
         }
 
         user.updateUser(userRequestDto.getName(), userRequestDto.getIntroduction());
+        Long commentCnt = commentRepository.countByUserAndStatus(user, true);
 
         return UserDto.builder()
                 .user(user)
                 .image(user.getImage())
-                .is_premium(user.getSubscribe() != null)
-                .comment_cnt((long) user.getComments().size())
+                .is_premium(user.getIsPremium())
+                .comment_cnt(commentCnt)
                 .like_cnt((long) user.getLikes().size())
                 .badge_cnt((long) user.getBadges().size())
                 .following_cnt((long) user.getFollowings().size())
@@ -226,6 +233,24 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
 
         user.updateDevice(requestDto.getDevice_token(), requestDto.getIs_ios());
+        return Boolean.TRUE;
+    }
+
+    public Boolean updatePremium(Long userId, UserPaymentRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(ErrorCode.NOT_FOUND_USER));
+        IamportResponse<Payment> irsp = null;
+        try {
+            irsp = paymentUtil.paymentLookup(requestDto.getImp_uid());
+        } catch (Exception e) {
+            throw new RestApiException(ErrorCode.PAYMENT_FAIL);
+        }
+
+        if (!paymentUtil.verifyIamport(irsp, requestDto.getAmount())) {
+            throw new RestApiException(ErrorCode.PAYMENT_FAIL);
+        }
+
+        user.updatePremium(requestDto.getAmount() / 4900);
+
         return Boolean.TRUE;
     }
 }
