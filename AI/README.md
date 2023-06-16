@@ -1,7 +1,30 @@
-## [AI 폴더]
+# Naemansan AI Model
 
-> 내가 만든 산책로의 AI_api는 checker, finihser, recommender가 있습니다.
-> Django로 구현했으며, 환경정보는 requirements.txt, 각 API의 상세 정보는 각 folder의 README 문서를 확인해 주세요.
+내가 만든 산책로의 AI_api는 checker, finihser, recommender가 있습니다.<br>
+
+-   version : 3.10.9
+-   Server : Django
+-   env : requirments.txt
+
+# Server 사용 예제
+
+### 1. 환경 설정
+
+```sh
+pip install -r requirments.txt
+```
+
+### 2 - 1. Server 실행 - Linux
+
+```sh
+python3 manage.py runserver
+```
+
+### 2 - 2. Server 실행 - Windows
+
+```sh
+python .\manage.py runserver
+```
 
 <br>
 
