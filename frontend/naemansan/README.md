@@ -1,4 +1,4 @@
-# 내가 만든 산책로, 내만산
+# 🌿 내가 만든 산책로, 내만산
 
 ## 🤔 This Repo?
 
@@ -52,13 +52,55 @@ dev_dependencies:
 
 ## 🛠️ How do I build it?
 
-This project is a starting point for a Flutter application.
+### 0️⃣ 만약 Flutter 기본 셋팅이 안되어 있나요?
 
-A few resources to get you started if this is your first Flutter project:
+그러면 아래 공식 문서를 참고해봐요!
 
--   [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
--   [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+> -   [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+> -   [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 1️⃣ 환경변수 설정
+
+> frontend/naemansan/assets/config/.env 경로에 .env파일 생성
+
+```
+YOUR_NATIVE_APP_KEY = "YOUR KAKAO NATIVE APP KEY"
+GOOGLE_MAPS_API_KEY = "YOUR GOOGLE MAP API KEY"
+NAVER_MAPS_API_KEY = "YOUR NAVER MAP API KEY"
+```
+
+를 설정해준다.
+
+만약 없다면 아래 사이트에서 발급 가능하다.
+
+-   구글 맵 : https://developers.google.com/maps?hl=ko
+-   카카오 개발자 : https://developers.kakao.com/
+-   네이버 클라우드 플랫폼 : https://www.ncloud.com/product/applicationService/maps
+
+### 1️⃣ 실행
+
+```
+flutter run // 플러터 실행
+```
+
+을 통해서 실행해주자
+
+### 2️⃣ 실행이 안될때
+
+#### 1. flutter ERROR
+
+```dart
+flutter clean // 플러터 의존성 제거
+flutter pub get  // 의존성 패키지 재설치
+```
+
+을 통해서 플러터 의존성을 다시 받아주자.
+
+#### 2. iOS ERROR
+
+```dart
+cd ios // ios 폴더 이동
+rm -rf Podfile.lock // Podfile.lock 제거
+pod install --repo-update // 의존성 패키지 재설치
+
+```
