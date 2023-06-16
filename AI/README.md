@@ -4,23 +4,40 @@
 
 -   version : 3.10.9
 -   Server : Django
--   env : requirments.txt
+-   env : requirements.txt
 
 # Server 사용 예제
 
-### 1. 환경 설정
+### 0. Ubuntu Update, Upgrade / Install pip
 
 ```sh
-pip install -r requirments.txt
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install python3-pip
 ```
 
-### 2 - 1. Server 실행 - Linux
+### 1. git clone, change directory
+
+```sh
+git cloen https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3.git
+cd 2023-1-OSSP2-WeAreBility-3
+cd AI
+```
+
+### 2. 환경 설정
+
+```sh
+pip install -r requirements.txt
+python3 manage.py migrate
+```
+
+### 3 - 1. Server 실행 - Linux
 
 ```sh
 python3 manage.py runserver
 ```
 
-### 2 - 2. Server 실행 - Windows
+### 3 - 2. Server 실행 - Windows
 
 ```sh
 python .\manage.py runserver
