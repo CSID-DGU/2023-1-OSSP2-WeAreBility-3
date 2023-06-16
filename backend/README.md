@@ -140,3 +140,4 @@ java -jar naemansan-0.0.1-SNAPSHOT.jar
 -   애플 Oauth2 - 2 : https://velog.io/@kwakwoohyun/%EA%B0%9C%EB%B0%9C%EC%9D%BC%EC%A7%80-Spring-boot-OAuth2-Apple-Login
 -   Geocoding API KEY : https://velog.io/@sukqbe/API-%EA%B5%AC%EA%B8%80-%EC%A7%80%EB%8F%84Google-Map-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0-API-Key-%EB%B0%9C%EA%B8%89%EB%B0%9B%EA%B8%B0-qumur49u
 -   FireBase Key : https://sol-devlog.tistory.com/11
+-   Apple PushNotification KEY(*.p12): https://www.youtube.com/watch?v=Hg1ZJjWzRxs
