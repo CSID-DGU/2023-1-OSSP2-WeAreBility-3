@@ -19,7 +19,7 @@ sudo apt install python3-pip
 ### 1. git clone, change directory
 
 ```sh
-git cloen https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3.git
+git clone https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3.git
 cd 2023-1-OSSP2-WeAreBility-3
 cd AI
 ```
