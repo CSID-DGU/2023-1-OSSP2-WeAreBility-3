@@ -90,9 +90,33 @@
 
 ![image](https://github.com/kyechan99/capsule-render/assets/62001944/9e5a3962-13d0-4a8e-a241-28302d002735)
 
-## 4. 스크린 샷
+## 4. 시연 영상 및 구동화면
 
-    <!-- 스크린샷 추가 -->
+### 💻 시연 영상
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/oiY1D0dB3vs/0.jpg)](https://www.youtube.com/watch?v=oiY1D0dB3vs)
+
+### ✨ 스크린
+
+1️⃣ 메인 화면
+
+<img width="430" alt="스크린샷 2023-06-16 오후 10 17 04" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/6cd935de-d6b2-48b4-b76c-4c2db0e5b79b">
+
+2️⃣ 나만의 산책로
+
+<img width="404" alt="스크린샷 2023-06-16 오후 10 20 15" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/22553883-601e-445f-bf59-c25841b9f7fe">
+
+3️⃣ 모두의 산책로
+
+공개 등록
+
+<img width="362" alt="스크린샷 2023-06-16 오후 10 25 10" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/026e1e5c-fa16-4cce-b779-4401a2577202">
+
+산책로 이용
+<img width="870" alt="스크린샷 2023-06-16 오후 10 10 13" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/1567b7ed-0aec-4525-869c-2c8879a7459f">
+
+4️⃣ 마이페이지, 알림, 배너 디테일
+<img width="427" alt="스크린샷 2023-06-16 오후 10 23 15" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/da8338dc-c45f-4ed7-8b3f-3d1f3dd6f2c3">
 
 ## 5. 서버 전체 구조
 
