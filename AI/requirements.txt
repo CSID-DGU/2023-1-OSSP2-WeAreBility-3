@@ -1,9 +1,8 @@
 Django==4.2.1
 djangorestframework==3.14.0
 gensim==4.3.0
-joblib==1.1.1
+haversine==2.8.0
 numpy==1.23.5
 pandas==1.5.3
 PyMySQL==1.0.3
 scikit_learn==1.2.1
-Shapely==2.0.1
