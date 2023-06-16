@@ -1,10 +1,10 @@
-# Naemansan AI Model
+# Naemansan AI Model And Web Server
 
 내가 만든 산책로의 AI_api는 checker, finihser, recommender가 있습니다.<br>
 
 -   version : 3.10.9
 -   Server : Django
--   env : requirements.txt
+-   Environment : requirements.txt
 
 # Server 사용 예제
 
@@ -24,20 +24,20 @@ cd 2023-1-OSSP2-WeAreBility-3
 cd AI
 ```
 
-### 2. 환경 설정
+### 2. Setting Environment
 
 ```sh
 pip install -r requirements.txt
 python3 manage.py migrate
 ```
 
-### 3 - 1. Server 실행 - Linux
+### 3 - 1. Run Server - Linux
 
 ```sh
 python3 manage.py runserver
 ```
 
-### 3 - 2. Server 실행 - Windows
+### 3 - 2. Run Server - Windows
 
 ```sh
 python .\manage.py runserver
