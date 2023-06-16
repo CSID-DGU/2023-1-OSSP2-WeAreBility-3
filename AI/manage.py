@@ -3,11 +3,10 @@
 import os
 import sys
 
-sys.path.append('C:\Hoin666\2023-1-OSSP2-WeAreBility-3\AI\checker')
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "similarity_checker.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "AI_api.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
