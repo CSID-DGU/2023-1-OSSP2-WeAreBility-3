@@ -112,6 +112,7 @@
 <img width="362" alt="스크린샷 2023-06-16 오후 10 25 10" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/026e1e5c-fa16-4cce-b779-4401a2577202">
 
 산책로 이용
+
 <img width="870" alt="스크린샷 2023-06-16 오후 10 10 13" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/1567b7ed-0aec-4525-869c-2c8879a7459f">
 
 4️⃣ 마이페이지, 알림, 배너 디테일
