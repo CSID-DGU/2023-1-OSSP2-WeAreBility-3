@@ -115,6 +115,7 @@
 <img width="870" alt="스크린샷 2023-06-16 오후 10 10 13" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/1567b7ed-0aec-4525-869c-2c8879a7459f">
 
 4️⃣ 마이페이지, 알림, 배너 디테일
+
 <img width="427" alt="스크린샷 2023-06-16 오후 10 23 15" src="https://github.com/CSID-DGU/2023-1-OSSP2-WeAreBility-3/assets/78739194/da8338dc-c45f-4ed7-8b3f-3d1f3dd6f2c3">
 
 ## 5. 서버 전체 구조
