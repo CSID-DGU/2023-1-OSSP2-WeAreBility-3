@@ -13,64 +13,56 @@
 | 이름                                         | 전공           | 학번   | Email                |
 | -------------------------------------------- | -------------- | ------ | -------------------- |
 | [서희찬](https://github.com/seochan99)       | 컴퓨터공학전공 | 19학번 | gmlcks0513@dgu.ac.kr |
-| [김정현](https://github.com/wjdgus000000000) | 통계학전공     | 21학번 | 2021110471@dgu.ac.kr |
+| [황현정](https://github.com/bunju20) | 컴퓨터공학전공     | 20학번 | ghkd4009@gmail.com |
 
-## [Back-end](/backend/README.md), [AI](/AI/README.md)
-
-| 이름                                      | 전공           | 학번   | Email               |
-| ----------------------------------------- | -------------- | ------ | ------------------- |
-| [정호인](https://github.com/Hoin666)      | 수학전공       | 18학번 | hoining6@dgu.ac.kr  |
-| [강우빈](https://github.com/Shortood)     | 컴퓨터공학전공 | 19학번 | woobin929@dgu.ac.kr |
-| [손형준](https://github.com/HyungJoonSon) | 컴퓨터공학전공 | 19학번 | hyungjoon@dgu.ac.kr |
 
 ---
 
 # 🛠️ Tech
 
-## FrameWork
-
-<div>
-    <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/>
-    <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white" />
-    <img src="https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white"/>
-</div>
+## Frameworks
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 
 ## Server
-
-<div>
-    <img src="https://img.shields.io/badge/Google Cloud-4285F4?style=for-the-badge&logo=Google Cloud&logoColor=white"/>
-</div>
+![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 
 ## Stack
 
-<div>
-    <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white"/>
-    <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/>
-    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
-    <img src="https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white" />
-    <br>
-    <!-- Front 추가 -->
-    <img src="https://img.shields.io/badge/geolocator-9.0.2-orange?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/jwt_decoder-2.0.1-yellow?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/http-0.13.6-red?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/uuid-3.0.7-blue?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/geocoding-2.1.0-red?style=for-the-badge"/>
-    <br>
-    <img src="https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white" />
-    <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=Spring-Security&logoColor=white"/>
-    <img src="https://img.shields.io/badge/json%20web%20tokens-323330?style=for-the-badge&logo=json-web-tokens&logoColor=pink"/>
-    <img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white" />
-    <br>
-    <img src="https://img.shields.io/badge/gensim-4.30-374da9?style=for-the-badge" />
-    <img src="https://img.shields.io/badge/haversine%20-2.8.0-374da9?style=for-the-badge" />
-    <img src="https://img.shields.io/badge/numpy-1.23.5-374da9?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/pandas-1.5.3-374da9?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/PyMySQL-1.0.3-374da9?style=for-the-badge"/>
-    <img src="https://img.shields.io/badge/Scikit--learn-1.2.1-orange?style=for-the-badge"/>
-    <br>
-    <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
-    <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
-</div>
+### Frontend
+![geolocator](https://img.shields.io/badge/geolocator-9.0.2-orange?style=for-the-badge)
+![jwt_decoder](https://img.shields.io/badge/jwt_decoder-2.0.1-yellow?style=for-the-badge)
+![http](https://img.shields.io/badge/http-0.13.6-red?style=for-the-badge)
+![uuid](https://img.shields.io/badge/uuid-3.0.7-blue?style=for-the-badge)
+![geocoding](https://img.shields.io/badge/geocoding-2.1.0-red?style=for-the-badge)
+
+### Backend
+
+![JPA](https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white)
+![JSON Web Tokens](https://img.shields.io/badge/json%20web%20tokens-323330?style=for-the-badge&logo=json-web-tokens&logoColor=pink)
+![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+
+### Data Science / Machine Learning
+
+![gensim](https://img.shields.io/badge/gensim-4.30-374da9?style=for-the-badge)
+![haversine](https://img.shields.io/badge/haversine%20-2.8.0-374da9?style=for-the-badge)
+![numpy](https://img.shields.io/badge/numpy-1.23.5-374da9?style=for-the-badge)
+![pandas](https://img.shields.io/badge/pandas-1.5.3-374da9?style=for-the-badge)
+![PyMySQL](https://img.shields.io/badge/PyMySQL-1.0.3-374da9?style=for-the-badge)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.2.1-orange?style=for-the-badge)
+
+### Database
+
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### Mobile
+![Swift](https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white)
+
 
 ---
 
